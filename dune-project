@@ -20,6 +20,10 @@
    (and
     (>= 1.1.0)
     :with-test))
+  (alcotest-lwt
+   (and
+    (>= 1.1.0)
+    :with-test))
   (base
    (>= 0.13.1))
   (lwt

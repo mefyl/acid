@@ -2,6 +2,7 @@ module Step = Base.Sequence.Step
 
 module Make (Monad : Base.Monad.S) = struct
   open Monad
+  module Step = Base.Sequence.Step
 
   type _ t =
     | Sequence : {
