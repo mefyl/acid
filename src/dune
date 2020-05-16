@@ -1,3 +1,4 @@
 (library
  (name acid)
+ (public_name acid)
  (libraries base lwt))
