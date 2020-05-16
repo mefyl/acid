@@ -4,3 +4,4 @@ module Sequence_ = Sequence
 include Base
 include Poly
 module Sequence = Sequence_
+module Format = Caml.Format
