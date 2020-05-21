@@ -1,4 +1,4 @@
-module Let2 (Monad : Base.Monad.S2) = struct
+module Syntax2 (Monad : Base.Monad.S2) = struct
   let ( >>= ) = Monad.( >>= )
 
   let ( >>| ) = Monad.( >>| )
@@ -12,8 +12,8 @@ module Let2 (Monad : Base.Monad.S2) = struct
   let ( and+ ) = Monad.Let_syntax.Let_syntax.both
 end
 
-module Let (Monad : Base.Monad.S) = struct
-  include Let2 (struct
+module Syntax (Monad : Base.Monad.S) = struct
+  include Syntax2 (struct
     include Monad
 
     type nonrec ('a, 'b) t = 'a t
