@@ -7,3 +7,4 @@ module Array = Acid_array
 module Result = Acid_result
 module Sequence = Sequence_
 module Format = Caml.Format
+module Let = Let
