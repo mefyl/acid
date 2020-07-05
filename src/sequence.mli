@@ -17,6 +17,10 @@ module Make (Monad : Base.Monad.S) : sig
   val iter : 'a t -> f:('a -> unit Monad.t) -> unit Monad.t
 
   val to_list : 'a t -> 'a list Monad.t
+
+  val step : 'a t -> ('a option * 'a t) Monad.t
+
+  val head : 'a t -> 'a option Monad.t
 end
 
 module Make2 (Monad : Base.Monad.S2) : sig
@@ -39,4 +43,8 @@ module Make2 (Monad : Base.Monad.S2) : sig
   val iter : ('a, 'b) t -> f:('a -> (unit, 'b) Monad.t) -> (unit, 'b) Monad.t
 
   val to_list : ('a, 'b) t -> ('a list, 'b) Monad.t
+
+  val step : ('a, 'b) t -> ('a option * ('a, 'b) t, 'b) Monad.t
+
+  val head : ('a, 'b) t -> ('a option, 'b) Monad.t
 end

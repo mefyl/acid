@@ -55,12 +55,20 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Step.Yield (v, state) ->
       f v >>= fun () -> iter (Sequence { state; f = step }) ~f
 
-  let rec to_list (Sequence { state; f = step }) =
-    step state >>= function
+  let rec to_list (Sequence { state; f }) =
+    f state >>= function
     | Step.Done -> Monad.return []
-    | Step.Skip state -> to_list (Sequence { state; f = step })
+    | Step.Skip state -> to_list (Sequence { state; f })
     | Step.Yield (v, state) ->
-      to_list (Sequence { state; f = step }) >>| fun tail -> v :: tail
+      to_list (Sequence { state; f }) >>| fun tail -> v :: tail
+
+  let rec step (Sequence { state; f } as seq) =
+    f state >>= function
+    | Step.Done -> Monad.return (None, seq)
+    | Step.Skip state -> step (Sequence { state; f })
+    | Step.Yield (v, state) -> Monad.return (Some v, Sequence { state; f })
+
+  let head seq = step seq >>| fst
 end
 
 module Make (Monad : Base.Monad.S) = struct
