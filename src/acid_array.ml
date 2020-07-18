@@ -1,4 +1,4 @@
-include Array
+include Base.Array
 
 module Monadic2 (Monad : Base.Monad.S2) = struct
   include Base.Array
