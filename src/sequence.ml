@@ -69,6 +69,12 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Step.Yield (v, state) -> Monad.return (Some v, Sequence { state; f })
 
   let head seq = step seq >>| fst
+
+  let rec find ~f seq =
+    step seq >>= function
+    | Some value, _ when f value -> Monad.return @@ Some value
+    | Some _, seq -> find ~f seq
+    | None, _ -> Monad.return None
 end
 
 module Make (Monad : Base.Monad.S) = struct

@@ -21,6 +21,8 @@ module Make (Monad : Base.Monad.S) : sig
   val step : 'a t -> ('a option * 'a t) Monad.t
 
   val head : 'a t -> 'a option Monad.t
+
+  val find : f:('a -> bool) -> 'a t -> 'a option Monad.t
 end
 
 module Make2 (Monad : Base.Monad.S2) : sig
@@ -47,4 +49,6 @@ module Make2 (Monad : Base.Monad.S2) : sig
   val step : ('a, 'b) t -> ('a option * ('a, 'b) t, 'b) Monad.t
 
   val head : ('a, 'b) t -> ('a option, 'b) Monad.t
+
+  val find : f:('a -> bool) -> ('a, 'b) t -> ('a option, 'b) Monad.t
 end
