@@ -15,6 +15,7 @@
 
 (package
  (name acid)
+ (synopsis "Base library")
  (depends
   (alcotest
    (and
