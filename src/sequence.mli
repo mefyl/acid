@@ -42,6 +42,8 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val concat : (('a, 'b) t, 'b) t -> ('a, 'b) t
 
+  val map : ('a, 'c) t -> f:('a -> ('b, 'c) Monad.t) -> ('b, 'c) t
+
   val iter : ('a, 'b) t -> f:('a -> (unit, 'b) Monad.t) -> (unit, 'b) Monad.t
 
   val to_list : ('a, 'b) t -> ('a list, 'b) Monad.t

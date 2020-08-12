@@ -48,6 +48,19 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     unfold ~init:(None, seq) ~f
 
+  let map :
+      type from to_.
+      (from, 'b) t -> f:(from -> (to_, 'b) Monad.t) -> (to_, 'b) t =
+   fun (Sequence { state; f = step }) ~f ->
+    let f state =
+      step state >>= function
+      | Step.Yield (v, state) ->
+        f v >>= fun v -> Monad.return @@ Step.Yield (v, state)
+      | Step.Skip state -> Monad.return @@ Step.Skip state
+      | Step.Done -> Monad.return @@ Step.Done
+    in
+    Sequence { state; f }
+
   let rec iter (Sequence { state; f = step }) ~f =
     step state >>= function
     | Step.Done -> Monad.return ()
