@@ -22,7 +22,7 @@ module Make (Monad : Base.Monad.S) : sig
 
   val head : 'a t -> 'a option Monad.t
 
-  val find : f:('a -> bool) -> 'a t -> 'a option Monad.t
+  val find : 'a t -> f:('a -> bool Monad.t) -> 'a option Monad.t
 end
 
 module Make2 (Monad : Base.Monad.S2) : sig
@@ -42,7 +42,15 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val concat : (('a, 'b) t, 'b) t -> ('a, 'b) t
 
+  val filter_map : ('a, 'c) t -> f:('a -> ('b option, 'c) Monad.t) -> ('b, 'c) t
+
   val map : ('a, 'c) t -> f:('a -> ('b, 'c) Monad.t) -> ('b, 'c) t
+
+  val fold_left :
+    ('a, 'b) t ->
+    f:('c -> 'a -> ('c, 'b) Monad.t) ->
+    init:'c ->
+    ('c, 'b) Monad.t
 
   val iter : ('a, 'b) t -> f:('a -> (unit, 'b) Monad.t) -> (unit, 'b) Monad.t
 
@@ -52,5 +60,9 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val head : ('a, 'b) t -> ('a option, 'b) Monad.t
 
-  val find : f:('a -> bool) -> ('a, 'b) t -> ('a option, 'b) Monad.t
+  val find_map :
+    ('a, 'b) t -> f:('a -> ('c option, 'b) Monad.t) -> ('c option, 'b) Monad.t
+
+  val find :
+    ('a, 'b) t -> f:('a -> (bool, 'b) Monad.t) -> ('a option, 'b) Monad.t
 end

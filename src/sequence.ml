@@ -1,3 +1,4 @@
+open Base
 module Step = Base.Sequence.Step
 
 module Make2 (Monad : Base.Monad.S2) = struct
@@ -48,18 +49,29 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     unfold ~init:(None, seq) ~f
 
-  let map :
+  let rec fold_left (Sequence { state; f = step }) ~f ~init =
+    step state >>= function
+    | Step.Done -> Monad.return init
+    | Step.Skip state -> fold_left (Sequence { state; f = step }) ~f ~init
+    | Step.Yield (v, state) ->
+      f init v >>= fun init -> fold_left (Sequence { state; f = step }) ~f ~init
+
+  let filter_map :
       type from to_.
-      (from, 'b) t -> f:(from -> (to_, 'b) Monad.t) -> (to_, 'b) t =
+      (from, 'b) t -> f:(from -> (to_ option, 'b) Monad.t) -> (to_, 'b) t =
    fun (Sequence { state; f = step }) ~f ->
     let f state =
       step state >>= function
-      | Step.Yield (v, state) ->
-        f v >>= fun v -> Monad.return @@ Step.Yield (v, state)
+      | Step.Yield (v, state) -> (
+        f v >>= function
+        | Some v -> Monad.return @@ Step.Yield (v, state)
+        | None -> Monad.return @@ Step.Skip state )
       | Step.Skip state -> Monad.return @@ Step.Skip state
       | Step.Done -> Monad.return @@ Step.Done
     in
     Sequence { state; f }
+
+  let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
 
   let rec iter (Sequence { state; f = step }) ~f =
     step state >>= function
@@ -83,11 +95,19 @@ module Make2 (Monad : Base.Monad.S2) = struct
 
   let head seq = step seq >>| fst
 
-  let rec find ~f seq =
+  let rec find_map seq ~f =
     step seq >>= function
-    | Some value, _ when f value -> Monad.return @@ Some value
-    | Some _, seq -> find ~f seq
     | None, _ -> Monad.return None
+    | Some value, seq -> (
+      f value >>= function
+      | Some value -> Monad.return @@ Some value
+      | None -> find_map ~f seq )
+
+  let find seq ~f =
+    find_map seq ~f:(fun v ->
+        f v >>= function
+        | true -> Monad.return @@ Some v
+        | false -> Monad.return None)
 end
 
 module Make (Monad : Base.Monad.S) = struct
