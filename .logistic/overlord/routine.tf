@@ -45,8 +45,14 @@ packages:
   - docker-ce-cli
   - nginx
   - nginx-extra
-ssh_authorized_keys:
-  - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq1pXuFI8l8MopHufZ4S3fe+WoR5wgeaPtZhw9IFuHZ+3F7V7fCzy76gKp5EPz5sk2Dowd90d+TuEUjUUkI0fRLJipRPjo2reFsuOAZ244ee/NLtG601vQUS/sV8ow2QZEAoNAiNZQGr4jEqvmjIB+rwOmx9eUgs887KjUYlX+wH5984EAr/qd62VddYXga8o4T2QX4GlYik/s/yKm0dlCQgZXQPYM5Wogv6KluGdLFKBaNc2HYkGEArZE51sATRcDOSQcycg2sGuwfL/LfClsCkx2LSYjJh9qkiBNUsAg+LeRt/9Hv3S32tcMszCph3nSX5u+1yz8VURHjVGh9ptAw== mefyl
+  - salt-minion
+salt_minion:
+  conf:
+    master: salt.routine.co
+  grains:
+    role:
+      - ${var.name}
+      - swarm
 EOF
 }
 
@@ -90,7 +96,7 @@ resource "digitalocean_loadbalancer" "api" {
   }
 
   healthcheck {
-    port     = 8080
+    port     = 80
     path     = "/"
     protocol = "http"
   }
