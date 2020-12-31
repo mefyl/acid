@@ -1,3 +1,4 @@
+module IQueue = Queue
 module Lwt = Acid_lwt
 module Lwt_result = Acid_lwt_result
 module Sequence_ = Sequence
