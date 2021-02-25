@@ -39,7 +39,7 @@ let _find_update rev q f =
         if rev then
           (List.rev_append t (v :: acc), Some v)
         else
-          (List.rev_append (v :: acc) t, Some v) )
+          (List.rev_append (v :: acc) t, Some v))
   in
   loop [] q
 

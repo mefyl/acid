@@ -37,7 +37,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
         | Step.Skip state ->
           Monad.return @@ Step.Skip (None, Sequence { state; f })
         | Step.Yield (sub, state) ->
-          Monad.return @@ Step.Skip (Some sub, Sequence { state; f }) )
+          Monad.return @@ Step.Skip (Some sub, Sequence { state; f }))
       | Some (Sequence { state; f }), next -> (
         f state >>= function
         | Step.Done -> Monad.return @@ Step.Skip (None, next)
@@ -65,7 +65,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
       | Step.Yield (v, state) -> (
         f v >>= function
         | Some v -> Monad.return @@ Step.Yield (v, state)
-        | None -> Monad.return @@ Step.Skip state )
+        | None -> Monad.return @@ Step.Skip state)
       | Step.Skip state -> Monad.return @@ Step.Skip state
       | Step.Done -> Monad.return @@ Step.Done
     in
@@ -101,7 +101,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Some value, seq -> (
       f value >>= function
       | Some value -> Monad.return @@ Some value
-      | None -> find_map ~f seq )
+      | None -> find_map ~f seq)
 
   let find seq ~f =
     find_map seq ~f:(fun v ->
