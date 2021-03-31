@@ -6,5 +6,5 @@ include Base
 module Array = Acid_array
 module Format = Caml.Format
 module Let = Let
-module Result = Acid_result
+module Result = Result
 module Sequence = Sequence_
