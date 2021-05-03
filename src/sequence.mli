@@ -42,6 +42,8 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val concat : (('a, 'b) t, 'b) t -> ('a, 'b) t
 
+  val filter : ('a, 'c) t -> f:('a -> (bool, 'c) Monad.t) -> ('a, 'c) t
+
   val filter_map : ('a, 'c) t -> f:('a -> ('b option, 'c) Monad.t) -> ('b, 'c) t
 
   val map : ('a, 'c) t -> f:('a -> ('b, 'c) Monad.t) -> ('b, 'c) t

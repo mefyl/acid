@@ -71,6 +71,12 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     Sequence { state; f }
 
+  let filter s ~f =
+    filter_map s ~f:(fun e ->
+        f e >>| function
+        | true -> Some e
+        | false -> None)
+
   let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
 
   let rec iter (Sequence { state; f = step }) ~f =
