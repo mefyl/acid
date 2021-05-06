@@ -1,0 +1,11 @@
+(rule
+ (target acid.%{version:acid}.opam)
+ (deps
+  (:opam acid.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (echo
+      "url {\n  src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\"\n}\n")))))

@@ -10,8 +10,14 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
+(version 0.1.0)
+
+(homepage https://gitlab.routine.co/routine/acid)
+
+(bug_reports https://gitlab.routine.co/routine/acid/-/issues)
+
 (source
- (github mefyl/aci))
+ (uri git+https://gitlab.routine.co/routine/acid.git))
 
 (package
  (name acid)
