@@ -23,6 +23,11 @@ module Make (Monad : Base.Monad.S) : sig
   val head : 'a t -> 'a option Monad.t
 
   val find : 'a t -> f:('a -> bool Monad.t) -> 'a option Monad.t
+
+  val fold :
+    'a t -> init:'state -> f:('state -> 'a -> 'state Monad.t) -> 'state Monad.t
+
+  val length : 'a t -> int Monad.t
 end
 
 module Make2 (Monad : Base.Monad.S2) : sig
@@ -67,4 +72,12 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val find :
     ('a, 'b) t -> f:('a -> (bool, 'b) Monad.t) -> ('a option, 'b) Monad.t
+
+  val fold :
+    ('a, 'b) t ->
+    init:'state ->
+    f:('state -> 'a -> ('state, 'b) Monad.t) ->
+    ('state, 'b) Monad.t
+
+  val length : ('a, 'b) t -> (int, 'b) Monad.t
 end

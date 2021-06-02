@@ -114,6 +114,13 @@ module Make2 (Monad : Base.Monad.S2) = struct
         f v >>= function
         | true -> Monad.return @@ Some v
         | false -> Monad.return None)
+
+  let rec fold seq ~init ~f =
+    step seq >>= function
+    | Some v, seq -> f init v >>= fun init -> fold seq ~init ~f
+    | None, _ -> Monad.return init
+
+  let length seq = fold seq ~init:0 ~f:(fun i _ -> Monad.return (i + 1))
 end
 
 module Make (Monad : Base.Monad.S) = struct

@@ -81,6 +81,27 @@ module Result = struct
       Alcotest.(check (result unit string) "res" (Result.Ok ()) res)
     in
     ()
+
+  let fold () =
+    let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ]
+    and f a b =
+      let res = a + b in
+      if res < 100 then
+        Result.Ok res
+      else
+        Result.Error "too big"
+    in
+    Alcotest.(
+      check (result int string) "sum" (Result.Ok 15)
+        (Sequence.fold ~init:0 ~f seq));
+    Alcotest.(
+      check (result int string) "too big a sum" (Result.Error "too big")
+        (Sequence.fold ~init:90 ~f seq))
+
+  let length () =
+    let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ] in
+    Alcotest.(
+      check (result int string) "length" (Result.Ok 5) (Sequence.length seq))
 end
 
 let () =
@@ -97,5 +118,7 @@ let () =
            [
              test_case_res "unfold" Result.unfold;
              test_case_res "step" Result.step;
+             test_case_res "fold" Result.fold;
+             test_case_res "length" Result.length;
            ] );
        ]
