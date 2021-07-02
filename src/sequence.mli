@@ -5,6 +5,8 @@ module Make (Monad : Base.Monad.S) : sig
 
   module Step = Base.Sequence.Step
 
+  val empty : 'a t
+
   val unfold : init:'state -> f:('state -> ('a, 'state) Step.t Monad.t) -> 'a t
 
   val unfold_step :
@@ -34,6 +36,8 @@ module Make2 (Monad : Base.Monad.S2) : sig
   type ('a, 'b) t
 
   module Step = Base.Sequence.Step
+
+  val empty : ('a, 'b) t
 
   val unfold :
     init:'state -> f:('state -> (('a, 'state) Step.t, 'b) Monad.t) -> ('a, 'b) t

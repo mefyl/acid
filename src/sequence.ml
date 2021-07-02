@@ -12,6 +12,8 @@ module Make2 (Monad : Base.Monad.S2) = struct
       }
         -> ('a, 'b) t
 
+  let empty = Sequence { state = (); f = (fun () -> Monad.return Step.Done) }
+
   let unfold ~init ~f = Sequence { state = init; f }
 
   let unfold_step ~init ~f =
