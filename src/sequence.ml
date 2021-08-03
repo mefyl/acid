@@ -101,6 +101,15 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Step.Skip state -> step (Sequence { state; f })
     | Step.Yield (v, state) -> Monad.return (Some v, Sequence { state; f })
 
+  let rec partition seq =
+    step seq >>= function
+    | None, _ -> Monad.return ([], [])
+    | Some v, sequence -> (
+      partition sequence >>| fun (l, r) ->
+      match v with
+      | Either.First h -> (h :: l, r)
+      | Either.Second h -> (l, h :: r))
+
   let head seq = step seq >>| fst
 
   let rec find_map seq ~f =
