@@ -1,6 +1,7 @@
 module IQueue = Queue
 module Lwt = Acid_lwt
 module Lwt_result = Acid_lwt_result
+module Mode = Mode
 module Sequence_ = Sequence
 include Base
 module Array = Acid_array

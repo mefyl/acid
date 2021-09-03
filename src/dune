@@ -1,4 +1,12 @@
 (library
  (name acid)
  (public_name acid)
- (libraries base lwt))
+ (libraries
+  base
+  lwt
+  (select
+   select.ml
+   from
+   (schematic-jsoo -> select.jsoo.ml)
+   (schematic -> select.schema.ml)
+   (!schematic -> select.none.ml))))

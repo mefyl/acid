@@ -15,6 +15,10 @@ depends: [
   "lwt" {>= "5.0.0"}
   "ocamlformat" {= "0.17.0" & dev}
 ]
+depopts: [
+  "schematic" {= "0.7.0"}
+  "schematic-jsoo" {= "0.7.0"}
+]
 build: [
   ["dune" "subst"] {pinned}
   [
