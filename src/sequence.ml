@@ -24,6 +24,10 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     Sequence { state = init; f }
 
+  let of_base init =
+    let f s = Monad.return @@ Base.Sequence.Expert.next_step s in
+    unfold ~init ~f
+
   let of_list init =
     let f = function
       | hd :: tl -> Monad.return @@ Some (hd, tl)
