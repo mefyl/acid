@@ -12,6 +12,8 @@ module Make (Monad : Base.Monad.S) : sig
   val unfold_step :
     init:'state -> f:('state -> ('a * 'state) option Monad.t) -> 'a t
 
+  val of_base : 'a Base.Sequence.t -> 'a t
+
   val of_list : 'a list -> 'a t
 
   val concat : 'a t t -> 'a t
