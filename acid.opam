@@ -16,8 +16,8 @@ depends: [
   "ocamlformat" {= "0.17.0" & dev}
 ]
 depopts: [
-  "schematic" {= "0.7.0"}
-  "schematic-jsoo" {= "0.7.0"}
+  "schematic" {= "0.8.0"}
+  "schematic-jsoo" {= "0.8.0"}
 ]
 build: [
   ["dune" "subst"] {pinned}

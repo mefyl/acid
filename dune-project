@@ -41,6 +41,6 @@
     :dev)))
  (depopts
   (schematic
-   (= 0.7.0))
+   (= 0.8.0))
   (schematic-jsoo
-   (= 0.7.0))))
+   (= 0.8.0))))
