@@ -40,3 +40,18 @@ module Switch_w = struct
 
   let schema _ w = w
 end
+
+module type SPLIT = sig
+  type ('l, 'r) t
+
+  type ('l, 'r) js
+
+  val schema :
+    'r Schematic.Schema.t ->
+    'w Schematic.Schema.t ->
+    ('r, 'w) t Schematic.Schema.t
+end
+
+module Split = struct
+  type ('l, 'r) js = Js_of_ocaml.Js.Unsafe.any
+end

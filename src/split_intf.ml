@@ -1,7 +1,7 @@
 module type S = sig
   type ('l, 'r) t
 
-  type ('l, 'r) js
+  include Select.SPLIT with type ('l, 'r) t := ('l, 'r) t
 
   val case : 'a -> 'a -> 'a
 
@@ -12,7 +12,4 @@ module type S = sig
   val right : 'r -> (_, 'r) t option
 
   val get : ('l -> 'a) -> ('r -> 'a) -> ('l, 'r) t -> 'a
-
-  val schema :
-    'r Schematic.schema -> 'w Schematic.schema -> ('r, 'w) t Schematic.schema
 end

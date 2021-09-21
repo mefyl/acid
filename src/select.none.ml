@@ -13,3 +13,9 @@ module W = struct end
 module Switch_r = struct end
 
 module Switch_w = struct end
+
+module type SPLIT = sig
+  type ('l, 'r) t
+end
+
+module Split = struct end

@@ -28,3 +28,14 @@ end
 module Switch_w = struct
   let schema _ w = w
 end
+
+module type SPLIT = sig
+  type ('l, 'r) t
+
+  val schema :
+    'r Schematic.Schema.t ->
+    'w Schematic.Schema.t ->
+    ('r, 'w) t Schematic.Schema.t
+end
+
+module Split = struct end
