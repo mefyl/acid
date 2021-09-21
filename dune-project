@@ -38,7 +38,15 @@
   (ocamlformat
    (and
     (= 0.17.0)
-    :dev)))
+    :dev))
+  (schematic
+   (and
+    (= 0.8.0)
+    :with-test))
+  (schematic-jsoo
+   (and
+    (= 0.8.0)
+    :with-test)))
  (depopts
   (schematic
    (= 0.8.0))
