@@ -6,6 +6,7 @@ let deconstruct () =
     Fmt.(
       str "%i %s %a %a %i %i %i %i" a b (option string) c (option int) d e f g h)
   in
+  Alcotest.(check int "length" 8 @@ Hlist.length l);
   Alcotest.(check string "deconstructed" "0 1 2 3 4 5 6 7" @@ f l)
 
 let () =
