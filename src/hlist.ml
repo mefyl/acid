@@ -14,7 +14,7 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
   type ('t, 'tag) value = ('t, 'tag) T.t
 
   type ('t, 'tag) t =
-    | ( :: ) : ('hd, 'tag) value * ('tl, 'tag) t -> ('hd -> 'tl, 'tag) t
+    | ( :: ) : ('hd, 'tag) value * ('tl, 'tag) t -> (('hd, 'tl) desc, 'tag) t
     | [] : (unit, 'tag) t
 
   let length l =
@@ -57,7 +57,7 @@ end) : S with type 'a value = 'a T.t = struct
   type 't value = 't T.t
 
   type 't t =
-    | ( :: ) : 'hd value * 'tl t -> ('hd -> 'tl) t
+    | ( :: ) : 'hd value * 'tl t -> ('hd, 'tl) desc t
     | [] : unit t
 
   let length l =
