@@ -8,6 +8,10 @@ let length l =
   in
   loop 0 l
 
+let rec to_pairs : type l. l t -> l = function
+  | a :: b -> (a, to_pairs b)
+  | [] -> ()
+
 module Make2 (T : sig
   type ('a, 'b) t
 end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct

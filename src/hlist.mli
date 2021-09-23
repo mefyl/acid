@@ -2,6 +2,8 @@ include module type of Hlist_intf
 
 val length : 'l t -> int
 
+val to_pairs : 'l t -> 'l
+
 module Make (T : sig
   type 'a t
 end) : S with type 'a value = 'a T.t
