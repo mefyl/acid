@@ -11,9 +11,11 @@ module type S2 = sig
 
   val length : _ t -> int
 
-  type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res option }
+  type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res }
 
   val map : ('t, 'tag) t -> f:'res mapper -> 'res list
+
+  val filter_map : ('t, 'tag) t -> f:'res option mapper -> 'res list
 end
 
 module type S = sig
@@ -25,7 +27,9 @@ module type S = sig
 
   val length : _ t -> int
 
-  type 'res mapper = { f : 't 'tag. 't value -> 'res option }
+  type 'res mapper = { f : 't 'tag. 't value -> 'res }
 
   val map : 't t -> f:'res mapper -> 'res list
+
+  val filter_map : 't t -> f:'res option mapper -> 'res list
 end

@@ -25,9 +25,9 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
     in
     loop 0 l
 
-  type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res option }
+  type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res }
 
-  let map l ~(f : 'res mapper) =
+  let filter_map l ~(f : 'res option mapper) =
     let rec map : type a tag. (a, tag) t -> 'res list = function
       | hd :: tl -> (
         match f.f hd with
@@ -36,6 +36,8 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
       | [] -> List.[]
     in
     map l
+
+  let map l ~(f : 'res mapper) = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
 end
 
 module Make (T : sig
@@ -55,9 +57,9 @@ end) : S with type 'a value = 'a T.t = struct
     in
     loop 0 l
 
-  type 'res mapper = { f : 't. 't value -> 'res option }
+  type 'res mapper = { f : 't. 't value -> 'res }
 
-  let map l ~(f : 'res mapper) =
+  let filter_map l ~(f : 'res option mapper) =
     let rec map : type a. a t -> 'res list = function
       | hd :: tl -> (
         match f.f hd with
@@ -66,4 +68,6 @@ end) : S with type 'a value = 'a T.t = struct
       | [] -> List.[]
     in
     map l
+
+  let map l ~(f : 'res mapper) = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
 end
