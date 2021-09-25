@@ -55,6 +55,12 @@ module type S = sig
     type imapper = { f : 'a 'b. int -> 'a value -> ('a, 'b) To.value }
 
     val mapi : 'a t -> f:imapper -> ('a, 'b) To.t
+
+    type 't folding_mapper = {
+      f : 'a 'b. 't -> 'a value -> 't * ('a, 'b) To.value;
+    }
+
+    val folding_map : 'fold -> 'a t -> f:'fold folding_mapper -> ('a, 'b) To.t
   end
 end
 

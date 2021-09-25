@@ -66,15 +66,24 @@ end) : S with type 'a value = 'a T.t = struct
   end
 
   module Transduce2 (To : S2_BASE) = struct
+    type 't folding_mapper = {
+      f : 'a 'b. 't -> 'a value -> 't * ('a, 'b) To.value;
+    }
+
+    let folding_map folded l ~f:{ f } =
+      let rec map : type a b. 'fold -> a t -> (a, b) To.t =
+       fun folded -> function
+        | hd :: tl ->
+          let folded, hd = f folded hd in
+          hd :: map folded tl
+        | [] -> []
+      in
+      map folded l
+
     type imapper = { f : 'a 'b. int -> 'a value -> ('a, 'b) To.value }
 
     let mapi l ~f:{ f } =
-      let rec map : type a b. int -> a t -> (a, b) To.t =
-       fun i -> function
-        | hd :: tl -> f i hd :: map (i + 1) tl
-        | [] -> []
-      in
-      map 0 l
+      folding_map 0 l ~f:{ f = (fun i elt -> (i + 1, f i elt)) }
 
     type mapper = { f : 'a 'b. 'a value -> ('a, 'b) To.value }
 
