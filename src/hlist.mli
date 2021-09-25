@@ -19,23 +19,23 @@ module Make2 (T : sig
 end) : S2 with type ('a, 'b) value = ('a, 'b) T.t
 
 module Transduce2 (From : S2) (To : S2) : sig
-  type mapper = { f : 't 'tag. ('t, 'tag) From.value -> ('t, 'tag) To.value }
+  type mapper = { f : 'a 'b1 'b2. ('a, 'b1) From.value -> ('a, 'b2) To.value }
 
   val map : ('a, 'b) From.t -> f:mapper -> ('a, 'b) To.t
 
   type imapper = {
-    f : 't 'tag. int -> ('t, 'tag) From.value -> ('t, 'tag) To.value;
+    f : 'a 'b1 'b2. int -> ('a, 'b1) From.value -> ('a, 'b2) To.value;
   }
 
   val mapi : ('a, 'b) From.t -> f:imapper -> ('a, 'b) To.t
 end
 
 module Transduce_2 (From : S) (To : S2) : sig
-  type mapper = { f : 't 'tag. 't From.value -> ('t, 'tag) To.value }
+  type mapper = { f : 'a 'b. 'a From.value -> ('a, 'b) To.value }
 
   val map : 'a From.t -> f:mapper -> ('a, 'b) To.t
 
-  type imapper = { f : 't 'tag. int -> 't From.value -> ('t, 'tag) To.value }
+  type imapper = { f : 'a 'b. int -> 'a From.value -> ('a, 'b) To.value }
 
   val mapi : 'a From.t -> f:imapper -> ('a, 'b) To.t
 end

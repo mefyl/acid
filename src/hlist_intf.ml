@@ -1,53 +1,53 @@
 type ('a, 'b) desc = 'a * 'b
 
 module type S2 = sig
-  type ('t, 'tag) value
+  type ('a, 'b) value
 
-  type ('t, 'tag) t =
-    | ( :: ) : ('hd, 'tag) value * ('tl, 'tag) t -> (('hd, 'tl) desc, 'tag) t
-    | [] : (unit, 'tag) t
+  type ('a, 'b) t =
+    | ( :: ) : ('hd, 'b) value * ('tl, 'b) t -> (('hd, 'tl) desc, 'b) t
+    | [] : (unit, 'b) t
 
   val length : _ t -> int
 
-  type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res }
+  type 'res mapper = { f : 'a 'b. ('a, 'b) value -> 'res }
 
-  type 'res imapper = { f : 't 'tag. int -> ('t, 'tag) value -> 'res }
+  type 'res imapper = { f : 'a 'b. int -> ('a, 'b) value -> 'res }
 
-  val iter : ('t, 'tag) t -> f:unit mapper -> unit
+  val iter : ('a, 'b) t -> f:unit mapper -> unit
 
-  val map : ('t, 'tag) t -> f:'res mapper -> 'res list
+  val map : ('a, 'b) t -> f:'res mapper -> 'res list
 
-  val filter_map : ('t, 'tag) t -> f:'res option mapper -> 'res list
+  val filter_map : ('a, 'b) t -> f:'res option mapper -> 'res list
 
-  val iteri : ('t, 'tag) t -> f:unit imapper -> unit
+  val iteri : ('a, 'b) t -> f:unit imapper -> unit
 
-  val mapi : ('t, 'tag) t -> f:'res imapper -> 'res list
+  val mapi : ('a, 'b) t -> f:'res imapper -> 'res list
 
-  val filter_mapi : ('t, 'tag) t -> f:'res option imapper -> 'res list
+  val filter_mapi : ('a, 'b) t -> f:'res option imapper -> 'res list
 end
 
 module type S = sig
-  type 't value
+  type 'a value
 
-  type 't t =
+  type 'a t =
     | ( :: ) : 'hd value * 'tl t -> ('hd, 'tl) desc t
     | [] : unit t
 
   val length : _ t -> int
 
-  type 'res mapper = { f : 't 'tag. 't value -> 'res }
+  type 'res mapper = { f : 'a. 'a value -> 'res }
 
-  type 'res imapper = { f : 't 'tag. int -> 't value -> 'res }
+  type 'res imapper = { f : 'a. int -> 'a value -> 'res }
 
-  val iter : 't t -> f:unit mapper -> unit
+  val iter : 'a t -> f:unit mapper -> unit
 
-  val map : 't t -> f:'res mapper -> 'res list
+  val map : 'a t -> f:'res mapper -> 'res list
 
-  val filter_map : 't t -> f:'res option mapper -> 'res list
+  val filter_map : 'a t -> f:'res option mapper -> 'res list
 
-  val iteri : 't t -> f:unit imapper -> unit
+  val iteri : 'a t -> f:unit imapper -> unit
 
-  val mapi : 't t -> f:'res imapper -> 'res list
+  val mapi : 'a t -> f:'res imapper -> 'res list
 
-  val filter_mapi : 't t -> f:'res option imapper -> 'res list
+  val filter_mapi : 'a t -> f:'res option imapper -> 'res list
 end

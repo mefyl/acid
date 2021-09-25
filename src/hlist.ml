@@ -10,7 +10,7 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
     | [] : (unit, 'tag) t
 
   let length l =
-    let rec loop : type l tag. int -> (l, tag) t -> int =
+    let rec loop : type l. int -> (l, 'tag) t -> int =
      fun acc -> function
       | _ :: tl -> loop (acc + 1) tl
       | [] -> acc
@@ -20,7 +20,7 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
   type 'res imapper = { f : 't 'tag. int -> ('t, 'tag) value -> 'res }
 
   let filter_mapi l ~(f : 'res option imapper) =
-    let rec map : type a tag. int -> (a, tag) t -> 'res list =
+    let rec map : type a. int -> (a, 'tag) t -> 'res list =
      fun i -> function
       | hd :: tl -> (
         match f.f i hd with
@@ -48,18 +48,18 @@ end
 
 module Transduce2 (From : S2) (To : S2) = struct
   type imapper = {
-    f : 't 'tag. int -> ('t, 'tag) From.value -> ('t, 'tag) To.value;
+    f : 'a 'b 'c. int -> ('a, 'b) From.value -> ('a, 'c) To.value;
   }
 
   let mapi l ~f:{ f } =
-    let rec map : type a b. int -> (a, b) From.t -> (a, b) To.t =
+    let rec map : type a b c. int -> (a, b) From.t -> (a, c) To.t =
      fun i -> function
       | hd :: tl -> f i hd :: map (i + 1) tl
       | [] -> []
     in
     map 0 l
 
-  type mapper = { f : 't 'tag. ('t, 'tag) From.value -> ('t, 'tag) To.value }
+  type mapper = { f : 'a 'b 'c. ('a, 'b) From.value -> ('a, 'c) To.value }
 
   let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
 end
