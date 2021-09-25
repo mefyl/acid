@@ -15,6 +15,8 @@ module type S2 = sig
 
   type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res }
 
+  val iter : ('t, 'tag) t -> f:unit mapper -> unit
+
   val map : ('t, 'tag) t -> f:'res mapper -> 'res list
 
   val filter_map : ('t, 'tag) t -> f:'res option mapper -> 'res list
@@ -30,6 +32,8 @@ module type S = sig
   val length : _ t -> int
 
   type 'res mapper = { f : 't 'tag. 't value -> 'res }
+
+  val iter : 't t -> f:unit mapper -> unit
 
   val map : 't t -> f:'res mapper -> 'res list
 

@@ -41,7 +41,9 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
     in
     map l
 
-  let map l ~(f : 'res mapper) = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
+  let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
+
+  let iter l ~f = map ~f l |> ignore
 end
 
 module Transduce2 (From : S2) (To : S2) = struct
@@ -84,7 +86,9 @@ end) : S with type 'a value = 'a T.t = struct
     in
     map l
 
-  let map l ~(f : 'res mapper) = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
+  let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
+
+  let iter l ~f = map ~f l |> ignore
 end
 
 module Transduce (From : S) (To : S) = struct
