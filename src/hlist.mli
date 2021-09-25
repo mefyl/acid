@@ -1,9 +1,5 @@
 include module type of Hlist_intf
 
-val length : 'l t -> int
-
-val to_pairs : 'l t -> 'l
-
 module Make (T : sig
   type 'a t
 end) : S with type 'a value = 'a T.t
@@ -43,3 +39,9 @@ module Transduce_2 (From : S) (To : S2) : sig
 
   val mapi : 'a From.t -> f:imapper -> ('a, 'b) To.t
 end
+
+include module type of Make (struct
+  type 'a t = 'a
+end)
+
+val to_pairs : 'l t -> 'l

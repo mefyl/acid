@@ -1,17 +1,5 @@
 include Hlist_intf
 
-let length l =
-  let rec loop : type l. int -> l t -> int =
-   fun acc -> function
-    | _ :: tl -> loop (acc + 1) tl
-    | [] -> acc
-  in
-  loop 0 l
-
-let rec to_pairs : type l. l t -> l = function
-  | a :: b -> (a, to_pairs b)
-  | [] -> ()
-
 module Make2 (T : sig
   type ('a, 'b) t
 end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
@@ -153,3 +141,11 @@ module Transduce (From : S) (To : S) = struct
 
   let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
 end
+
+include Make (struct
+  type 'a t = 'a
+end)
+
+let rec to_pairs : type l. l t -> l = function
+  | a :: b -> (a, to_pairs b)
+  | [] -> ()

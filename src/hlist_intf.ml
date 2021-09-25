@@ -1,9 +1,5 @@
 type ('a, 'b) desc = 'a * 'b
 
-type _ t =
-  | ( :: ) : 'a * 'b t -> ('a, 'b) desc t
-  | [] : unit t
-
 module type S2 = sig
   type ('t, 'tag) value
 
