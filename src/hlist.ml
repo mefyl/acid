@@ -29,17 +29,29 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
     in
     loop 0 l
 
+  type 'res imapper = { f : 't 'tag. int -> ('t, 'tag) value -> 'res }
+
+  let filter_mapi l ~(f : 'res option imapper) =
+    let rec map : type a tag. int -> (a, tag) t -> 'res list =
+     fun i -> function
+      | hd :: tl -> (
+        match f.f i hd with
+        | Some value -> List.cons value (map (i + 1) tl)
+        | None -> map (i + 1) tl)
+      | [] -> List.[]
+    in
+    map 0 l
+
+  let mapi l ~f = filter_mapi ~f:{ f = (fun i x -> Some (f.f i x)) } l
+
+  let iteri l ~f =
+    let (_ : unit list) = mapi ~f l in
+    ()
+
   type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res }
 
   let filter_map l ~(f : 'res option mapper) =
-    let rec map : type a tag. (a, tag) t -> 'res list = function
-      | hd :: tl -> (
-        match f.f hd with
-        | Some value -> List.cons value (map tl)
-        | None -> map tl)
-      | [] -> List.[]
-    in
-    map l
+    filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
 
   let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
 
@@ -47,14 +59,37 @@ end) : S2 with type ('t, 'tag) value = ('t, 'tag) T.t = struct
 end
 
 module Transduce2 (From : S2) (To : S2) = struct
-  type mapper = { f : 't 'tag. ('t, 'tag) From.value -> ('t, 'tag) To.value }
+  type imapper = {
+    f : 't 'tag. int -> ('t, 'tag) From.value -> ('t, 'tag) To.value;
+  }
 
-  let map l ~f:{ f } =
-    let rec map : type a b. (a, b) From.t -> (a, b) To.t = function
-      | hd :: tl -> f hd :: map tl
+  let mapi l ~f:{ f } =
+    let rec map : type a b. int -> (a, b) From.t -> (a, b) To.t =
+     fun i -> function
+      | hd :: tl -> f i hd :: map (i + 1) tl
       | [] -> []
     in
-    map l
+    map 0 l
+
+  type mapper = { f : 't 'tag. ('t, 'tag) From.value -> ('t, 'tag) To.value }
+
+  let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
+end
+
+module Transduce_2 (From : S) (To : S2) = struct
+  type imapper = { f : 'a 'b. int -> 'a From.value -> ('a, 'b) To.value }
+
+  let mapi l ~f:{ f } =
+    let rec map : type a b. int -> a From.t -> (a, b) To.t =
+     fun i -> function
+      | hd :: tl -> f i hd :: map (i + 1) tl
+      | [] -> []
+    in
+    map 0 l
+
+  type mapper = { f : 'a 'b. 'a From.value -> ('a, 'b) To.value }
+
+  let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
 end
 
 module Make (T : sig
@@ -74,17 +109,29 @@ end) : S with type 'a value = 'a T.t = struct
     in
     loop 0 l
 
+  type 'res imapper = { f : 't. int -> 't value -> 'res }
+
+  let filter_mapi l ~(f : 'res option imapper) =
+    let rec map : type a. int -> a t -> 'res list =
+     fun i -> function
+      | hd :: tl -> (
+        match f.f i hd with
+        | Some value -> List.cons value (map (i + 1) tl)
+        | None -> map (i + 1) tl)
+      | [] -> List.[]
+    in
+    map 0 l
+
+  let mapi l ~f = filter_mapi ~f:{ f = (fun i x -> Some (f.f i x)) } l
+
+  let iteri l ~f =
+    let (_ : unit list) = mapi ~f l in
+    ()
+
   type 'res mapper = { f : 't. 't value -> 'res }
 
   let filter_map l ~(f : 'res option mapper) =
-    let rec map : type a. a t -> 'res list = function
-      | hd :: tl -> (
-        match f.f hd with
-        | Some value -> List.cons value (map tl)
-        | None -> map tl)
-      | [] -> List.[]
-    in
-    map l
+    filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
 
   let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
 
@@ -92,23 +139,17 @@ end) : S with type 'a value = 'a T.t = struct
 end
 
 module Transduce (From : S) (To : S) = struct
+  type imapper = { f : 't. int -> 't From.value -> 't To.value }
+
+  let mapi l ~f:{ f } =
+    let rec map : type a. int -> a From.t -> a To.t =
+     fun i -> function
+      | hd :: tl -> f i hd :: map (i + 1) tl
+      | [] -> []
+    in
+    map 0 l
+
   type mapper = { f : 't. 't From.value -> 't To.value }
 
-  let map l ~f:{ f } =
-    let rec map : type a. a From.t -> a To.t = function
-      | hd :: tl -> f hd :: map tl
-      | [] -> []
-    in
-    map l
-end
-
-module Transduce_2 (From : S) (To : S2) = struct
-  type mapper = { f : 'a 'b. 'a From.value -> ('a, 'b) To.value }
-
-  let map l ~f:{ f } =
-    let rec map : type a b. a From.t -> (a, b) To.t = function
-      | hd :: tl -> f hd :: map tl
-      | [] -> []
-    in
-    map l
+  let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
 end
