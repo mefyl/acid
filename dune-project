@@ -41,14 +41,14 @@
     :dev))
   (schematic
    (and
-    (= 0.8.0)
+    (= 0.9.0)
     :with-test))
   (schematic-jsoo
    (and
-    (= 0.8.0)
+    (= 0.9.0)
     :with-test)))
  (depopts
   (schematic
-   (= 0.8.0))
+   (= 0.9.0))
   (schematic-jsoo
-   (= 0.8.0))))
+   (= 0.9.0))))
