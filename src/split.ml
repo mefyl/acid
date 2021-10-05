@@ -7,8 +7,6 @@ module Left : S with type ('l, 'r) t = 'l = struct
 
   let[@warning "-32"] schema l _ = l
 
-  let case l _ = l
-
   let make l _ = l
 
   let left v = Some v
@@ -28,8 +26,6 @@ module Right : S with type ('l, 'r) t = 'r = struct
   include Select.Split
 
   let[@warning "-32"] schema _ r = r
-
-  let case _ r = r
 
   let make _ r = r
 
