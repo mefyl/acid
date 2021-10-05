@@ -13,6 +13,10 @@ module type S = sig
 
   val if_optional : 'a option -> 'a t option
 
+  val pp : 'a Fmt.t -> 'a t Fmt.t
+
+  val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
+
   module Switch : sig
     type ('r, 'w) t
 

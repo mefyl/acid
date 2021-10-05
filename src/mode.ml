@@ -15,6 +15,10 @@ module R = struct
 
   let if_optional _ = None
 
+  let pp pp = pp
+
+  let equal equal = equal
+
   module Switch = struct
     type ('r, _) t = 'r
 
@@ -40,6 +44,11 @@ module W = struct
   let default _ = None
 
   let if_optional v = Some v
+
+  let pp pp =
+    Fmt.(option ~none:(const string "None") (const string "Some " ++ pp))
+
+  let equal equal = Option.equal equal
 
   module Switch = struct
     type (_, 'w) t = 'w
