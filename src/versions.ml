@@ -1,6 +1,6 @@
 (** Backward compatibility versions *)
 
-module V0_5 = struct
+module V0_5_0 = struct
   (** @closed *)
   include Base
 
