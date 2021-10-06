@@ -1,3 +1,5 @@
+(** Heterogeneous lists. *)
+
 include module type of Hlist_intf
 
 module Make (T : sig

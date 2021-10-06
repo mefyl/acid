@@ -1,13 +1,12 @@
-module Hlist = Hlist
-module IQueue = Queue
-module Lwt = Acid_lwt
-module Lwt_result = Acid_lwt_result
-module Mode = Mode
-module Split = Split
-module Sequence_ = Sequence
-include Base
-module Array = Acid_array
-module Format = Caml.Format
-module Let = Let
-module Result = Acid_result
-module Sequence = Sequence_
+(** Acid is an additional convenience over Base.
+
+    Acid / Base. Get it ? Haha. *)
+
+(** {1 API} *)
+
+(** @inline *)
+include Versions.V0_5
+
+(** {1 Backward compatibility} *)
+
+module Versions = Versions

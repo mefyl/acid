@@ -1,3 +1,5 @@
+(** Immutable queues *)
+
 open Base
 
 (* FIXME: implement with Braun trees *)
