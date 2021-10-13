@@ -14,12 +14,12 @@ depends: [
   "base" {>= "0.13.1"}
   "lwt" {>= "5.0.0"}
   "ocamlformat" {= "0.17.0" & dev}
-  "schematic" {= "0.9.0" & with-test}
-  "schematic-jsoo" {= "0.9.0" & with-test}
+  "schematic" {>= "0.10.0" & < "0.11.0" & with-test}
+  "schematic-jsoo" {>= "0.10.0" & < "0.11.0" & with-test}
 ]
 depopts: [
-  "schematic" {= "0.9.0"}
-  "schematic-jsoo" {= "0.9.0"}
+  "schematic" {>= "0.10.0" & < "0.11.0"}
+  "schematic-jsoo" {>= "0.10.0" & < "0.11.0"}
 ]
 build: [
   ["dune" "subst"] {pinned}
