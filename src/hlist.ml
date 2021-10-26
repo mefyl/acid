@@ -175,3 +175,16 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
     let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
   end
 end
+
+module Zip2 (L : S2) (R : S2) = struct
+  include Make2 (struct
+    type ('a, 'b) t = ('a, 'b) L.value * ('a, 'b) R.value
+  end)
+
+  let zip l r =
+    let rec zip : type a. (a, 'b) L.t * (a, 'b) R.t -> (a, 'b) t = function
+      | L.(hd_l :: tl_l), R.(hd_r :: tl_r) -> (hd_l, hd_r) :: zip (tl_l, tl_r)
+      | L.[], R.[] -> []
+    in
+    zip (l, r)
+end

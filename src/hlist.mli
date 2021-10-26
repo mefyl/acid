@@ -15,3 +15,9 @@ include module type of Make (struct
 end)
 
 val to_pairs : 'l t -> 'l
+
+module Zip2 (L : S2) (R : S2) : sig
+  include S2 with type ('a, 'b) value = ('a, 'b) L.value * ('a, 'b) R.value
+
+  val zip : ('a, 'b) L.t -> ('a, 'b) R.t -> ('a, 'b) t
+end
