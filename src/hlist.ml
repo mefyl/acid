@@ -116,9 +116,9 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
     in
     loop 0 l
 
-  type 'res imapper = { f : 't 'tag. int -> ('t, 'tag) value -> 'res }
+  type ('b, 'res) imapper = { f : 'a. int -> ('a, 'b) value -> 'res }
 
-  let filter_mapi l ~(f : 'res option imapper) =
+  let filter_mapi l ~f =
     let rec map : type a. int -> (a, 'tag) t -> 'res list =
      fun i -> function
       | hd :: tl -> (
@@ -135,10 +135,9 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
     let (_ : unit list) = mapi ~f l in
     ()
 
-  type 'res mapper = { f : 't 'tag. ('t, 'tag) value -> 'res }
+  type ('b, 'res) mapper = { f : 'a. ('a, 'b) value -> 'res }
 
-  let filter_map l ~(f : 'res option mapper) =
-    filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
+  let filter_map l ~f = filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
 
   let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
 
