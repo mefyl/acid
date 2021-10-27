@@ -16,4 +16,11 @@ module V0_5_1 = struct
   module Split = Split
 end
 
+module V0_5_2 = struct
+  (** @closed *)
+  include V0_5_1
+
+  module List_nonempty = List_nonempty
+end
+
 module V0_5_0 = V0_5_1
