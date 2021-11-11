@@ -1,6 +1,6 @@
 (** Backward compatibility versions *)
 
-module V0_5_1 = struct
+module V0_6_0 = struct
   (** @closed *)
   include Base
 
@@ -14,13 +14,5 @@ module V0_5_1 = struct
   module Result = Root.Result
   module Sequence = Root.Sequence
   module Split = Split
-end
-
-module V0_5_2 = struct
-  (** @closed *)
-  include V0_5_1
-
   module List_nonempty = List_nonempty
 end
-
-module V0_5_0 = V0_5_1
