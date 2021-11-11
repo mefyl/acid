@@ -33,6 +33,7 @@
     :with-test))
   (base
    (>= 0.13.1))
+  fmt
   (lwt
    (>= 5.0.0))
   (ocamlformat
