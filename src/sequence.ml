@@ -105,6 +105,14 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Step.Skip state -> step (Sequence { state; f })
     | Step.Yield (v, state) -> Monad.return (Some v, Sequence { state; f })
 
+  let to_list_rev seq =
+    let rec to_list_rev acc seq =
+      step seq >>= function
+      | None, _ -> Monad.return []
+      | Some v, seq -> to_list_rev (v :: acc) seq
+    in
+    to_list_rev [] seq
+
   let rec partition seq =
     step seq >>= function
     | None, _ -> Monad.return ([], [])

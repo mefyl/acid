@@ -22,6 +22,8 @@ module Make (Monad : Base.Monad.S) : sig
 
   val to_list : 'a t -> 'a list Monad.t
 
+  val to_list_rev : 'a t -> 'a list Monad.t
+
   val partition : ('a, 'b) Base.Either.t t -> ('a list * 'b list) Monad.t
 
   val step : 'a t -> ('a option * 'a t) Monad.t
