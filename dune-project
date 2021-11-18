@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.6.0)
+(version 0.6.1)
 
 (homepage https://gitlab.routine.co/routine/acid)
 
@@ -43,21 +43,21 @@
   (schematic
    (and
     (and
-     (>= 0.10.0)
-     (< 0.11.0))
+     (>= 0.11.0)
+     (< 0.12.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.10.0)
-     (< 0.11.0))
+     (>= 0.11.0)
+     (< 0.12.0))
     :with-test)))
  (depopts
   (schematic
    (and
-    (>= 0.10.0)
-    (< 0.11.0)))
+    (>= 0.11.0)
+    (< 0.12.0)))
   (schematic-jsoo
    (and
-    (>= 0.10.0)
-    (< 0.11.0)))))
+    (>= 0.11.0)
+    (< 0.12.0)))))
