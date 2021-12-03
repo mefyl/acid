@@ -2,7 +2,13 @@ open Base
 
 type 'a t = ( :: ) : 'a * 'a list -> 'a t
 
+val rev : 'a t -> 'a t
+
 val map : 'a t -> f:('a -> 'b) -> 'b t
+
+val mapi : 'a t -> f:('a -> int -> 'b) -> 'b t
+
+val rev_mapi : 'a t -> f:('a -> int -> 'b) -> 'b t
 
 val hd : 'a t -> 'a
 
