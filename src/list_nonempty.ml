@@ -14,3 +14,5 @@ let to_list = function
   | hd :: tl -> List.cons hd tl
 
 let equal f (l :: tl_l) (r :: tl_r) = f l r && List.equal f tl_l tl_r
+
+let pp ?sep p = Fmt.(using to_list @@ list ?sep p)
