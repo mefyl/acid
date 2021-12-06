@@ -1,6 +1,5 @@
 open Base
-
-type 'a t = ( :: ) : 'a * 'a list -> 'a t
+include Select.List_nonempty
 
 let append (lh :: lt) (rh :: rt) = lh :: (lt @ rh :: rt)
 

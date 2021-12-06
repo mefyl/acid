@@ -1,6 +1,6 @@
 open Base
 
-type 'a t = ( :: ) : 'a * 'a list -> 'a t
+include module type of Select.List_nonempty
 
 val rev : 'a t -> 'a t
 

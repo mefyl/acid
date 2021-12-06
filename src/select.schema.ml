@@ -39,3 +39,28 @@ module type SPLIT = sig
 end
 
 module Split = struct end
+
+module List_nonempty = struct
+  type 'a t = ( :: ) : 'a * 'a list -> 'a t
+
+  let schema parameter =
+    let descriptor parameter =
+      let decode = function
+        | [] -> Result.fail "empty list"
+        | hd :: tl -> Result.return (hd :: tl)
+      and encode (hd :: tl) = List.cons hd tl in
+      Schematic.Schema.Map (decode, encode, List parameter)
+    in
+    Schematic.Schema.make
+      ~id:(Schematic.Schema.name_combine parameter "list-nonempty")
+      ~parametric:
+        (Parametric
+           {
+             name = "a";
+             parameter;
+             next =
+               (fun a ->
+                 Plain { name = "list-nonempty"; descriptor = descriptor a });
+           })
+    @@ descriptor parameter
+end
