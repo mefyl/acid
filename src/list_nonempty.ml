@@ -2,6 +2,17 @@ open Base
 
 type 'a t = ( :: ) : 'a * 'a list -> 'a t
 
+let append (lh :: lt) (rh :: rt) = lh :: (lt @ rh :: rt)
+
+let fold (hd :: tl) ~f =
+  let rec loop acc = function
+    | [] -> acc
+    | hd :: tl -> loop (f acc hd) tl
+  in
+  loop hd tl
+
+let concat l = fold l ~f:append
+
 let map (hd :: tl) ~f = f hd :: List.map ~f tl
 
 let rev_mapi (hd :: l) ~f =

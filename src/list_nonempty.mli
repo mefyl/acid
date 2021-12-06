@@ -4,6 +4,12 @@ type 'a t = ( :: ) : 'a * 'a list -> 'a t
 
 val rev : 'a t -> 'a t
 
+val append : 'a t -> 'a t -> 'a t
+
+val concat : 'a t t -> 'a t
+
+val fold : 'a t -> f:('a -> 'a -> 'a) -> 'a
+
 val map : 'a t -> f:('a -> 'b) -> 'b t
 
 val mapi : 'a t -> f:('a -> int -> 'b) -> 'b t
