@@ -4,6 +4,8 @@ type 'a t = ( :: ) : 'a * 'a list -> 'a t
 
 let append (lh :: lt) (rh :: rt) = lh :: (lt @ rh :: rt)
 
+let cons e (hd :: tl) = e :: hd :: tl
+
 let fold (hd :: tl) ~f =
   let rec loop acc = function
     | [] -> acc

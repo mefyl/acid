@@ -8,6 +8,8 @@ val append : 'a t -> 'a t -> 'a t
 
 val concat : 'a t t -> 'a t
 
+val cons : 'a -> 'a t -> 'a t
+
 val fold : 'a t -> f:('a -> 'a -> 'a) -> 'a
 
 val map : 'a t -> f:('a -> 'b) -> 'b t
