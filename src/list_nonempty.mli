@@ -10,6 +10,8 @@ val concat : 'a t t -> 'a t
 
 val cons : 'a -> 'a t -> 'a t
 
+val filter : 'a t -> f:('a -> bool) -> 'a List.t
+
 val fold : 'a t -> f:('a -> 'a -> 'a) -> 'a
 
 val map : 'a t -> f:('a -> 'b) -> 'b t
