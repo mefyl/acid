@@ -10,6 +10,7 @@ module V0_6_0 = struct
   module Let = Let
   module Lwt = Root.Lwt
   module Lwt_result = Root.Lwt_result
+  module Lwt_guarded = Lwt_guarded
   module Mode = Mode
   module Result = Root.Result
   module Sequence = Root.Sequence
