@@ -15,8 +15,19 @@ let literal () =
   Alcotest.(check (list int) "tail" [ 1 ] @@ List_nonempty.tl l);
   Alcotest.(check (list int) "to_list" [ 0; 1 ] @@ List_nonempty.to_list l);
   Alcotest.(check int "head" 0 @@ List_nonempty.hd l);
-  let l = List_nonempty.map ~f:Int.pred l in
-  Alcotest.(check (list_nonempty int) "map" List_nonempty.[ -1; 0 ] l)
+  let () =
+    let l = List_nonempty.map ~f:Int.pred l in
+    Alcotest.(check (list_nonempty int) "map" List_nonempty.[ -1; 0 ] l)
+  in
+  let () =
+    let l =
+      List_nonempty.filter_map
+        ~f:(fun x -> Option.some_if (x > 0) (Int.pred x))
+        l
+    in
+    Alcotest.(check (list int) "filter_map" [ 0 ] l)
+  in
+  ()
 
 let () =
   let test_case name f = Alcotest.test_case name `Quick f in

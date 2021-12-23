@@ -16,6 +16,12 @@ let fold (hd :: tl) ~f =
 
 let concat l = fold l ~f:append
 
+let filter_map (hd :: tl) ~f =
+  let tl = List.filter_map ~f tl in
+  match f hd with
+  | None -> tl
+  | Some hd -> hd :: tl
+
 let map (hd :: tl) ~f = f hd :: List.map ~f tl
 
 let rev_mapi (hd :: l) ~f =

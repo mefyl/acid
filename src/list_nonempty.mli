@@ -18,6 +18,8 @@ val map : 'a t -> f:('a -> 'b) -> 'b t
 
 val mapi : 'a t -> f:('a -> int -> 'b) -> 'b t
 
+val filter_map : 'a t -> f:('a -> 'b option) -> 'b List.t
+
 val rev_mapi : 'a t -> f:('a -> int -> 'b) -> 'b t
 
 val hd : 'a t -> 'a
