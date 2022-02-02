@@ -14,7 +14,6 @@ depends: [
   "base" {>= "0.13.1"}
   "fmt"
   "lwt" {>= "5.0.0"}
-  "ocamlformat" {= "0.17.0" & dev}
   "schematic" {>= "0.11.0" & < "0.12.0" & with-test}
   "schematic-jsoo" {>= "0.11.0" & < "0.12.0" & with-test}
 ]

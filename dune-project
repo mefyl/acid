@@ -36,10 +36,6 @@
   fmt
   (lwt
    (>= 5.0.0))
-  (ocamlformat
-   (and
-    (= 0.17.0)
-    :dev))
   (schematic
    (and
     (and
