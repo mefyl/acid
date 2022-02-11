@@ -13,10 +13,7 @@ let find_update () =
         (IQueue.to_list q, res))
   in
   let () =
-    let f = function
-      | 2 -> Some 3
-      | _ -> None
-    in
+    let f = function 2 -> Some 3 | _ -> None in
     let q, res = IQueue.find_update ~f q in
     Alcotest.(
       check
@@ -40,10 +37,7 @@ let rfind_update () =
         (IQueue.to_list q, res))
   in
   let () =
-    let f = function
-      | 2 -> Some 3
-      | _ -> None
-    in
+    let f = function 2 -> Some 3 | _ -> None in
     let q, res = IQueue.rfind_update ~f q in
     Alcotest.(
       check

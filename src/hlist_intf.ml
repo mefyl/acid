@@ -22,19 +22,13 @@ module type S = sig
   val length : _ t -> int
 
   type 'res mapper = { f : 'a. 'a value -> 'res }
-
   type 'res imapper = { f : 'a. int -> 'a value -> 'res }
 
   val iter : 'a t -> f:unit mapper -> unit
-
   val map : 'a t -> f:'res mapper -> 'res list
-
   val filter_map : 'a t -> f:'res option mapper -> 'res list
-
   val iteri : 'a t -> f:unit imapper -> unit
-
   val mapi : 'a t -> f:'res imapper -> 'res list
-
   val filter_mapi : 'a t -> f:'res option imapper -> 'res list
 
   module Transduce (To : S_BASE) : sig
@@ -70,19 +64,13 @@ module type S2 = sig
   val length : _ t -> int
 
   type ('b, 'res) mapper = { f : 'a. ('a, 'b) value -> 'res }
-
   type ('b, 'res) imapper = { f : 'a. int -> ('a, 'b) value -> 'res }
 
   val iter : ('a, 'b) t -> f:('b, unit) mapper -> unit
-
   val map : ('a, 'b) t -> f:('b, 'res) mapper -> 'res list
-
   val filter_map : ('a, 'b) t -> f:('b, 'res option) mapper -> 'res list
-
   val iteri : ('a, 'b) t -> f:('b, unit) imapper -> unit
-
   val mapi : ('a, 'b) t -> f:('b, 'res) imapper -> 'res list
-
   val filter_mapi : ('a, 'b) t -> f:('b, 'res option) imapper -> 'res list
 
   module Transduce (To : S_BASE) : sig

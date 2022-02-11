@@ -1,6 +1,5 @@
 module type S = sig
   type 'a t
-
   type 'a js
 
   val schema : 'a Schematic.Schema.t -> 'a t Schematic.Schema.t
@@ -8,7 +7,6 @@ end
 
 module type SWITCH = sig
   type ('r, 'w) t
-
   type ('r, 'w) js
 
   val schema :
@@ -43,7 +41,6 @@ end
 
 module type SPLIT = sig
   type ('l, 'r) t
-
   type ('l, 'r) js
 
   val schema :

@@ -13,7 +13,6 @@ module Make2 (Monad : Base.Monad.S2) = struct
         -> ('a, 'b) t
 
   let empty = Sequence { state = (); f = (fun () -> Monad.return Step.Done) }
-
   let unfold ~init ~f = Sequence { state = init; f }
 
   let unfold_step ~init ~f =
@@ -78,10 +77,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
     Sequence { state; f }
 
   let filter s ~f =
-    filter_map s ~f:(fun e ->
-        f e >>| function
-        | true -> Some e
-        | false -> None)
+    filter_map s ~f:(fun e -> f e >>| function true -> Some e | false -> None)
 
   let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
 

@@ -86,10 +86,7 @@ module Result = struct
     let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ]
     and f a b =
       let res = a + b in
-      if res < 100 then
-        Result.Ok res
-      else
-        Result.Error "too big"
+      if res < 100 then Result.Ok res else Result.Error "too big"
     in
     Alcotest.(
       check (result int string) "sum" (Result.Ok 15)

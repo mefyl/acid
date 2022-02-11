@@ -15,9 +15,7 @@ end) : S with type 'a value = 'a T.t = struct
 
   let length l =
     let rec loop : type l. int -> l t -> int =
-     fun acc -> function
-      | _ :: tl -> loop (acc + 1) tl
-      | [] -> acc
+     fun acc -> function _ :: tl -> loop (acc + 1) tl | [] -> acc
     in
     loop 0 l
 
@@ -46,7 +44,6 @@ end) : S with type 'a value = 'a T.t = struct
     filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
 
   let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
-
   let iter l ~f = map ~f l |> ignore
 
   module Transduce (To : S_BASE) = struct
@@ -54,9 +51,7 @@ end) : S with type 'a value = 'a T.t = struct
 
     let mapi l ~f:{ f } =
       let rec map : type a. int -> a t -> a To.t =
-       fun i -> function
-        | hd :: tl -> f i hd :: map (i + 1) tl
-        | [] -> []
+       fun i -> function hd :: tl -> f i hd :: map (i + 1) tl | [] -> []
       in
       map 0 l
 
@@ -110,9 +105,7 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
 
   let length l =
     let rec loop : type l. int -> (l, 'tag) t -> int =
-     fun acc -> function
-      | _ :: tl -> loop (acc + 1) tl
-      | [] -> acc
+     fun acc -> function _ :: tl -> loop (acc + 1) tl | [] -> acc
     in
     loop 0 l
 
@@ -138,9 +131,7 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
   type ('b, 'res) mapper = { f : 'a. ('a, 'b) value -> 'res }
 
   let filter_map l ~f = filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
-
   let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
-
   let iter l ~f = map ~f l |> ignore
 
   module Transduce (To : S_BASE) = struct
@@ -148,9 +139,7 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
 
     let mapi l ~f:{ f } =
       let rec map : type a b. int -> (a, b) t -> a To.t =
-       fun i -> function
-        | hd :: tl -> f i hd :: map (i + 1) tl
-        | [] -> []
+       fun i -> function hd :: tl -> f i hd :: map (i + 1) tl | [] -> []
       in
       map 0 l
 
@@ -164,9 +153,7 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
 
     let mapi l ~f:{ f } =
       let rec map : type a b c. int -> (a, b) t -> (a, c) To.t =
-       fun i -> function
-        | hd :: tl -> f i hd :: map (i + 1) tl
-        | [] -> []
+       fun i -> function hd :: tl -> f i hd :: map (i + 1) tl | [] -> []
       in
       map 0 l
 

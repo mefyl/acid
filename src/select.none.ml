@@ -7,11 +7,8 @@ module type SWITCH = sig
 end
 
 module R = struct end
-
 module W = struct end
-
 module Switch_r = struct end
-
 module Switch_w = struct end
 
 module type SPLIT = sig

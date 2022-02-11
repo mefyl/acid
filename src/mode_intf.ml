@@ -4,17 +4,11 @@ module type S = sig
   include Select.S with type 'a t := 'a t
 
   val return : 'a -> 'a t
-
   val map : ('a -> 'b) -> 'a t -> 'b t
-
   val get : 'a t -> 'a option
-
   val default : 'a -> 'a t
-
   val if_optional : 'a option -> 'a t option
-
   val pp : 'a Fmt.t -> 'a t Fmt.t
-
   val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
 
   module Switch : sig
@@ -23,7 +17,6 @@ module type S = sig
     include Select.SWITCH with type ('r, 'w) t := ('r, 'w) t
 
     val switch : 'r -> 'w -> ('r, 'w) t
-
     val map : ('r -> 'rr) -> ('w -> 'ww) -> ('r, 'w) t -> ('rr, 'ww) t
   end
 end
