@@ -5,6 +5,8 @@ module R = struct
 
   include Select.R
 
+  let schema_versioned _ s = s
+  let schema s = schema_versioned None s
   let return v = v
   let map f = f
   let get v = Some v
@@ -18,6 +20,8 @@ module R = struct
 
     include Select.Switch_r
 
+    let schema_versioned _ r _ = r
+    let schema r w = schema_versioned None r w
     let switch r _ = r
     let map f _ r = f r
   end
@@ -28,6 +32,8 @@ module W = struct
 
   include Select.W
 
+  let schema_versioned = Schematic.Schemas.option_schema_versioned
+  let schema s = schema_versioned None s
   let return v = Some v
   let map f = Option.map f
   let get v = v
@@ -44,6 +50,8 @@ module W = struct
 
     include Select.Switch_w
 
+    let schema_versioned _ _ w = w
+    let schema r w = schema_versioned None r w
     let switch _ w = w
     let map _ f w = f w
   end

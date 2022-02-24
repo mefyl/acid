@@ -1,11 +1,22 @@
 module type S = sig
   type 'a t
 
+  val schema_versioned :
+    Schematic.Version.t option ->
+    'a Schematic.Schema.t ->
+    'a t Schematic.Schema.t
+
   val schema : 'a Schematic.Schema.t -> 'a t Schematic.Schema.t
 end
 
 module type SWITCH = sig
   type ('r, 'w) t
+
+  val schema_versioned :
+    Schematic.Version.t option ->
+    'r Schematic.Schema.t ->
+    'w Schematic.Schema.t ->
+    ('r, 'w) t Schematic.Schema.t
 
   val schema :
     'r Schematic.Schema.t ->
@@ -13,24 +24,19 @@ module type SWITCH = sig
     ('r, 'w) t Schematic.Schema.t
 end
 
-module R = struct
-  let schema s = s
-end
-
-module W = struct
-  let schema = Schematic.Schema.Schemas.option_schema
-end
-
-module Switch_r = struct
-  let schema r _ = r
-end
-
-module Switch_w = struct
-  let schema _ w = w
-end
+module R = struct end
+module W = struct end
+module Switch_r = struct end
+module Switch_w = struct end
 
 module type SPLIT = sig
   type ('l, 'r) t
+
+  val schema_versioned :
+    Schematic.Version.t option ->
+    'r Schematic.Schema.t ->
+    'w Schematic.Schema.t ->
+    ('r, 'w) t Schematic.Schema.t
 
   val schema :
     'r Schematic.Schema.t ->
@@ -43,7 +49,7 @@ module Split = struct end
 module List_nonempty = struct
   type 'a t = ( :: ) : 'a * 'a list -> 'a t
 
-  let schema parameter =
+  let schema_versioned _ parameter =
     let descriptor parameter =
       let decode = function
         | [] -> Result.fail "empty list"
@@ -63,4 +69,6 @@ module List_nonempty = struct
                  Plain { name = "list-nonempty"; descriptor = descriptor a });
            })
     @@ descriptor parameter
+
+  let schema s = schema_versioned None s
 end
