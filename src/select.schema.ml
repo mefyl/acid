@@ -25,7 +25,12 @@ module type SWITCH = sig
 end
 
 module R = struct end
-module W = struct end
+
+module W = struct
+  let schema_versioned = Schematic.Schemas.option_schema_versioned
+  let schema s = schema_versioned None s
+end
+
 module Switch_r = struct end
 module Switch_w = struct end
 

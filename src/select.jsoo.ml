@@ -31,6 +31,9 @@ module R = struct
 end
 
 module W = struct
+  let schema_versioned = Schematic.Schemas.option_schema_versioned
+  let schema s = schema_versioned None s
+
   type 'a js = 'a Js_of_ocaml.Js.Opt.t
 end
 

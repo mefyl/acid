@@ -32,8 +32,6 @@ module W = struct
 
   include Select.W
 
-  let schema_versioned = Schematic.Schemas.option_schema_versioned
-  let schema s = schema_versioned None s
   let return v = Some v
   let map f = Option.map f
   let get v = v
