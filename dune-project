@@ -1,4 +1,4 @@
-(lang dune 2.5)
+(lang dune 3.0)
 
 (name acid)
 

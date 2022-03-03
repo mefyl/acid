@@ -8,7 +8,7 @@ license: "GPLv3"
 homepage: "https://gitlab.routine.co/routine/acid"
 bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
 depends: [
-  "dune" {>= "2.5"}
+  "dune" {>= "3.0"}
   "alcotest" {>= "1.1.0" & with-test}
   "alcotest-lwt" {>= "1.1.0" & with-test}
   "base" {>= "0.13.1"}
@@ -16,13 +16,14 @@ depends: [
   "lwt" {>= "5.0.0"}
   "schematic" {>= "0.12.0" & < "0.13.0" & with-test}
   "schematic-jsoo" {>= "0.12.0" & < "0.13.0" & with-test}
+  "odoc" {with-doc}
 ]
 depopts: [
   "schematic" {>= "0.12.0" & < "0.13.0"}
   "schematic-jsoo" {>= "0.12.0" & < "0.13.0"}
 ]
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   [
     "dune"
     "build"
