@@ -35,5 +35,24 @@ let mapi l ~f = rev (rev_mapi l ~f)
 let hd = function hd :: _ -> hd
 let tl = function _ :: tl -> tl
 let to_list = function hd :: tl -> List.cons hd tl
+
+let of_list : 'a List.t -> 'a t Option.t = function
+  | h :: tl -> Some (h :: tl)
+  | _ -> None
+
+let of_list_exn l =
+  match l |> of_list with
+  | Some l -> l
+  | None -> failwith "converted empty list to List_nonempty.t"
+
 let equal f (l :: tl_l) (r :: tl_r) = f l r && List.equal f tl_l tl_r
 let pp ?sep p = Fmt.(using to_list @@ list ?sep p)
+let lift f l = l |> to_list |> f |> of_list
+
+let lift_exn f l =
+  match lift f l with
+  | Some l -> l
+  | None -> failwith "List_nonempty lifted into []"
+
+let sort l ~compare = lift_exn (List.sort ~compare) l
+let stable_sort l ~compare = lift_exn (List.stable_sort ~compare) l
