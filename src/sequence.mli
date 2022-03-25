@@ -18,12 +18,21 @@ module Make (Monad : Base.Monad.S) : sig
   val to_list : 'a t -> 'a list Monad.t
   val to_list_rev : 'a t -> 'a list Monad.t
   val partition : ('a, 'b) Base.Either.t t -> ('a list * 'b list) Monad.t
-  val step : 'a t -> ('a option * 'a t) Monad.t
   val head : 'a t -> 'a option Monad.t
   val find : 'a t -> f:('a -> bool Monad.t) -> 'a option Monad.t
 
   val fold :
     'a t -> init:'state -> f:('state -> 'a -> 'state Monad.t) -> 'state Monad.t
+
+  val fold_until :
+    'a t ->
+    init:'accum ->
+    f:
+      ('accum ->
+      'a ->
+      ('accum, 'final) Base.Container.Continue_or_stop.t Monad.t) ->
+    finish:('accum -> 'final) ->
+    'final Monad.t
 
   val length : 'a t -> int Monad.t
 end
@@ -49,20 +58,12 @@ module Make2 (Monad : Base.Monad.S2) : sig
   val filter : ('a, 'c) t -> f:('a -> (bool, 'c) Monad.t) -> ('a, 'c) t
   val filter_map : ('a, 'c) t -> f:('a -> ('b option, 'c) Monad.t) -> ('b, 'c) t
   val map : ('a, 'c) t -> f:('a -> ('b, 'c) Monad.t) -> ('b, 'c) t
-
-  val fold_left :
-    ('a, 'b) t ->
-    f:('c -> 'a -> ('c, 'b) Monad.t) ->
-    init:'c ->
-    ('c, 'b) Monad.t
-
   val iter : ('a, 'b) t -> f:('a -> (unit, 'b) Monad.t) -> (unit, 'b) Monad.t
   val to_list : ('a, 'b) t -> ('a list, 'b) Monad.t
 
   val partition :
     (('a, 'b) Base.Either.t, 'c) t -> ('a list * 'b list, 'c) Monad.t
 
-  val step : ('a, 'b) t -> ('a option * ('a, 'b) t, 'b) Monad.t
   val head : ('a, 'b) t -> ('a option, 'b) Monad.t
 
   val find_map :
@@ -73,9 +74,19 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val fold :
     ('a, 'b) t ->
-    init:'state ->
-    f:('state -> 'a -> ('state, 'b) Monad.t) ->
-    ('state, 'b) Monad.t
+    init:'c ->
+    f:('c -> 'a -> ('c, 'b) Monad.t) ->
+    ('c, 'b) Monad.t
+
+  val fold_until :
+    ('a, 'b) t ->
+    init:'accum ->
+    f:
+      ('accum ->
+      'a ->
+      (('accum, 'final) Base.Container.Continue_or_stop.t, 'b) Monad.t) ->
+    finish:('accum -> 'final) ->
+    ('final, 'b) Monad.t
 
   val length : ('a, 'b) t -> (int, 'b) Monad.t
 end

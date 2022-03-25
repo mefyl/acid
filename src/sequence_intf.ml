@@ -3,4 +3,5 @@ module Step = struct
     | Done
     | Skip of 's
     | Yield of 'a * 's
+    | Yields of 'a list * 's
 end

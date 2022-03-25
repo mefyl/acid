@@ -40,37 +40,64 @@ module Make2 (Monad : Base.Monad.S2) = struct
 
   let of_list init =
     let f = function
-      | hd :: tl -> Monad.return @@ Some (hd, tl)
-      | [] -> Monad.return None
+      | [] -> Monad.return Step.Done
+      | l -> Monad.return (Step.Yields (l, []))
     in
-    unfold_step ~init ~f
+    unfold ~init ~f
 
   let concat seq =
     let f = function
-      | None, Sequence { state; f } -> (
+      | [], Sequence { state; f } -> (
         f state >>= function
         | Step.Done -> Monad.return Step.Done
         | Step.Skip state ->
-          Monad.return @@ Step.Skip (None, Sequence { state; f })
+          Monad.return @@ Step.Skip ([], Sequence { state; f })
         | Step.Yield (sub, state) ->
-          Monad.return @@ Step.Skip (Some sub, Sequence { state; f }))
-      | Some (Sequence { state; f }), next -> (
+          Monad.return @@ Step.Skip ([ sub ], Sequence { state; f })
+        | Step.Yields (subs, state) ->
+          Monad.return @@ Step.Skip (subs, Sequence { state; f }))
+      | Sequence { state; f } :: tail, next -> (
         f state >>= function
-        | Step.Done -> Monad.return @@ Step.Skip (None, next)
+        | Step.Done -> Monad.return @@ Step.Skip (tail, next)
         | Step.Skip state ->
-          Monad.return @@ Step.Skip (Some (Sequence { state; f }), next)
+          Monad.return @@ Step.Skip (Sequence { state; f } :: tail, next)
         | Step.Yield (elt, state) ->
-          Monad.return @@ Step.Yield (elt, (Some (Sequence { state; f }), next))
-        )
+          Monad.return @@ Step.Yield (elt, (Sequence { state; f } :: tail, next))
+        | Step.Yields (elts, state) ->
+          Monad.return
+          @@ Step.Yields (elts, (Sequence { state; f } :: tail, next)))
     in
-    unfold ~init:(None, seq) ~f
+    unfold ~init:([], seq) ~f
 
-  let rec fold_left (Sequence { state; f = step }) ~f ~init =
+  let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
+    let open Base.Container.Continue_or_stop in
     step state >>= function
-    | Step.Done -> Monad.return init
-    | Step.Skip state -> fold_left (Sequence { state; f = step }) ~f ~init
-    | Step.Yield (v, state) ->
-      f init v >>= fun init -> fold_left (Sequence { state; f = step }) ~f ~init
+    | Step.Done -> Monad.return (finish init)
+    | Step.Skip state ->
+      fold_until ~init ~f ~finish (Sequence { state; f = step })
+    | Step.Yield (v, state) -> (
+      f init v >>= function
+      | Stop v -> Monad.return v
+      | Continue init ->
+        fold_until (Sequence { state; f = step }) ~f ~init ~finish)
+    | Step.Yields (v, state) -> (
+      let rec fold ~init ~f = function
+        | [] -> Monad.return (Continue init)
+        | hd :: tl -> (
+          f init hd >>= function
+          | Stop v -> Monad.return (Stop v)
+          | Continue init -> fold ~init ~f tl)
+      in
+      fold ~init ~f v >>= function
+      | Stop v -> Monad.return v
+      | Continue init ->
+        fold_until (Sequence { state; f = step }) ~init ~f ~finish)
+
+  let fold seq ~init ~f =
+    let open Base.Container.Continue_or_stop in
+    fold_until seq ~init
+      ~f:(fun init v -> f init v >>| fun v -> Continue v)
+      ~finish:Fn.id
 
   let filter_map :
       type from to_.
@@ -78,12 +105,24 @@ module Make2 (Monad : Base.Monad.S2) = struct
    fun (Sequence { state; f = step }) ~f ->
     let f state =
       step state >>= function
+      | Step.Done -> Monad.return @@ Step.Done
+      | Step.Skip state -> Monad.return @@ Step.Skip state
       | Step.Yield (v, state) -> (
         f v >>= function
         | Some v -> Monad.return @@ Step.Yield (v, state)
         | None -> Monad.return @@ Step.Skip state)
-      | Step.Skip state -> Monad.return @@ Step.Skip state
-      | Step.Done -> Monad.return @@ Step.Done
+      | Step.Yields (v, state) ->
+        let rec filter acc = function
+          | [] -> (
+            match acc with
+            | [] -> Monad.return @@ Step.Skip state
+            | _ -> Monad.return (Step.Yields (List.rev acc, state)))
+          | hd :: tl -> (
+            f hd >>= function
+            | None -> filter acc tl
+            | Some v -> filter (v :: acc) tl)
+        in
+        filter [] v
     in
     Sequence { state; f }
 
@@ -98,6 +137,10 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Step.Skip state -> iter (Sequence { state; f = step }) ~f
     | Step.Yield (v, state) ->
       f v >>= fun () -> iter (Sequence { state; f = step }) ~f
+    | Step.Yields (v, state) ->
+      let fold init v = init >>= fun () -> f v in
+      List.fold ~init:(Monad.return ()) ~f:fold v >>= fun () ->
+      iter (Sequence { state; f = step }) ~f
 
   let rec to_list (Sequence { state; f }) =
     f state >>= function
@@ -105,50 +148,58 @@ module Make2 (Monad : Base.Monad.S2) = struct
     | Step.Skip state -> to_list (Sequence { state; f })
     | Step.Yield (v, state) ->
       to_list (Sequence { state; f }) >>| fun tail -> v :: tail
+    | Step.Yields (v, state) ->
+      to_list (Sequence { state; f }) >>| fun tail -> v @ tail
 
   let rec step (Sequence { state; f } as seq) =
     f state >>= function
-    | Step.Done -> Monad.return (None, seq)
-    | Step.Skip state -> step (Sequence { state; f })
-    | Step.Yield (v, state) -> Monad.return (Some v, Sequence { state; f })
+    | Step.Done -> Monad.return ([], seq)
+    | Step.Skip state | Step.Yields ([], state) -> step (Sequence { state; f })
+    | Step.Yield (value, state) ->
+      Monad.return ([ value ], Sequence { state; f })
+    | Step.Yields (values, state) -> Monad.return (values, Sequence { state; f })
 
   let to_list_rev seq =
     let rec to_list_rev acc seq =
       step seq >>= function
-      | None, _ -> Monad.return []
-      | Some v, seq -> to_list_rev (v :: acc) seq
+      | [], _ -> Monad.return []
+      | l, seq -> to_list_rev (List.rev_append l acc) seq
     in
     to_list_rev [] seq
 
-  let rec partition seq =
-    step seq >>= function
-    | None, _ -> Monad.return ([], [])
-    | Some v, sequence -> (
-      partition sequence >>| fun (l, r) ->
-      match v with
-      | Either.First h -> (h :: l, r)
-      | Either.Second h -> (l, h :: r))
+  let partition_rev seq =
+    let rec loop (l, r) seq =
+      step seq >>= function
+      | [], _ -> Monad.return (l, r)
+      | v, sequence ->
+        let acc =
+          let f (l, r) = function
+            | Either.First h -> (h :: l, r)
+            | Either.Second h -> (l, h :: r)
+          in
+          List.fold_left v ~init:(l, r) ~f
+        in
+        loop acc sequence
+    in
+    loop ([], []) seq
 
-  let head seq = step seq >>| fst
+  let partition seq =
+    partition_rev seq >>| fun (l, r) -> (List.rev l, List.rev r)
 
-  let rec find_map seq ~f =
-    step seq >>= function
-    | None, _ -> Monad.return None
-    | Some value, seq -> (
-      f value >>= function
-      | Some value -> Monad.return @@ Some value
-      | None -> find_map ~f seq)
+  let head seq = step seq >>| function [], _ -> None | hd :: _, _ -> Some hd
+
+  let find_map seq ~f =
+    let open Base.Container.Continue_or_stop in
+    let f () v =
+      f v >>| function Some v -> Stop (Some v) | None -> Continue ()
+    in
+    fold_until seq ~init:() ~f ~finish:(fun () -> None)
 
   let find seq ~f =
     find_map seq ~f:(fun v ->
         f v >>= function
         | true -> Monad.return @@ Some v
         | false -> Monad.return None)
-
-  let rec fold seq ~init ~f =
-    step seq >>= function
-    | Some v, seq -> f init v >>= fun init -> fold seq ~init ~f
-    | None, _ -> Monad.return init
 
   let length seq = fold seq ~init:0 ~f:(fun i _ -> Monad.return (i + 1))
 end
