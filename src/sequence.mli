@@ -1,9 +1,9 @@
-module Step = Base.Sequence.Step
+include module type of Sequence_intf
 
 module Make (Monad : Base.Monad.S) : sig
   type 'a t
 
-  module Step = Base.Sequence.Step
+  module Step = Step
 
   val empty : 'a t
   val unfold : init:'state -> f:('state -> ('a, 'state) Step.t Monad.t) -> 'a t
@@ -31,7 +31,7 @@ end
 module Make2 (Monad : Base.Monad.S2) : sig
   type ('a, 'b) t
 
-  module Step = Base.Sequence.Step
+  module Step = Step
 
   val empty : ('a, 'b) t
 

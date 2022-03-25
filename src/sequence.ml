@@ -1,9 +1,18 @@
 open Base
-module Step = Base.Sequence.Step
+include Sequence_intf
+
+module Step = struct
+  include Step
+
+  let of_base = function
+    | Base.Sequence.Step.Done -> Done
+    | Skip state -> Skip state
+    | Yield (v, state) -> Yield (v, state)
+end
 
 module Make2 (Monad : Base.Monad.S2) = struct
   open Monad
-  module Step = Base.Sequence.Step
+  module Step = Step
 
   type ('a, 'b) t =
     | Sequence : {
@@ -24,7 +33,9 @@ module Make2 (Monad : Base.Monad.S2) = struct
     Sequence { state = init; f }
 
   let of_base init =
-    let f s = Monad.return @@ Base.Sequence.Expert.next_step s in
+    let f s =
+      Base.Sequence.Expert.next_step s |> Step.of_base |> Monad.return
+    in
     unfold ~init ~f
 
   let of_list init =
@@ -145,6 +156,8 @@ end
 module Make (Monad : Base.Monad.S) = struct
   module Monad2 = struct
     type ('a, 'b) t = 'a Monad.t
+
+    module Step = Step
 
     include Base.Monad.Make2 (struct
       include Monad
