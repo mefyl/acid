@@ -252,13 +252,13 @@ module Make2 (Monad : Base.Monad.S2) = struct
       Monad.return ([ value ], Sequence { state; f })
     | Step.Yields (values, state) -> Monad.return (values, Sequence { state; f })
 
-  let to_list_rev seq =
-    let rec to_list_rev acc seq =
-      step seq >>= function
-      | [], _ -> Monad.return []
-      | l, seq -> to_list_rev (List.rev_append l acc) seq
-    in
-    to_list_rev [] seq
+  (* let to_list_rev seq =
+   *   let rec to_list_rev acc seq =
+   *     step seq >>= function
+   *     | [], _ -> Monad.return []
+   *     | l, seq -> to_list_rev (List.rev_append l acc) seq
+   *   in
+   *   to_list_rev [] seq *)
 
   let partition_rev seq =
     let rec loop (l, r) seq =
