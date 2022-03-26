@@ -69,78 +69,171 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     unfold ~init:([], seq) ~f
 
-  let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
-    let open Base.Container.Continue_or_stop in
-    step state >>= function
-    | Step.Done -> Monad.return (finish init)
-    | Step.Skip state ->
-      fold_until ~init ~f ~finish (Sequence { state; f = step })
-    | Step.Yield (v, state) -> (
-      f init v >>= function
-      | Stop v -> Monad.return v
-      | Continue init ->
-        fold_until (Sequence { state; f = step }) ~f ~init ~finish)
-    | Step.Yields (v, state) -> (
-      let rec fold ~init ~f = function
-        | [] -> Monad.return (Continue init)
-        | hd :: tl -> (
-          f init hd >>= function
-          | Stop v -> Monad.return (Stop v)
-          | Continue init -> fold ~init ~f tl)
-      in
-      fold ~init ~f v >>= function
-      | Stop v -> Monad.return v
-      | Continue init ->
-        fold_until (Sequence { state; f = step }) ~init ~f ~finish)
-
-  let fold seq ~init ~f =
-    let open Base.Container.Continue_or_stop in
-    fold_until seq ~init
-      ~f:(fun init v -> f init v >>| fun v -> Continue v)
-      ~finish:Fn.id
-
-  let filter_map :
-      type from to_.
-      (from, 'b) t -> f:(from -> (to_ option, 'b) Monad.t) -> (to_, 'b) t =
-   fun (Sequence { state; f = step }) ~f ->
-    let f state =
+  include struct
+    let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
+      let open Base.Container.Continue_or_stop in
       step state >>= function
-      | Step.Done -> Monad.return @@ Step.Done
-      | Step.Skip state -> Monad.return @@ Step.Skip state
+      | Step.Done -> Monad.return (finish init)
+      | Step.Skip state ->
+        fold_until ~init ~f ~finish (Sequence { state; f = step })
       | Step.Yield (v, state) -> (
-        f v >>= function
-        | Some v -> Monad.return @@ Step.Yield (v, state)
-        | None -> Monad.return @@ Step.Skip state)
-      | Step.Yields (v, state) ->
-        let rec filter acc = function
-          | [] -> (
-            match acc with
-            | [] -> Monad.return @@ Step.Skip state
-            | _ -> Monad.return (Step.Yields (List.rev acc, state)))
+        match f init v with
+        | Stop v -> Monad.return v
+        | Continue init ->
+          fold_until (Sequence { state; f = step }) ~f ~init ~finish)
+      | Step.Yields (v, state) -> (
+        let rec fold ~init ~f = function
+          | [] -> Monad.return (Continue init)
           | hd :: tl -> (
-            f hd >>= function
-            | None -> filter acc tl
-            | Some v -> filter (v :: acc) tl)
+            match f init hd with
+            | Stop v -> Monad.return (Stop v)
+            | Continue init -> fold ~init ~f tl)
         in
-        filter [] v
-    in
-    Sequence { state; f }
+        fold ~init ~f v >>= function
+        | Stop v -> Monad.return v
+        | Continue init ->
+          fold_until (Sequence { state; f = step }) ~init ~f ~finish)
 
-  let filter s ~f =
-    filter_map s ~f:(fun e -> f e >>| function true -> Some e | false -> None)
+    let fold seq ~init ~f =
+      let open Base.Container.Continue_or_stop in
+      fold_until seq ~init ~f:(fun init v -> Continue (f init v)) ~finish:Fn.id
 
-  let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
+    let filter_map (Sequence { state; f = step }) ~f =
+      let f state =
+        step state >>= function
+        | Step.Done -> Monad.return @@ Step.Done
+        | Step.Skip state -> Monad.return @@ Step.Skip state
+        | Step.Yield (v, state) -> (
+          match f v with
+          | Some v -> Monad.return @@ Step.Yield (v, state)
+          | None -> Monad.return @@ Step.Skip state)
+        | Step.Yields (v, state) ->
+          let rec filter acc = function
+            | [] -> (
+              match acc with
+              | [] -> Monad.return @@ Step.Skip state
+              | _ -> Monad.return (Step.Yields (List.rev acc, state)))
+            | hd :: tl -> (
+              match f hd with
+              | None -> filter acc tl
+              | Some v -> filter (v :: acc) tl)
+          in
+          filter [] v
+      in
+      Sequence { state; f }
 
-  let rec iter (Sequence { state; f = step }) ~f =
-    step state >>= function
-    | Step.Done -> Monad.return ()
-    | Step.Skip state -> iter (Sequence { state; f = step }) ~f
-    | Step.Yield (v, state) ->
-      f v >>= fun () -> iter (Sequence { state; f = step }) ~f
-    | Step.Yields (v, state) ->
-      let fold init v = init >>= fun () -> f v in
-      List.fold ~init:(Monad.return ()) ~f:fold v >>= fun () ->
-      iter (Sequence { state; f = step }) ~f
+    let filter s ~f = filter_map s ~f:(fun e -> Option.some_if (f e) e)
+    let map s ~f = filter_map s ~f:(fun v -> Some (f v))
+
+    let rec iter (Sequence { state; f = step }) ~f =
+      step state >>= function
+      | Step.Done -> Monad.return ()
+      | Step.Skip state -> iter (Sequence { state; f = step }) ~f
+      | Step.Yield (v, state) ->
+        let () = f v in
+        iter (Sequence { state; f = step }) ~f
+      | Step.Yields (v, state) ->
+        let () = List.iter ~f v in
+        iter (Sequence { state; f = step }) ~f
+
+    let find_map seq ~f =
+      let open Base.Container.Continue_or_stop in
+      let f () v =
+        match f v with Some v -> Stop (Some v) | None -> Continue ()
+      in
+      fold_until seq ~init:() ~f ~finish:(fun () -> None)
+
+    let find seq ~f = find_map seq ~f:(fun v -> Option.some_if (f v) v)
+  end
+
+  module Seq = struct
+    let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
+      let open Base.Container.Continue_or_stop in
+      step state >>= function
+      | Step.Done -> Monad.return (finish init)
+      | Step.Skip state ->
+        fold_until ~init ~f ~finish (Sequence { state; f = step })
+      | Step.Yield (v, state) -> (
+        f init v >>= function
+        | Stop v -> Monad.return v
+        | Continue init ->
+          fold_until (Sequence { state; f = step }) ~f ~init ~finish)
+      | Step.Yields (v, state) -> (
+        let rec fold ~init ~f = function
+          | [] -> Monad.return (Continue init)
+          | hd :: tl -> (
+            f init hd >>= function
+            | Stop v -> Monad.return (Stop v)
+            | Continue init -> fold ~init ~f tl)
+        in
+        fold ~init ~f v >>= function
+        | Stop v -> Monad.return v
+        | Continue init ->
+          fold_until (Sequence { state; f = step }) ~init ~f ~finish)
+
+    let fold seq ~init ~f =
+      let open Base.Container.Continue_or_stop in
+      fold_until seq ~init
+        ~f:(fun init v -> f init v >>| fun v -> Continue v)
+        ~finish:Fn.id
+
+    let filter_map :
+        type from to_.
+        (from, 'b) t -> f:(from -> (to_ option, 'b) Monad.t) -> (to_, 'b) t =
+     fun (Sequence { state; f = step }) ~f ->
+      let f state =
+        step state >>= function
+        | Step.Done -> Monad.return @@ Step.Done
+        | Step.Skip state -> Monad.return @@ Step.Skip state
+        | Step.Yield (v, state) -> (
+          f v >>= function
+          | Some v -> Monad.return @@ Step.Yield (v, state)
+          | None -> Monad.return @@ Step.Skip state)
+        | Step.Yields (v, state) ->
+          let rec filter acc = function
+            | [] -> (
+              match acc with
+              | [] -> Monad.return @@ Step.Skip state
+              | _ -> Monad.return (Step.Yields (List.rev acc, state)))
+            | hd :: tl -> (
+              f hd >>= function
+              | None -> filter acc tl
+              | Some v -> filter (v :: acc) tl)
+          in
+          filter [] v
+      in
+      Sequence { state; f }
+
+    let filter s ~f =
+      filter_map s ~f:(fun e ->
+          f e >>| function true -> Some e | false -> None)
+
+    let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
+
+    let rec iter (Sequence { state; f = step }) ~f =
+      step state >>= function
+      | Step.Done -> Monad.return ()
+      | Step.Skip state -> iter (Sequence { state; f = step }) ~f
+      | Step.Yield (v, state) ->
+        f v >>= fun () -> iter (Sequence { state; f = step }) ~f
+      | Step.Yields (v, state) ->
+        let fold init v = init >>= fun () -> f v in
+        List.fold ~init:(Monad.return ()) ~f:fold v >>= fun () ->
+        iter (Sequence { state; f = step }) ~f
+
+    let find_map seq ~f =
+      let open Base.Container.Continue_or_stop in
+      let f () v =
+        f v >>| function Some v -> Stop (Some v) | None -> Continue ()
+      in
+      fold_until seq ~init:() ~f ~finish:(fun () -> None)
+
+    let find seq ~f =
+      find_map seq ~f:(fun v ->
+          f v >>= function
+          | true -> Monad.return @@ Some v
+          | false -> Monad.return None)
+  end
 
   let rec to_list (Sequence { state; f }) =
     f state >>= function
@@ -187,21 +280,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
     partition_rev seq >>| fun (l, r) -> (List.rev l, List.rev r)
 
   let head seq = step seq >>| function [], _ -> None | hd :: _, _ -> Some hd
-
-  let find_map seq ~f =
-    let open Base.Container.Continue_or_stop in
-    let f () v =
-      f v >>| function Some v -> Stop (Some v) | None -> Continue ()
-    in
-    fold_until seq ~init:() ~f ~finish:(fun () -> None)
-
-  let find seq ~f =
-    find_map seq ~f:(fun v ->
-        f v >>= function
-        | true -> Monad.return @@ Some v
-        | false -> Monad.return None)
-
-  let length seq = fold seq ~init:0 ~f:(fun i _ -> Monad.return (i + 1))
+  let length seq = Seq.fold seq ~init:0 ~f:(fun i _ -> Monad.return (i + 1))
 end
 
 module Make (Monad : Base.Monad.S) = struct

@@ -1,21 +1,40 @@
 open Acid
 
 module Lwt = struct
+  open Let.Syntax (Lwt)
   module Sequence = Acid.Sequence.Make (Lwt)
 
-  let unfold _ () =
-    let ( let* ) = Lwt.( >>= ) in
-    let squared_odds init =
-      let f = function
-        | x when x < 0 -> Lwt.return Sequence.Step.Done
-        | x when x % 2 = 0 -> Lwt.return @@ Sequence.Step.Skip (x - 1)
-        | x -> Lwt.return @@ Sequence.Step.Yield (x * x, x - 1)
-      in
-      Sequence.unfold ~init ~f
+  let squared_odds init =
+    let f = function
+      | x when x < 0 -> Lwt.return Sequence.Step.Done
+      | x when x % 2 = 0 -> Lwt.return @@ Sequence.Step.Skip (x - 1)
+      | x -> Lwt.return @@ Sequence.Step.Yield (x * x, x - 1)
     in
+    Sequence.unfold ~init ~f
+
+  let unfold _ () =
     let* res = Sequence.to_list @@ squared_odds 8 in
     Alcotest.(check (list int) "unfold |> to_list" [ 49; 25; 9; 1 ] res)
     |> Lwt.return
+
+  module Make
+      (Monad : Base.Monad.S)
+      (Walk : Acid.Sequence.WALKERS
+                with type 'a sequence := 'a Sequence.t
+                 and type 'a monad := 'a Lwt.t
+                 and type 'a walk := 'a Monad.t) =
+  struct
+    let filter_map _ () =
+      let f i =
+        if i % 3 = 0 then Monad.return (Some (i * 10)) else Monad.return None
+      in
+      let* res = Walk.filter_map (squared_odds 10) ~f |> Sequence.to_list in
+      Alcotest.(check (list int) "filter_map |> to_list" [ 810; 90 ] res)
+      |> Lwt.return
+  end
+
+  include Make (Base.Monad.Ident) (Sequence)
+  module Seq = Make (Lwt) (Sequence.Seq)
 end
 
 module Result = struct
@@ -44,44 +63,6 @@ module Result = struct
         (result (list int) string)
         "unfold |> to_list" (Result.Error "dividing by zero") res)
 
-  let step () =
-    let () =
-      let res =
-        let open Let.Syntax2 (Result) in
-        let s = div [ 4; -1; 2 ] in
-        let* head, s = Sequence.step s in
-        let () = Alcotest.(check (option int) "head" (Some 15) head) in
-        let* head, s = Sequence.step s in
-        let () = Alcotest.(check (option int) "head" (Some 30) head) in
-        let* head, s = Sequence.step s in
-        let () = Alcotest.(check (option int) "head" None head) in
-        let+ head, _ = Sequence.step s in
-        Alcotest.(check (option int) "head" None head)
-      in
-      Alcotest.(check (result unit string) "res" (Result.Ok ()) res)
-    and () =
-      let res =
-        let open Let.Syntax2 (Result) in
-        let s = div [ 4; -1; 0; 2 ] in
-        let+ head, s = Sequence.step s in
-        let () = Alcotest.(check (option int) "head" (Some 15) head) in
-        let res = Sequence.step s |> Result.map ~f:fst in
-        let () =
-          Alcotest.(
-            check
-              (result (option int) string)
-              "head" (Result.Error "dividing by zero") res)
-        in
-        let res = Sequence.step s |> Result.map ~f:fst in
-        Alcotest.(
-          check
-            (result (option int) string)
-            "head" (Result.Error "dividing by zero") res)
-      in
-      Alcotest.(check (result unit string) "res" (Result.Ok ()) res)
-    in
-    ()
-
   let fold () =
     let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ]
     and f a b =
@@ -90,10 +71,10 @@ module Result = struct
     in
     Alcotest.(
       check (result int string) "sum" (Result.Ok 15)
-        (Sequence.fold ~init:0 ~f seq));
+        (Sequence.Seq.fold ~init:0 ~f seq));
     Alcotest.(
       check (result int string) "too big a sum" (Result.Error "too big")
-        (Sequence.fold ~init:90 ~f seq))
+        (Sequence.Seq.fold ~init:90 ~f seq))
 
   let length () =
     let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ] in
@@ -110,11 +91,15 @@ let () =
   Lwt_main.run
   @@ run "Acid.Sequence"
        [
-         ("Lwt", [ test_case "unfold" Lwt.unfold ]);
+         ( "Lwt",
+           [
+             test_case "unfold" Lwt.unfold;
+             test_case "filter_map" Lwt.filter_map;
+             test_case "Seq.filter_map" Lwt.Seq.filter_map;
+           ] );
          ( "Result",
            [
              test_case_res "unfold" Result.unfold;
-             test_case_res "step" Result.step;
              test_case_res "fold" Result.fold;
              test_case_res "length" Result.length;
            ] );
