@@ -75,7 +75,7 @@ module List_nonempty = struct
         | [] -> Result.fail "empty list"
         | hd :: tl -> Result.return (hd :: tl)
       and encode (hd :: tl) = List.cons hd tl in
-      Schematic.Schema.Map (decode, encode, List parameter)
+      Schematic.Schema.Map { decode; encode; descriptor = List parameter }
     in
     Schematic.Schema.make
       ~id:(Schematic.Schema.name_combine parameter "list-nonempty")
@@ -96,7 +96,7 @@ module List_nonempty = struct
         | [] -> Result.fail "empty list"
         | hd :: tl -> Result.return (hd :: tl)
       and encode (hd :: tl) = List.cons hd tl in
-      Schematic.Schema.Map (decode, encode, List parameter)
+      Schematic.Schema.Map { decode; encode; descriptor = List parameter }
     in
     Schematic.Schema.make
       ~id:(Schematic.Schema.name_combine parameter "list-nonempty")
