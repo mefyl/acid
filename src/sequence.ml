@@ -45,6 +45,13 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     unfold ~init ~f
 
+  let of_lists init =
+    let f = function
+      | [] -> Monad.return Step.Done
+      | list :: rest -> Monad.return (Step.Yields (list, rest))
+    in
+    unfold ~init ~f
+
   let concat seq =
     let f = function
       | [], Sequence { state; f } -> (
@@ -68,6 +75,14 @@ module Make2 (Monad : Base.Monad.S2) = struct
           @@ Step.Yields (elts, (Sequence { state; f } :: tail, next)))
     in
     unfold ~init:([], seq) ~f
+
+  let rec step (Sequence { state; f } as seq) =
+    f state >>= function
+    | Step.Done -> Monad.return ([], seq)
+    | Step.Skip state | Step.Yields ([], state) -> step (Sequence { state; f })
+    | Step.Yield (value, state) ->
+      Monad.return ([ value ], Sequence { state; f })
+    | Step.Yields (values, state) -> Monad.return (values, Sequence { state; f })
 
   include struct
     let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
@@ -144,6 +159,36 @@ module Make2 (Monad : Base.Monad.S2) = struct
       fold_until seq ~init:() ~f ~finish:(fun () -> None)
 
     let find seq ~f = find_map seq ~f:(fun v -> Option.some_if (f v) v)
+
+    let group_fold s ~init ~f =
+      let f =
+        let open Step in
+        function
+        | seq, (acc, (head :: tail as values)) -> (
+          let rec loop acc = function
+            | [] -> (acc, [])
+            | head :: tail as values -> (
+              match f acc head with
+              | Some acc -> loop acc tail
+              | None -> (acc, values))
+          in
+          let acc, values =
+            match acc with
+            | None -> (init head, tail)
+            | Some acc -> (acc, values)
+          in
+          match loop acc values with
+          | acc, [] -> Skip (seq, (Some acc, [])) |> Monad.return
+          | acc, values -> Yield (acc, (seq, (None, values))) |> Monad.return)
+        | seq, (acc, []) -> (
+          step seq >>| function
+          | [], next -> (
+            match acc with
+            | None -> Done
+            | Some acc -> Yield (acc, (next, (None, []))))
+          | values, next -> Skip (next, (acc, values)))
+      in
+      unfold ~init:(s, (None, [])) ~f
   end
 
   module Seq = struct
@@ -233,15 +278,28 @@ module Make2 (Monad : Base.Monad.S2) = struct
           f v >>= function
           | true -> Monad.return @@ Some v
           | false -> Monad.return None)
-  end
 
-  let rec step (Sequence { state; f } as seq) =
-    f state >>= function
-    | Step.Done -> Monad.return ([], seq)
-    | Step.Skip state | Step.Yields ([], state) -> step (Sequence { state; f })
-    | Step.Yield (value, state) ->
-      Monad.return ([ value ], Sequence { state; f })
-    | Step.Yields (values, state) -> Monad.return (values, Sequence { state; f })
+    let group_fold s ~init ~f =
+      let f =
+        let open Step in
+        function
+        | seq, (None, value :: rest) ->
+          init value >>| fun value -> Skip (seq, (Some value, rest))
+        | seq, (Some acc, value :: rest) -> (
+          f acc value >>= function
+          | Some value -> Monad.return (Skip (seq, (Some value, rest)))
+          | None ->
+            init value >>| fun value -> Yield (acc, (seq, (Some value, rest))))
+        | seq, (acc, []) -> (
+          step seq >>| function
+          | [], next -> (
+            match acc with
+            | None -> Done
+            | Some acc -> Yield (acc, (next, (None, []))))
+          | values, next -> Skip (next, (acc, values)))
+      in
+      unfold ~init:(s, (None, [])) ~f
+  end
 
   let to_list_rev seq =
     let rec to_list_rev acc seq =

@@ -41,6 +41,12 @@ module type WALKERS2 = sig
       (('accum, 'final) Base.Container.Continue_or_stop.t, 'b) walk) ->
     finish:('accum -> 'final) ->
     ('final, 'b) monad
+
+  val group_fold :
+    ('a, 'b) sequence ->
+    init:('a -> ('c, 'b) walk) ->
+    f:('c -> 'a -> ('c option, 'b) walk) ->
+    ('c, 'b) sequence
 end
 
 module type WALKERS = sig

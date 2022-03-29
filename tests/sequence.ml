@@ -80,6 +80,21 @@ module Result = struct
     let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ] in
     Alcotest.(
       check (result int string) "length" (Result.Ok 5) (Sequence.length seq))
+
+  let group_fold () =
+    let seq = Sequence.of_lists [ [ 1; 2 ]; [ 4; 6 ]; [ 3; 5; 8; 7; 9 ] ] in
+    let init n = List_nonempty.[ n ]
+    and f List_nonempty.(head :: tail) n =
+      Option.some_if (n >= head) List_nonempty.(n :: head :: tail)
+    in
+    Alcotest.(
+      check
+        (result (list (list int)) string)
+        "group_fold"
+        (Result.Ok [ [ 1; 2; 4; 6 ]; [ 3; 5; 8 ]; [ 7; 9 ] ])
+        Sequence.(
+          group_fold seq ~init ~f |> to_list
+          |> Result.map ~f:(List.map ~f:List_nonempty.to_list)))
 end
 
 let () =
@@ -102,5 +117,6 @@ let () =
              test_case_res "unfold" Result.unfold;
              test_case_res "fold" Result.fold;
              test_case_res "length" Result.length;
+             test_case_res "group_fold" Result.group_fold;
            ] );
        ]

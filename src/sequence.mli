@@ -17,6 +17,7 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val of_base : 'a Base.Sequence.t -> ('a, 'b) t
   val of_list : 'a list -> ('a, 'b) t
+  val of_lists : 'a list list -> ('a, 'b) t
   val concat : (('a, 'b) t, 'b) t -> ('a, 'b) t
   val to_list : ('a, 'b) t -> ('a list, 'b) Monad.t
   val to_list_rev : ('a, 'b) t -> ('a list, 'b) Monad.t
