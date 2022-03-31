@@ -18,8 +18,6 @@
      "url {\n  src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\"\n}\n")))))
 
 (rule
- (mode
-  (promote (until-clean)))
  (deps acid.opam)
  (target acid.opam.locked)
  (action
