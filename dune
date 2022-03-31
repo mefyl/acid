@@ -1,3 +1,10 @@
+(alias
+ (name default)
+ (deps
+  acid.opam
+  (alias_rec src/all)
+  (alias_rec runtest)))
+
 (rule
  (target acid.%{version:acid}.opam)
  (deps
