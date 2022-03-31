@@ -24,12 +24,14 @@ module type S = sig
   type 'res mapper = { f : 'a. 'a value -> 'res }
   type 'res imapper = { f : 'a. int -> 'a value -> 'res }
 
-  val iter : 'a t -> f:unit mapper -> unit
-  val map : 'a t -> f:'res mapper -> 'res list
   val filter_map : 'a t -> f:'res option mapper -> 'res list
-  val iteri : 'a t -> f:unit imapper -> unit
-  val mapi : 'a t -> f:'res imapper -> 'res list
   val filter_mapi : 'a t -> f:'res option imapper -> 'res list
+  val find_map : 'a t -> f:'res option mapper -> 'res option
+  val find_mapi : 'a t -> f:'res option imapper -> 'res option
+  val iter : 'a t -> f:unit mapper -> unit
+  val iteri : 'a t -> f:unit imapper -> unit
+  val map : 'a t -> f:'res mapper -> 'res list
+  val mapi : 'a t -> f:'res imapper -> 'res list
 
   module Transduce (To : S_BASE) : sig
     type mapper = { f : 'a. 'a value -> 'a To.value }

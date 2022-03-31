@@ -38,10 +38,22 @@ end) : S with type 'a value = 'a T.t = struct
     let (_ : unit list) = mapi ~f l in
     ()
 
+  let find_mapi l ~(f : 'res option imapper) =
+    let rec loop : type a. int -> a t -> 'res option =
+     fun i -> function
+      | hd :: tl -> (
+        match f.f i hd with Some value -> Some value | None -> loop (i + 1) tl)
+      | [] -> None
+    in
+    loop 0 l
+
   type 'res mapper = { f : 't. 't value -> 'res }
 
   let filter_map l ~(f : 'res option mapper) =
     filter_mapi l ~f:{ f = (fun _ v -> f.f v) }
+
+  let find_map l ~(f : 'res option mapper) =
+    find_mapi l ~f:{ f = (fun _ v -> f.f v) }
 
   let map l ~f = filter_map ~f:{ f = (fun x -> Some (f.f x)) } l
   let iter l ~f = map ~f l |> ignore
