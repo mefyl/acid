@@ -26,6 +26,7 @@
 (rule
  (mode
   (promote (until-clean)))
+ (alias extdeps)
  (target acid.opam.extdeps)
  (action
   (with-stdout-to
