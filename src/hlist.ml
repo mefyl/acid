@@ -200,3 +200,42 @@ module Zip2 (L : S2) (R : S2) = struct
     in
     zip (l, r)
 end
+
+module Transduce (To : S_BASE) = struct
+  type imapper = { f : 't. int -> 't value -> 't To.value }
+
+  let mapi l ~f:{ f } =
+    let rec map : type a. int -> a t -> a To.t =
+     fun i -> function hd :: tl -> f i hd :: map (i + 1) tl | [] -> []
+    in
+    map 0 l
+
+  type mapper = { f : 't. 't value -> 't To.value }
+
+  let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
+end
+
+module Transduce2 (To : S2_BASE) = struct
+  type 't folding_mapper = {
+    f : 'a 'b. 't -> 'a value -> 't * ('a, 'b) To.value;
+  }
+
+  let folding_map folded l ~f:{ f } =
+    let rec map : type a b. 'fold -> a t -> (a, b) To.t =
+     fun folded -> function
+      | hd :: tl ->
+        let folded, hd = f folded hd in
+        hd :: map folded tl
+      | [] -> []
+    in
+    map folded l
+
+  type imapper = { f : 'a 'b. int -> 'a value -> ('a, 'b) To.value }
+
+  let mapi l ~f:{ f } =
+    folding_map 0 l ~f:{ f = (fun i elt -> (i + 1, f i elt)) }
+
+  type mapper = { f : 'a 'b. 'a value -> ('a, 'b) To.value }
+
+  let map l ~f:{ f } = mapi l ~f:{ f = (fun _ v -> f v) }
+end

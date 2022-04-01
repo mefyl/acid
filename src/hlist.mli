@@ -21,3 +21,29 @@ module Zip2 (L : S2) (R : S2) : sig
 
   val zip : ('a, 'b) L.t -> ('a, 'b) R.t -> ('a, 'b) t
 end
+
+module Transduce (To : S_BASE) : sig
+  type mapper = { f : 'a. 'a value -> 'a To.value }
+
+  val map : 'a t -> f:mapper -> 'a To.t
+
+  type imapper = { f : 'a. int -> 'a value -> 'a To.value }
+
+  val mapi : 'a t -> f:imapper -> 'a To.t
+end
+
+module Transduce2 (To : S2_BASE) : sig
+  type mapper = { f : 'a 'b. 'a value -> ('a, 'b) To.value }
+
+  val map : 'a t -> f:mapper -> ('a, 'b) To.t
+
+  type imapper = { f : 'a 'b. int -> 'a value -> ('a, 'b) To.value }
+
+  val mapi : 'a t -> f:imapper -> ('a, 'b) To.t
+
+  type 't folding_mapper = {
+    f : 'a 'b. 't -> 'a value -> 't * ('a, 'b) To.value;
+  }
+
+  val folding_map : 'fold -> 'a t -> f:'fold folding_mapper -> ('a, 'b) To.t
+end
