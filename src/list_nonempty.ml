@@ -17,6 +17,10 @@ module List_nonempty = struct
     | None -> failwith "converted empty list to List_nonempty.t"
 
   let fold (hd :: tl) ~f = List.fold ~init:hd ~f tl
+
+  let fold_map (hd :: tl) ~init ~f =
+    List.fold ~init:(init hd) ~f:(fun acc v -> f acc (init v)) tl
+
   let lift f l = l |> to_list |> f |> of_list
 
   let lift_exn f l =

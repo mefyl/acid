@@ -23,6 +23,7 @@ val cons : 'a -> 'a t -> 'a t
 val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
 val filter : 'a t -> f:('a -> bool) -> 'a List.t
 val filter_map : 'a t -> f:('a -> 'b option) -> 'b List.t
+val fold_map : 'a t -> init:('a -> 'b) -> f:('b -> 'b -> 'b) -> 'b
 val hd : 'a t -> 'a
 val lift : ('a List.t -> 'b List.t) -> 'a t -> 'b t option
 val lift_exn : ('a List.t -> 'b List.t) -> 'a t -> 'b t
