@@ -13,6 +13,16 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
     match v with
     | None -> Monad.return @@ f None
     | Some v -> v >>| fun v -> f (Some v)
+
+  let ( let*?? ) v f =
+    v >>= function
+    | None -> Monad.return @@ None
+    | Some v -> f v >>| Option.some
+
+  let ( let+?? ) v f =
+    v >>= function
+    | None -> Monad.return @@ None
+    | Some v -> Monad.return (Some (f v))
 end
 
 module Syntax (Monad : Base.Monad.S) = struct
