@@ -83,7 +83,7 @@ module List_nonempty = struct
 
   (* Direct bouncers to List *)
   let count (hd :: tl) = List.count (hd :: tl)
-  let exists (hd :: tl) = List.for_all (hd :: tl)
+  let exists (hd :: tl) = List.exists (hd :: tl)
   let filter (hd :: tl) = List.filter (hd :: tl)
   let find (hd :: tl) = List.find (hd :: tl)
   let find_map (hd :: tl) = List.find_map (hd :: tl)
