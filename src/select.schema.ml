@@ -1,14 +1,3 @@
-module type S = sig
-  type 'a t
-
-  val schema_versioned :
-    Schematic.Version.t option ->
-    'a Schematic.Schema.t ->
-    'a t Schematic.Schema.t
-
-  val schema : 'a Schematic.Schema.t -> 'a t Schematic.Schema.t
-end
-
 module type SWITCH = sig
   type ('r, 'w) t
 
