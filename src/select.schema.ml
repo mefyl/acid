@@ -1,3 +1,8 @@
+module Either = struct
+  let schema = Schematic.Schemas.Either.schema
+  let schema_versioned = Schematic.Schemas.Either.schema_versioned
+end
+
 module type SWITCH = sig
   type ('r, 'w) t
 

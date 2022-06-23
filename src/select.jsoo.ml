@@ -1,3 +1,10 @@
+module Either = struct
+  let schema = Schematic.Schemas.Either.schema
+  let schema_versioned = Schematic.Schemas.Either.schema_versioned
+
+  type (_, _) js = Js_of_ocaml.Js.Unsafe.any
+end
+
 module type S = sig
   type 'a t
   type 'a js

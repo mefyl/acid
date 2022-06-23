@@ -67,3 +67,10 @@ module V0_7_2 = struct
   module Split = Split
   module List_nonempty = List_nonempty
 end
+
+module V0_7_3 = struct
+  (** @closed *)
+  include V0_7_2
+
+  module Either = Root.Either
+end
