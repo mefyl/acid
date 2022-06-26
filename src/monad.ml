@@ -3,38 +3,53 @@ include Base.Monad
 module type BasicNestable2 = sig
   include Basic2
 
-  module Nest (M : S) : sig
-    val bind : ('a, 'e) t M.t -> f:('a -> ('b, 'e) t M.t) -> ('b, 'e) t M.t
+  module Nest2 (M : S2) : sig
+    val bind :
+      (('a, 'c) t, 'c) M.t ->
+      f:('a -> (('b, 'c) t, 'c) M.t) ->
+      (('b, 'c) t, 'c) M.t
   end
 end
 
 module type BasicNestable = sig
   include Basic
 
-  module Nest (M : S) : sig
-    val bind : 'a t M.t -> f:('a -> 'b t M.t) -> 'b t M.t
+  module Nest2 (M : S2) : sig
+    val bind : ('a t, 'c) M.t -> f:('a -> ('b t, 'c) M.t) -> ('b t, 'c) M.t
   end
 end
 
 module MakeNestable2 (M : BasicNestable2) = struct
   include Make2 (M)
 
-  module Nest (N : S) = struct
-    type ('a, 'b) t = ('a, 'b) M.t N.t
+  module Nest2 (N : S2) = struct
+    type ('a, 'b) t = (('a, 'b) M.t, 'b) N.t
 
-    module M = struct
+    include Make2 (struct
       type nonrec ('a, 'b) t = ('a, 'b) t
 
       let return v = N.return @@ return v
 
       let bind v ~f =
-        let module Nested = M.Nest (N) in
+        let module Nested = M.Nest2 (struct
+          include N
+
+          type nonrec ('a, 'b) t = ('a, 'b) t
+        end) in
         Nested.bind v ~f
 
       let map = `Define_using_bind
-    end
+    end)
+  end
 
-    include Make2 (M)
+  module Nest (N : S) = struct
+    include Nest2 (struct
+      include N
+
+      type ('a, _) t = 'a N.t
+    end)
+
+    type ('a, 'b) t = ('a, 'b) M.t N.t
   end
 end
 

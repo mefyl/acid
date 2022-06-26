@@ -16,7 +16,7 @@ struct
   let return = return
   let map = `Define_using_bind
 
-  module Nest (M : Monad.S) = struct
+  module Nest2 (M : Monad.S2) = struct
     let bind v ~f =
       let f = function Error _ as e -> M.return e | Ok v -> f v in
       M.bind v ~f
