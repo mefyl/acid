@@ -73,4 +73,5 @@ module V0_7_3 = struct
   include V0_7_2
 
   module Either = Root.Either
+  module Option = Root.Option
 end

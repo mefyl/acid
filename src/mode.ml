@@ -33,7 +33,7 @@ module W = struct
   include Select.W
 
   let return v = Some v
-  let map f = Option.map f
+  let map f = Option.map ~f
   let get v = v
   let default _ = None
   let if_optional v = Some v

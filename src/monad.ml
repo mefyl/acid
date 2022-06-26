@@ -8,6 +8,14 @@ module type BasicNestable2 = sig
   end
 end
 
+module type BasicNestable = sig
+  include Basic
+
+  module Nest (M : S) : sig
+    val bind : 'a t M.t -> f:('a -> 'b t M.t) -> 'b t M.t
+  end
+end
+
 module MakeNestable2 (M : BasicNestable2) = struct
   include Make2 (M)
 
@@ -28,4 +36,14 @@ module MakeNestable2 (M : BasicNestable2) = struct
 
     include Make2 (M)
   end
+end
+
+module MakeNestable (M : BasicNestable) = struct
+  type nonrec 'a t = 'a M.t
+
+  include MakeNestable2 (struct
+    include M
+
+    type nonrec ('a, 'b) t = 'a t
+  end)
 end
