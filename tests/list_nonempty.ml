@@ -1,5 +1,11 @@
 open Acid
 
+module Schemas_library = struct
+  type Schematic.Schema.library += V
+
+  let v = V
+end
+
 let pp elt =
   Fmt.using List_nonempty.to_list
   @@ Fmt.(const char '[' ++ list ~sep:semi elt ++ const char ']')

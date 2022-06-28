@@ -1,6 +1,6 @@
 module Either = struct end
 
-module type S = sig
+module type MODE = sig
   type 'a t
 end
 

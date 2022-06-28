@@ -1,7 +1,7 @@
 module type S = sig
   type 'a t
 
-  include Select.S with type 'a t := 'a t
+  include Select.MODE with type 'a t := 'a t
 
   val return : 'a -> 'a t
   val map : ('a -> 'b) -> 'a t -> 'b t

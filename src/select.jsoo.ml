@@ -5,16 +5,12 @@ module Either = struct
   type (_, _) js = Js_of_ocaml.Js.Unsafe.any
 end
 
-module type S = sig
+module type MODE = sig
   type 'a t
   type 'a js
 
   val schema_versioned :
-    Schematic.Version.t option ->
-    'a Schematic.Schema.t ->
-    'a t Schematic.Schema.t
-
-  val schema : 'a Schematic.Schema.t -> 'a t Schematic.Schema.t
+    Schematic.Schema.version -> 'a Schematic.Schema.t -> 'a t Schematic.Schema.t
 end
 
 module type SWITCH = sig
@@ -22,7 +18,7 @@ module type SWITCH = sig
   type ('r, 'w) js
 
   val schema_versioned :
-    Schematic.Version.t option ->
+    Schematic.Schema.version ->
     'r Schematic.Schema.t ->
     'w Schematic.Schema.t ->
     ('r, 'w) t Schematic.Schema.t
@@ -39,7 +35,6 @@ end
 
 module W = struct
   let schema_versioned = Schematic.Schemas.option_schema_versioned
-  let schema s = schema_versioned None s
 
   type 'a js = 'a Js_of_ocaml.Js.Opt.t
 end
@@ -57,7 +52,7 @@ module type SPLIT = sig
   type ('l, 'r) js
 
   val schema_versioned :
-    Schematic.Version.t option ->
+    Schematic.Schema.version ->
     'r Schematic.Schema.t ->
     'w Schematic.Schema.t ->
     ('r, 'w) t Schematic.Schema.t

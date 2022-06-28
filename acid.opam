@@ -14,13 +14,13 @@ depends: [
   "base" {>= "0.13.1"}
   "fmt"
   "lwt" {>= "5.0.0"}
-  "schematic" {>= "0.13.0" & < "0.14.0" & with-test}
-  "schematic-jsoo" {>= "0.13.0" & < "0.14.0" & with-test}
+  "schematic" {>= "0.14.0" & < "0.15.0" & with-test}
+  "schematic-jsoo" {>= "0.14.0" & < "0.15.0" & with-test}
   "odoc" {with-doc}
 ]
 depopts: [
-  "schematic" {>= "0.13.0" & < "0.14.0"}
-  "schematic-jsoo" {>= "0.13.0" & < "0.14.0"}
+  "schematic" {>= "0.14.0" & < "0.15.0"}
+  "schematic-jsoo" {>= "0.14.0" & < "0.15.0"}
 ]
 build: [
   ["dune" "subst"] {dev}

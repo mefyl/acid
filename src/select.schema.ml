@@ -3,6 +3,13 @@ module Either = struct
   let schema_versioned = Schematic.Schemas.Either.schema_versioned
 end
 
+module type MODE = sig
+  type 'a t
+
+  val schema_versioned :
+    Schematic.Schema.version -> 'a Schematic.Schema.t -> 'a t Schematic.Schema.t
+end
+
 module type SWITCH = sig
   type ('r, 'w) t
 
@@ -22,7 +29,7 @@ module R = struct end
 
 module W = struct
   let schema_versioned = Schematic.Schemas.option_schema_versioned
-  let schema s = schema_versioned None s
+  let schema s = schema_versioned (fun _ -> None) s
 end
 
 module Switch_r = struct end

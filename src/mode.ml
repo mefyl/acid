@@ -6,7 +6,6 @@ module R = struct
   include Select.R
 
   let schema_versioned _ s = s
-  let schema s = schema_versioned None s
   let return v = v
   let map f = f
   let get v = Some v
