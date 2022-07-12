@@ -1,4 +1,4 @@
-module V0_8_0 = struct
+module V0_8_1 = struct
   (** @closed *)
   include Base
 
@@ -17,3 +17,5 @@ module V0_8_0 = struct
   module Either = Root.Either
   module Option = Root.Option
 end
+
+module V0_8_0 = V0_8_1
