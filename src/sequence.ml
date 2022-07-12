@@ -113,31 +113,41 @@ module Make2 (Monad : Base.Monad.S2) = struct
       let open Base.Container.Continue_or_stop in
       fold_until seq ~init ~f:(fun init v -> Continue (f init v)) ~finish:Fn.id
 
-    let filter_map (Sequence { state; f = step }) ~f =
-      let f state =
+    let folding_filter_map (Sequence { state; f = step }) ~init ~f =
+      let f (acc, state) =
         step state >>= function
         | Step.Done -> Monad.return @@ Step.Done
-        | Step.Skip state -> Monad.return @@ Step.Skip state
+        | Step.Skip state -> Monad.return @@ Step.Skip (acc, state)
         | Step.Yield (v, state) -> (
-          match f v with
-          | Some v -> Monad.return @@ Step.Yield (v, state)
-          | None -> Monad.return @@ Step.Skip state)
+          match f acc v with
+          | acc, Some v -> Monad.return @@ Step.Yield (v, (acc, state))
+          | acc, None -> Monad.return @@ Step.Skip (acc, state))
         | Step.Yields (v, state) ->
-          let rec filter acc = function
+          let rec filter acc l = function
             | [] -> (
-              match acc with
-              | [] -> Monad.return @@ Step.Skip state
-              | _ -> Monad.return (Step.Yields (List.rev acc, state)))
+              match l with
+              | [] -> Monad.return @@ Step.Skip (acc, state)
+              | _ -> Monad.return (Step.Yields (List.rev l, (acc, state))))
             | hd :: tl -> (
-              match f hd with
-              | None -> filter acc tl
-              | Some v -> filter (v :: acc) tl)
+              match f acc hd with
+              | acc, None -> filter acc l tl
+              | acc, Some v -> filter acc (v :: l) tl)
           in
-          filter [] v
+          filter acc [] v
       in
-      Sequence { state; f }
+      Sequence { state = (init, state); f }
+
+    let filter_map seq ~f =
+      let f () v = ((), f v) in
+      folding_filter_map seq ~init:() ~f
 
     let filter s ~f = filter_map s ~f:(fun e -> Option.some_if (f e) e)
+
+    let folding_map s ~init ~f =
+      folding_filter_map s ~init ~f:(fun acc v ->
+          let acc, v = f acc v in
+          (acc, Some v))
+
     let map s ~f = filter_map s ~f:(fun v -> Some (f v))
 
     let rec iter (Sequence { state; f = step }) ~f =
@@ -222,36 +232,41 @@ module Make2 (Monad : Base.Monad.S2) = struct
         ~f:(fun init v -> f init v >>| fun v -> Continue v)
         ~finish:Fn.id
 
-    let filter_map :
-        type from to_.
-        (from, 'b) t -> f:(from -> (to_ option, 'b) Monad.t) -> (to_, 'b) t =
-     fun (Sequence { state; f = step }) ~f ->
-      let f state =
+    let folding_filter_map (Sequence { state; f = step }) ~init ~f =
+      let f (acc, state) =
         step state >>= function
         | Step.Done -> Monad.return @@ Step.Done
-        | Step.Skip state -> Monad.return @@ Step.Skip state
+        | Step.Skip state -> Monad.return @@ Step.Skip (acc, state)
         | Step.Yield (v, state) -> (
-          f v >>= function
-          | Some v -> Monad.return @@ Step.Yield (v, state)
-          | None -> Monad.return @@ Step.Skip state)
+          f acc v >>= function
+          | acc, Some v -> Monad.return @@ Step.Yield (v, (acc, state))
+          | acc, None -> Monad.return @@ Step.Skip (acc, state))
         | Step.Yields (v, state) ->
-          let rec filter acc = function
+          let rec filter acc l = function
             | [] -> (
-              match acc with
-              | [] -> Monad.return @@ Step.Skip state
-              | _ -> Monad.return (Step.Yields (List.rev acc, state)))
+              match l with
+              | [] -> Monad.return @@ Step.Skip (acc, state)
+              | _ -> Monad.return (Step.Yields (List.rev l, (acc, state))))
             | hd :: tl -> (
-              f hd >>= function
-              | None -> filter acc tl
-              | Some v -> filter (v :: acc) tl)
+              f acc hd >>= function
+              | acc, None -> filter acc l tl
+              | acc, Some v -> filter acc (v :: l) tl)
           in
-          filter [] v
+          filter acc [] v
       in
-      Sequence { state; f }
+      Sequence { state = (init, state); f }
+
+    let filter_map seq ~f =
+      let f () v = Monad.map (f v) ~f:(fun v -> ((), v)) in
+      folding_filter_map seq ~init:() ~f
 
     let filter s ~f =
       filter_map s ~f:(fun e ->
           f e >>| function true -> Some e | false -> None)
+
+    let folding_map s ~init ~f =
+      folding_filter_map s ~init ~f:(fun acc v ->
+          f acc v >>| fun (acc, v) -> (acc, Some v))
 
     let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
 

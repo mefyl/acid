@@ -17,6 +17,18 @@ module type WALKERS2 = sig
   val filter_map :
     ('a, 'c) sequence -> f:('a -> ('b option, 'c) walk) -> ('b, 'c) sequence
 
+  val folding_filter_map :
+    ('a, 'c) sequence ->
+    init:'fold ->
+    f:('fold -> 'a -> ('fold * 'b option, 'c) walk) ->
+    ('b, 'c) sequence
+
+  val folding_map :
+    ('a, 'c) sequence ->
+    init:'fold ->
+    f:('fold -> 'a -> ('fold * 'b, 'c) walk) ->
+    ('b, 'c) sequence
+
   val map : ('a, 'c) sequence -> f:('a -> ('b, 'c) walk) -> ('b, 'c) sequence
   val iter : ('a, 'b) sequence -> f:('a -> (unit, 'b) walk) -> (unit, 'b) monad
 
