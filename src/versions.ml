@@ -19,3 +19,10 @@ module V0_8_1 = struct
 end
 
 module V0_8_0 = V0_8_1
+
+module V0_8_2 = struct
+  (** @inline *)
+  include V0_8_1
+
+  module Fmt = Acid_fmt
+end
