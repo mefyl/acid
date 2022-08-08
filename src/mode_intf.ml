@@ -10,6 +10,7 @@ module type S = sig
   val if_optional : 'a option -> 'a t option
   val pp : 'a Fmt.t -> 'a t Fmt.t
   val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
+  val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int
 
   module Switch : sig
     type ('r, 'w) t
