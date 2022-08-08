@@ -32,6 +32,11 @@ module List_nonempty = struct
   let concat l = fold l ~f:append
   let cons e (hd :: tl) = e :: hd :: tl
   let equal f (l :: tl_l) (r :: tl_r) = f l r && List.equal f tl_l tl_r
+
+  let compare f (l :: tl_l) (r :: tl_r) =
+    let cmp = f l r in
+    if cmp <> 0 then cmp else List.compare f tl_l tl_r
+
   let fold_result (hd :: tl) ~f = List.fold_result ~init:hd ~f tl
   let fold_until (hd :: tl) ~f ~finish = List.fold_until ~init:hd ~f ~finish tl
   let hd = function hd :: _ -> hd

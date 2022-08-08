@@ -18,6 +18,7 @@ val fold_until :
 (** {0 Additional functions} *)
 
 val append : 'a t -> 'a t -> 'a t
+val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int
 val concat : 'a t t -> 'a t
 val cons : 'a -> 'a t -> 'a t
 val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
