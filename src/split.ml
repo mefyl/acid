@@ -13,6 +13,7 @@ module Left : S with type ('l, 'r) t = 'l = struct
   let get f _ v = f v
   let pp = make
   let equal = make
+  let compare = make
 end
 
 module Right : S with type ('l, 'r) t = 'r = struct
@@ -28,4 +29,5 @@ module Right : S with type ('l, 'r) t = 'r = struct
   let get _ f v = f v
   let pp = make
   let equal = make
+  let compare = make
 end
