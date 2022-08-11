@@ -10,4 +10,4 @@ check () {
     fi
 }
 
-check "src/versions.ml"
+check "src/acid.ml" "src/versions.ml"
