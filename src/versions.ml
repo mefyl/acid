@@ -27,4 +27,9 @@ module V0_8_2 = struct
   module Fmt = Acid_fmt
 end
 
-module V0_8_3 = V0_8_2
+module V0_8_3 = struct
+  (** @inline *)
+  include V0_8_2
+
+  module Map = Root.Map
+end

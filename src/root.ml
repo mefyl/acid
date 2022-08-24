@@ -10,6 +10,9 @@ module Lwt = Acid_lwt
 (** @canonical Acid.Lwt_result *)
 module Lwt_result = Acid_lwt_result
 
+(** @canonical Acid.Map *)
+module Map = Map
+
 (** @canonical Acid.Option *)
 module Option = Option
 
