@@ -4,6 +4,9 @@ module Array = Array
 (** @canonical Acid.Either *)
 module Either = Either
 
+(** @canonical Acid.List *)
+module List = List
+
 (** @canonical Acid.Lwt *)
 module Lwt = Acid_lwt
 

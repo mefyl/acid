@@ -31,5 +31,6 @@ module V0_8_3 = struct
   (** @inline *)
   include V0_8_2
 
+  module List = Root.List
   module Map = Root.Map
 end

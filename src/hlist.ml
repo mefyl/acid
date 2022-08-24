@@ -28,7 +28,7 @@ end) : S with type 'a value = 'a T.t = struct
         match f.f i hd with
         | Some value -> List.cons value (map (i + 1) tl)
         | None -> map (i + 1) tl)
-      | [] -> List.[]
+      | [] -> []
     in
     map 0 l
 
@@ -130,7 +130,7 @@ end) : S2 with type ('a, 'b) value = ('a, 'b) T.t = struct
         match f.f i hd with
         | Some value -> List.cons value (map (i + 1) tl)
         | None -> map (i + 1) tl)
-      | [] -> List.[]
+      | [] -> []
     in
     map 0 l
 
