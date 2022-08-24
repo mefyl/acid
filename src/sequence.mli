@@ -6,6 +6,7 @@ module Make2 (Monad : Base.Monad.S2) : sig
   module Step = Step
 
   val empty : ('a, 'b) t
+  val cons : 'a -> ('a, 'b) t -> ('a, 'b) t
 
   val unfold :
     init:'state -> f:('state -> (('a, 'state) Step.t, 'b) Monad.t) -> ('a, 'b) t

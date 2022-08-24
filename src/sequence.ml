@@ -76,6 +76,8 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     unfold ~init:([], seq) ~f
 
+  let cons v s = concat @@ of_list [ of_list [ v ]; s ]
+
   let rec step (Sequence { state; f } as seq) =
     f state >>= function
     | Step.Done -> Monad.return ([], seq)
