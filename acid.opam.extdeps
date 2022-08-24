@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "acid"
-version: "0.8.2"
+version: "0.8.3"
 synopsis: "Base library"
 maintainer: "mefyl <mefyl@gruntech.org>"
 authors: "mefyl <mefyl@gruntech.org>"
@@ -60,5 +60,5 @@ depends: [
   "uchar" {= "0.0.2"}
   "uri" {= "4.2.0"}
   "uutf" {= "1.0.3"}
-  "yojson" {= "2.0.1"}
+  "yojson" {= "2.0.2"}
 ]
