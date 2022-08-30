@@ -100,9 +100,12 @@ module Map = struct
 
     let schema_versioned version =
       let key_schema = K.schema_versioned version in
+      let (Flatten { descriptor; decode; encode }) =
+        Schematic.Schema.flatten key_schema.descriptor
+      in
       let pp_key = Schematic.Pp.of_schema key_schema in
       let res : 'data. 'data Schematic.Schema.t -> 'data t Schematic.Schema.t =
-        match key_schema.descriptor with
+        match descriptor with
         | String ->
           fun data_schema ->
             let open Schematic.Schema in
@@ -114,10 +117,22 @@ module Map = struct
             and descriptor =
               let descriptor = Mapping data_schema
               and decode l =
+                let open Let.Syntax2 (Result) in
+                let* l =
+                  List.map
+                    ~f:(fun (key, data) ->
+                      let+ key = decode key in
+                      (key, data))
+                    l
+                  |> Result.all
+                in
                 match Base.Map.of_alist (module K) l with
                 | `Duplicate_key k -> Result.failf "duplicate key: %a" pp_key k
                 | `Ok map -> Result.return map
-              and encode map = Base.Map.to_alist map in
+              and encode map =
+                Base.Map.to_alist map
+                |> List.map ~f:(fun (key, data) -> (encode key, data))
+              in
               Map { descriptor; decode; encode }
             in
             make ~id descriptor
