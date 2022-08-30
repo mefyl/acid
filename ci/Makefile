@@ -3,7 +3,7 @@ DIR=$(patsubst %/,%,$(dir $(MAKEFILE)))
 OCAML_VERSION ?= $(shell ocamlc --version)
 
 build: lint
-	test -d /root/node_modules && ln -s /root/node_modules
+	if test -d /root/node_modules; then ln -s /root/node_modules; fi
 	dune subst
 	dune build --ignore-promoted-rules @install
 
@@ -11,7 +11,7 @@ lint:
 	dune build @fmt
 
 check:
-	test -d /root/node_modules && ln -s /root/node_modules
+	if test -d /root/node_modules; then ln -s /root/node_modules; fi
 	dune subst
 	dune runtest
 
