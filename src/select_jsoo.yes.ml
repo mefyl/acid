@@ -36,5 +36,3 @@ end
 module Split = struct
   type ('l, 'r) js = Js_of_ocaml.Js.Unsafe.any
 end
-
-module Map = struct end

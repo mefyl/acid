@@ -94,6 +94,7 @@ module Map = struct
     val schema_versioned : Schematic.Schema.version -> t Schematic.Schema.t
   end) =
   struct
+    include Base.Map
     include Base.Map.M (K)
 
     let empty = Base.Map.empty (module K)
