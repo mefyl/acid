@@ -4,6 +4,9 @@ module Array = Array
 (** @canonical Acid.Either *)
 module Either = Either
 
+(** @canonical Acid.Int *)
+module Int = Int
+
 (** @canonical Acid.List *)
 module List = List
 
@@ -27,3 +30,6 @@ module Result = Result
 
 (** @canonical Acid.Sequence *)
 module Sequence = Sequence
+
+(** @canonical Acid.String *)
+module String = String

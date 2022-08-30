@@ -11,3 +11,5 @@ let change_map map k ~f =
   (Option.value_exn ~here:[%here] !res, map)
 
 let mem_update map k ~f = Base.Map.change map k ~f:(Option.map ~f)
+
+include Select.Map

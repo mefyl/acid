@@ -40,3 +40,12 @@ module V0_8_3 = struct
     let failf = Base.Result.failf
   end
 end
+
+module V0_8_4 = struct
+  (** @inline *)
+  include V0_8_3
+
+  module Int = Root.Int
+  module Result = Root.Result
+  module String = Root.String
+end

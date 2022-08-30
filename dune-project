@@ -36,6 +36,10 @@
   fmt
   (lwt
    (>= 5.0.0))
+  (ppx_yojson
+   (and
+    (>= 1.2.0)
+    :with-test))
   (schematic
    (and
     (and
