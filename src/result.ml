@@ -2,6 +2,8 @@
 
 include Base.Result
 
+let failf format = Fmt.kstr fail format
+
 let both l r =
   l >>= fun l ->
   r >>= fun r -> return (l, r)

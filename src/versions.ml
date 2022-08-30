@@ -33,4 +33,10 @@ module V0_8_3 = struct
 
   module List = Root.List
   module Map = Root.Map
+
+  module Result = struct
+    include Result
+
+    let failf = Base.Result.failf
+  end
 end
