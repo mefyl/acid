@@ -1,10 +1,10 @@
 opam-version: "2.0"
 name: "acid"
-version: "0.8.3"
+version: "0.8.4"
 synopsis: "Base library"
 maintainer: "mefyl <mefyl@gruntech.org>"
 authors: "mefyl <mefyl@gruntech.org>"
-license: "GPLv3"
+license: "LGPL-3.0-or-later"
 homepage: "https://gitlab.routine.co/routine/acid"
 bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
 depends: [
@@ -46,6 +46,7 @@ depends: [
   "ppx_derivers" {= "1.2.1"}
   "ppx_deriving" {= "5.2.1"}
   "ppx_here" {= "v0.14.0"}
+  "ppx_yojson" {= "1.2.0" & with-test}
   "ppxlib" {= "0.25.0"}
   "ptime" {= "1.0.0"}
   "re" {= "1.10.4" & with-test}
