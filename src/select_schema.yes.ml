@@ -14,7 +14,7 @@ module type SWITCH = sig
   type ('r, 'w) t
 
   val schema_versioned :
-    Schematic.Version.t option ->
+    Schematic.Schema.version ->
     'r Schematic.Schema.t ->
     'w Schematic.Schema.t ->
     ('r, 'w) t Schematic.Schema.t
@@ -39,7 +39,7 @@ module type SPLIT = sig
   type ('l, 'r) t
 
   val schema_versioned :
-    Schematic.Version.t option ->
+    Schematic.Schema.version ->
     'r Schematic.Schema.t ->
     'w Schematic.Schema.t ->
     ('r, 'w) t Schematic.Schema.t
