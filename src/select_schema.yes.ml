@@ -88,16 +88,15 @@ module List_nonempty = struct
 end
 
 module Map = struct
-  module M (K : sig
+  module type KEY = sig
     include Base.Comparator.S
 
     val schema_versioned : Schematic.Schema.version -> t Schematic.Schema.t
-  end) =
-  struct
+  end
+
+  module M (K : KEY) = struct
     include Base.Map
     include Base.Map.M (K)
-
-    let empty = Base.Map.empty (module K)
 
     let schema_versioned version =
       let key_schema = K.schema_versioned version in

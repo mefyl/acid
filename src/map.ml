@@ -1,5 +1,18 @@
 include Base.Map
 
+let pp pp_key pp_data =
+  let open Fmt in
+  let indent = 2 in
+  using (fun map -> to_sequence map |> Base.Sequence.to_seq)
+  @@ box
+  @@ const string "{"
+     ++ (hvbox ~indent:(indent - 1)
+        @@ cut
+           ++ seq ~sep:comma
+                (box ~indent
+                @@ pair ~sep:(const string ":" ++ sp) pp_key pp_data))
+     ++ cut ++ const string "}"
+
 let change_map map k ~f =
   let res = ref None in
   let f v =
@@ -12,4 +25,9 @@ let change_map map k ~f =
 
 let mem_update map k ~f = Base.Map.change map k ~f:(Option.map ~f)
 
-include Select_schema.Map
+module M (K : Select_schema.Map.KEY) = struct
+  include Select_schema.Map.M (K)
+
+  let pp = pp
+  let empty = Base.Map.empty (module K)
+end

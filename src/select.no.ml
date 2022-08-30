@@ -26,10 +26,10 @@ module List_nonempty = struct
 end
 
 module Map = struct
-  module M (K : Base.Comparator.S) = struct
+  module type KEY = Base.Comparator.S
+
+  module M (K : KEY) = struct
     include Base.Map
     include M (K)
-
-    let empty = Base.Map.empty (module K)
   end
 end
