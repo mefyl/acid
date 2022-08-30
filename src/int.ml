@@ -1,3 +1,2 @@
 include Base.Int
-
-let schema_versioned _ = Schematic.Schemas.int_schema
+include Select_schema.Int

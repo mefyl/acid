@@ -1,7 +1,7 @@
 open Base
 
 module List_nonempty = struct
-  include Select.List_nonempty
+  include Select_schema.List_nonempty
 
   (* Specific implementations *)
 

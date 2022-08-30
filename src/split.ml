@@ -3,7 +3,8 @@ include Split_intf
 module Left : S with type ('l, 'r) t = 'l = struct
   type ('l, 'r) t = 'l
 
-  include Select.Split
+  include Select_schema.Split
+  include Select_jsoo.Split
 
   let[@warning "-32"] schema_versioned _ l _ = l
   let[@warning "-32"] schema l r = schema_versioned (fun _ -> None) l r
@@ -19,7 +20,8 @@ end
 module Right : S with type ('l, 'r) t = 'r = struct
   type ('l, 'r) t = 'r
 
-  include Select.Split
+  include Select_schema.Split
+  include Select_jsoo.Split
 
   let[@warning "-32"] schema_versioned _ _ r = r
   let[@warning "-32"] schema l r = schema_versioned (fun _ -> None) l r

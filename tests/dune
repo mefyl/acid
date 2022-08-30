@@ -1,5 +1,3 @@
 (tests
  (names hlist list_nonempty monad queue sequence)
- (libraries alcotest alcotest-lwt acid)
- (preprocess
-  (pps schematic.ppx)))
+ (libraries alcotest alcotest-lwt acid))

@@ -7,4 +7,5 @@ let pp first second fmt = function
   | First v -> first fmt v
   | Second v -> second fmt v
 
-include Select.Either
+include Select_schema.Either
+include Select_jsoo.Either

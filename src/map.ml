@@ -12,4 +12,5 @@ let change_map map k ~f =
 
 let mem_update map k ~f = Base.Map.change map k ~f:(Option.map ~f)
 
-include Select.Map
+include Select_schema.Map
+include Select_jsoo.Map

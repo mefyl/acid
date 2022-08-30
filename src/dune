@@ -6,10 +6,14 @@
   fmt
   lwt
   (select
-   select.ml
+   select_schema.ml
    from
-   (schematic-jsoo -> select.jsoo.ml)
-   (schematic -> select.schema.ml)
-   (!schematic -> select.none.ml)))
+   (schematic -> select_schema.yes.ml)
+   (!schematic -> select_schema.no.ml))
+  (select
+   select_jsoo.ml
+   from
+   (js_of_ocaml -> select_jsoo.yes.ml)
+   (!js_of_ocaml -> select_jsoo.no.ml)))
  (preprocess
   (pps ppx_here)))

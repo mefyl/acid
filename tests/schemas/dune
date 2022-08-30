@@ -1,6 +1,6 @@
 (tests
  (enabled_if %{lib-available:schematic})
- (names map_schema)
+ (names map)
  (libraries acid alcotest schematic)
  (preprocess
-  (pps ppx_yojson)))
+  (pps ppx_yojson schematic.ppx)))

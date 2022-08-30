@@ -1,7 +1,8 @@
 module type S = sig
   type 'a t
 
-  include Select.MODE with type 'a t := 'a t
+  include Select_schema.MODE with type 'a t := 'a t
+  include Select_jsoo.MODE with type 'a t := 'a t
 
   val return : 'a -> 'a t
   val map : ('a -> 'b) -> 'a t -> 'b t
@@ -15,7 +16,8 @@ module type S = sig
   module Switch : sig
     type ('r, 'w) t
 
-    include Select.SWITCH with type ('r, 'w) t := ('r, 'w) t
+    include Select_schema.SWITCH with type ('r, 'w) t := ('r, 'w) t
+    include Select_jsoo.SWITCH with type ('r, 'w) t := ('r, 'w) t
 
     val switch : 'r -> 'w -> ('r, 'w) t
     val map : ('r -> 'rr) -> ('w -> 'ww) -> ('r, 'w) t -> ('rr, 'ww) t

@@ -1,7 +1,8 @@
 module type S = sig
   type ('l, 'r) t
 
-  include Select.SPLIT with type ('l, 'r) t := ('l, 'r) t
+  include Select_schema.SPLIT with type ('l, 'r) t := ('l, 'r) t
+  include Select_jsoo.SPLIT with type ('l, 'r) t := ('l, 'r) t
 
   val make : 'l -> 'r -> ('l, 'r) t
   val left : 'l -> ('l, _) t option
