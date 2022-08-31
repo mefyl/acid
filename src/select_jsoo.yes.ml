@@ -2,6 +2,10 @@ module Either = struct
   type (_, _) js = Js_of_ocaml.Js.Unsafe.any
 end
 
+module List_nonempty = struct
+  type 'a js = 'a Js_of_ocaml.Js.js_array Js_of_ocaml.Js.t
+end
+
 module type MODE = sig
   type 'a t
   type 'a js

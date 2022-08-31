@@ -1,5 +1,6 @@
 open Base
 include module type of Select_schema.List_nonempty
+include module type of Select_jsoo.List_nonempty
 include Container.S1 with type 'a t := 'a t
 
 (** {0 Functions that differ from Container} *)

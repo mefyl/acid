@@ -2,6 +2,7 @@ open Base
 
 module List_nonempty = struct
   include Select_schema.List_nonempty
+  include Select_jsoo.List_nonempty
 
   (* Specific implementations *)
 
