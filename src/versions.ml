@@ -48,6 +48,19 @@ module V0_8_4 = struct
   module Int = Root.Int
   module Result = Root.Result
   module String = Root.String
+
+  module Let = struct
+    include Let
+
+    module Syntax2 (Monad : Base.Monad.S2) = struct
+      include Syntax2 (Monad)
+
+      let ( let*? ) = ( let*?? )
+      and ( let+? ) = ( let+?? )
+      and ( let*?? ) = ( let*? )
+      and ( let+?? ) = ( let+? )
+    end
+  end
 end
 
 module V0_8_5 = struct
