@@ -1,6 +1,9 @@
 (** @canonical Acid.Array *)
 module Array = Array
 
+(** @canonical Acid.Continue_or_stop *)
+module Continue_or_stop = Continue_or_stop
+
 (** @canonical Acid.Either *)
 module Either = Either
 

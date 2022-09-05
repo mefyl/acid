@@ -49,3 +49,10 @@ module V0_8_4 = struct
   module Result = Root.Result
   module String = Root.String
 end
+
+module V0_8_5 = struct
+  (** @inline *)
+  include V0_8_4
+
+  module Continue_or_stop = Root.Continue_or_stop
+end
