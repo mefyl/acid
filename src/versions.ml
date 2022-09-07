@@ -5,7 +5,20 @@ module V0_8_1 = struct
   module Array = Root.Array
   module Hlist = Hlist
   module IQueue = Root.Queue
-  module Let = Let
+
+  module Let = struct
+    include Let
+
+    module Syntax2 (Monad : Base.Monad.S2) = struct
+      include Syntax2 (Monad)
+
+      let ( let*? ) = ( let*?? )
+      and ( let+? ) = ( let+?? )
+      and ( let*?? ) = ( let*? )
+      and ( let+?? ) = ( let+? )
+    end
+  end
+
   module Lwt = Root.Lwt
   module Lwt_result = Root.Lwt_result
   module Lwt_guarded = Lwt_guarded
@@ -48,19 +61,6 @@ module V0_8_4 = struct
   module Int = Root.Int
   module Result = Root.Result
   module String = Root.String
-
-  module Let = struct
-    include Let
-
-    module Syntax2 (Monad : Base.Monad.S2) = struct
-      include Syntax2 (Monad)
-
-      let ( let*? ) = ( let*?? )
-      and ( let+? ) = ( let+?? )
-      and ( let*?? ) = ( let*? )
-      and ( let+?? ) = ( let+? )
-    end
-  end
 end
 
 module V0_8_5 = struct
@@ -68,4 +68,5 @@ module V0_8_5 = struct
   include V0_8_4
 
   module Continue_or_stop = Root.Continue_or_stop
+  module Let = Let
 end
