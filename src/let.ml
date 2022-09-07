@@ -9,9 +9,7 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
   (* Nested option operators *)
 
   let ( >>=? ) v f =
-    v >>= function
-    | None -> Monad.return @@ None
-    | Some v -> f v >>| Option.some
+    v >>= function None -> Monad.return @@ None | Some v -> f v
 
   let ( let*? ) = ( >>=? )
 
@@ -37,9 +35,7 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
   (* Nested result operators *)
 
   let ( >>=! ) v f =
-    v >>= function
-    | Result.Error _ as e -> Monad.return e
-    | Result.Ok v -> f v >>| Result.return
+    v >>= function Result.Error _ as e -> Monad.return e | Result.Ok v -> f v
 
   let ( let*! ) = ( >>=! )
 
