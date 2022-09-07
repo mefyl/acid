@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.8.4)
+(version 0.8.5)
 
 (homepage https://gitlab.routine.co/routine/acid)
 
@@ -36,7 +36,8 @@
   fmt
   (lwt
    (>= 5.0.0))
-  (ppx_here (= v0.14.0))
+  (ppx_here
+   (= v0.14.0))
   (ppx_yojson
    (and
     (>= 1.2.0)
