@@ -20,10 +20,7 @@ end
 module Split = struct end
 module Int = struct end
 module String = struct end
-
-module List_nonempty = struct
-  type 'a t = ( :: ) : 'a * 'a list -> 'a t
-end
+module List_nonempty = Select.List_nonempty
 
 module Map = struct
   module type KEY = Base.Comparator.S

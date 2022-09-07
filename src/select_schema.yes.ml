@@ -61,7 +61,7 @@ module String = struct
 end
 
 module List_nonempty = struct
-  type 'a t = ( :: ) : 'a * 'a list -> 'a t
+  include Select.List_nonempty
 
   let schema_versioned _ parameter =
     let descriptor parameter =
