@@ -70,3 +70,5 @@ module V0_8_5 = struct
   module Continue_or_stop = Root.Continue_or_stop
   module Let = Let
 end
+
+module V0_8_6 = V0_8_5
