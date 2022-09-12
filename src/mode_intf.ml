@@ -8,7 +8,9 @@ module type S = sig
   val map : ('a -> 'b) -> 'a t -> 'b t
   val get : 'a t -> 'a option
   val default : 'a -> 'a t
-  val if_optional : 'a option -> 'a t option
+  val if_optional : 'a option -> 'a t option (* use some_if_optional *)
+  val some_if_optional : 'a option -> 'a t option
+  val some_if_required : 'a -> 'a t 
   val pp : 'a Fmt.t -> 'a t Fmt.t
   val equal : ('a -> 'a -> bool) -> 'a t -> 'a t -> bool
   val compare : ('a -> 'a -> int) -> 'a t -> 'a t -> int

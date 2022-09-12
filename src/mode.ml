@@ -12,6 +12,8 @@ module R = struct
   let get v = Some v
   let default v = v
   let if_optional _ = None
+  let some_if_optional = if_optional 
+  let some_if_required v = v
   let pp pp = pp
   let equal equal = equal
   let compare compare = compare
@@ -42,7 +44,9 @@ module W = struct
   let map f = Option.map ~f
   let get v = v
   let default _ = None
-  let if_optional v = Some v
+  let if_optional v = Some v (* Fixme: Backwards compatibility *)
+  let some_if_optional = if_optional 
+  let some_if_required _ = None
 
   let pp pp =
     Fmt.(option ~none:(const string "None") (const string "Some " ++ pp))
