@@ -1,4 +1,4 @@
-FROM alpine:3.15.4 AS opam-base
+FROM alpine:3.16.2 AS opam-base
 
 RUN apk add --no-cache bash coreutils docker-cli gcc git linux-headers m4 make musl-dev opam perl pkgconfig openssh rclone
 ARG OCAML_VERSION
