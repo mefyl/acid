@@ -29,8 +29,8 @@ module R = struct
     let schema r w = schema_versioned None r w
       [@@ocaml.warning "-unused-value-declaration"]
 
-    let equal r_eq _ l r = r_eq l r
-    let pp pp_r _ = Fmt.(const string "Switch.R " ++ pp_r)
+    let equal r_eq _ = r_eq
+    let pp pp_r _ = pp_r
     let switch r _ = r
     let map f _ r = f r
   end
@@ -68,8 +68,8 @@ module W = struct
     let schema r w = schema_versioned None r w
       [@@ocaml.warning "-unused-value-declaration"]
 
-    let equal _ w_eq l r = w_eq l r
-    let pp _ pp_w = Fmt.(const string "Switch.W " ++ pp_w)
+    let equal _ w_eq = w_eq
+    let pp _ pp_w = pp_w
     let switch _ w = w
     let map _ f w = f w
   end
