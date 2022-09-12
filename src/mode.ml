@@ -11,7 +11,8 @@ module R = struct
   let map f = f
   let get v = Some v
   let default v = v
-  let if_optional _ = None
+  let some_if_optional _ = None
+  let some_if_required v = v
   let pp pp = pp
   let equal equal = equal
   let compare compare = compare
@@ -27,6 +28,8 @@ module R = struct
     let schema r w = schema_versioned None r w
       [@@ocaml.warning "-unused-value-declaration"]
 
+    let equal r_eq _ = r_eq
+    let pp pp_r _ = pp_r
     let switch r _ = r
     let map f _ r = f r
   end
@@ -42,7 +45,8 @@ module W = struct
   let map f = Option.map ~f
   let get v = v
   let default _ = None
-  let if_optional v = Some v
+  let some_if_optional v = Some v
+  let some_if_required _ = None
 
   let pp pp =
     Fmt.(option ~none:(const string "None") (const string "Some " ++ pp))
@@ -61,6 +65,8 @@ module W = struct
     let schema r w = schema_versioned None r w
       [@@ocaml.warning "-unused-value-declaration"]
 
+    let equal _ w_eq = w_eq
+    let pp _ pp_w = pp_w
     let switch _ w = w
     let map _ f w = f w
   end

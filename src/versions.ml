@@ -22,7 +22,23 @@ module V0_8_1 = struct
   module Lwt = Root.Lwt
   module Lwt_result = Root.Lwt_result
   module Lwt_guarded = Lwt_guarded
-  module Mode = Mode
+
+  module Mode = struct
+    include Mode
+
+    module R = struct
+      include R
+
+      let if_optional = some_if_optional
+    end
+
+    module W = struct
+      include R
+
+      let if_optional = some_if_optional
+    end
+  end
+
   module Result = Root.Result
   module Sequence = Root.Sequence
   module Split = Split
@@ -71,4 +87,7 @@ module V0_8_5 = struct
   module Let = Let
 end
 
-module V0_8_6 = V0_8_5
+module V0_8_6 = struct
+  include V0_8_5
+  module Mode = Root.Mode
+end
