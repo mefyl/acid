@@ -21,6 +21,9 @@ module type S = sig
     include Select_schema.SWITCH with type ('r, 'w) t := ('r, 'w) t
     include Select_jsoo.SWITCH with type ('r, 'w) t := ('r, 'w) t
 
+    val equal : ('r -> 'r -> bool) -> ('w -> 'w -> bool) -> ('r, 'w) t -> ('r, 'w) t -> bool
+    val pp : 'r Fmt.t -> 'w Fmt.t -> ('r, 'w) t Fmt.t
+
     val switch : 'r -> 'w -> ('r, 'w) t
     val map : ('r -> 'rr) -> ('w -> 'ww) -> ('r, 'w) t -> ('rr, 'ww) t
   end
