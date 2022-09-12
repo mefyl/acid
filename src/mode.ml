@@ -12,7 +12,7 @@ module R = struct
   let get v = Some v
   let default v = v
   let if_optional _ = None
-  let some_if_optional = if_optional 
+  let some_if_optional = if_optional
   let some_if_required v = v
   let pp pp = pp
   let equal equal = equal
@@ -28,11 +28,9 @@ module R = struct
 
     let schema r w = schema_versioned None r w
       [@@ocaml.warning "-unused-value-declaration"]
-    
-    let equal r_eq _ l r = r_eq l r
-    let pp pp_r _ =
-      Fmt.(const string "Switch.R " ++ pp_r)
 
+    let equal r_eq _ l r = r_eq l r
+    let pp pp_r _ = Fmt.(const string "Switch.R " ++ pp_r)
     let switch r _ = r
     let map f _ r = f r
   end
@@ -49,7 +47,8 @@ module W = struct
   let get v = v
   let default _ = None
   let if_optional v = Some v (* Fixme: Backwards compatibility *)
-  let some_if_optional = if_optional 
+
+  let some_if_optional = if_optional
   let some_if_required _ = None
 
   let pp pp =
@@ -70,9 +69,7 @@ module W = struct
       [@@ocaml.warning "-unused-value-declaration"]
 
     let equal _ w_eq l r = w_eq l r
-    let pp _ pp_w =
-      Fmt.(const string "Switch.W " ++ pp_w)
-
+    let pp _ pp_w = Fmt.(const string "Switch.W " ++ pp_w)
     let switch _ w = w
     let map _ f w = f w
   end
