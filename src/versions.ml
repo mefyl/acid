@@ -87,7 +87,9 @@ module V0_8_5 = struct
   module Let = Let
 end
 
-module V0_8_6 = struct
-  include V0_8_5
+module V0_8_6 = V0_8_5
+
+module V0_8_7 = struct
+  include V0_8_6
   module Mode = Root.Mode
 end
