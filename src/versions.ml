@@ -26,6 +26,12 @@ module V0_8_1 = struct
   module Mode = struct
     include Mode
 
+    module type S = sig
+      include S
+
+      val if_optional : 'a option -> 'a t option
+    end
+
     module R = struct
       include R
 
