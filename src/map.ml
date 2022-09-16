@@ -30,4 +30,5 @@ module M (K : Select_schema.Map.KEY) = struct
 
   let pp = pp
   let empty = Base.Map.empty (module K)
+  let singleton k v = Base.Map.singleton (module K) k v
 end
