@@ -16,13 +16,13 @@ depends: [
   "lwt" {>= "5.0.0"}
   "ppx_here" {= "v0.14.0"}
   "ppx_yojson" {>= "1.2.0" & with-test}
-  "schematic" {>= "0.14.5" & < "0.15.0" & with-test}
-  "schematic-jsoo" {>= "0.14.0" & < "0.15.0" & with-test}
+  "schematic" {>= "0.15.0" & < "0.16.0" & with-test}
+  "schematic-jsoo" {>= "0.15.0" & < "0.16.0" & with-test}
   "odoc" {with-doc}
 ]
 depopts: [
-  "schematic" {>= "0.14.5" & < "0.15.0"}
-  "schematic-jsoo" {>= "0.14.0" & < "0.15.0"}
+  "schematic" {>= "0.15.0" & < "0.16.0"}
+  "schematic-jsoo" {>= "0.15.0" & < "0.16.0"}
 ]
 build: [
   ["dune" "subst"] {dev}

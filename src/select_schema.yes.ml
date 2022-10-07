@@ -151,11 +151,17 @@ module Map = struct
                 List
                   (make
                   @@ Tuple
-                       (Item
-                          {
-                            schema = key_schema;
-                            rest = Item { schema = data_schema; rest = ItemEnd };
-                          }))
+                       {
+                         decode = Base.Fn.id;
+                         encode = Base.Fn.id;
+                         items =
+                           Item
+                             {
+                               schema = key_schema;
+                               rest =
+                                 Item { schema = data_schema; rest = ItemEnd };
+                             };
+                       })
               and decode l =
                 let l = List.map l ~f:(fun (k, (d, ())) -> (k, d)) in
                 match Base.Map.of_alist (module K) l with
