@@ -98,6 +98,48 @@ module Map = struct
     include Base.Map
     include Base.Map.M (K)
 
+    let assoc_schema_versioned version =
+      let key_schema = K.schema_versioned version in
+      let pp_key = Schematic.Pp.of_schema key_schema in
+      let res : 'data. 'data Schematic.Schema.t -> 'data t Schematic.Schema.t =
+       fun data_schema ->
+        let open Schematic.Schema in
+        let id =
+          let open Fmt in
+          str "%a%amap"
+            (option (string ++ const char '-'))
+            key_schema.id
+            (option (string ++ const char '-'))
+            data_schema.id
+        and descriptor =
+          let descriptor =
+            List
+              (make
+              @@ Tuple
+                   {
+                     decode = Base.Fn.id;
+                     encode = Base.Fn.id;
+                     items =
+                       Item
+                         {
+                           schema = key_schema;
+                           rest = Item { schema = data_schema; rest = ItemEnd };
+                         };
+                   })
+          and decode l =
+            let l = List.map l ~f:(fun (k, (d, ())) -> (k, d)) in
+            match Base.Map.of_alist (module K) l with
+            | `Duplicate_key k -> Result.failf "duplicate key: %a" pp_key k
+            | `Ok map -> Result.return map
+          and encode map =
+            Base.Map.to_alist map |> List.map ~f:(fun (k, d) -> (k, (d, ())))
+          in
+          Map { descriptor; decode; encode }
+        in
+        make ~id descriptor
+      in
+      res
+
     let schema_versioned version =
       let key_schema = K.schema_versioned version in
       let (Flatten { descriptor; decode; encode }) =
@@ -136,44 +178,7 @@ module Map = struct
               Map { descriptor; decode; encode }
             in
             make ~id descriptor
-        | _ ->
-          fun data_schema ->
-            let open Schematic.Schema in
-            let id =
-              let open Fmt in
-              str "%a%amap"
-                (option (string ++ const char '-'))
-                key_schema.id
-                (option (string ++ const char '-'))
-                data_schema.id
-            and descriptor =
-              let descriptor =
-                List
-                  (make
-                  @@ Tuple
-                       {
-                         decode = Base.Fn.id;
-                         encode = Base.Fn.id;
-                         items =
-                           Item
-                             {
-                               schema = key_schema;
-                               rest =
-                                 Item { schema = data_schema; rest = ItemEnd };
-                             };
-                       })
-              and decode l =
-                let l = List.map l ~f:(fun (k, (d, ())) -> (k, d)) in
-                match Base.Map.of_alist (module K) l with
-                | `Duplicate_key k -> Result.failf "duplicate key: %a" pp_key k
-                | `Ok map -> Result.return map
-              and encode map =
-                Base.Map.to_alist map
-                |> List.map ~f:(fun (k, d) -> (k, (d, ())))
-              in
-              Map { descriptor; decode; encode }
-            in
-            make ~id descriptor
+        | _ -> fun schema -> assoc_schema_versioned version schema
       in
       res
 
