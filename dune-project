@@ -68,9 +68,10 @@
  (name acid-jsoo)
  (synopsis "Base javascript library")
  (depends
+  (acid
+   (= :version))
   (alcotest
    (and
     (>= 1.1.0)
     :with-test))
-  (acid
-   (= :version))))
+  (conf-npm :with-test)))
