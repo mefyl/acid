@@ -7,5 +7,6 @@
 
 (rule
  (alias runtest)
+ (package acid-jsoo)
  (action
   (run node %{dep:map.bc.js})))
