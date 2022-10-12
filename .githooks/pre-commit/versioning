@@ -10,4 +10,4 @@ check () {
     fi
 }
 
-check "acid/src/acid.ml" "acid/src/versions.ml"
+check "acid/src/acid.ml" "acid/src/versions.ml" "acid-jsoo/src/acid_jsoo.ml" "acid-jsoo/src/versions.ml"
