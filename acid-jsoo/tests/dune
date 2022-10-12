@@ -1,0 +1,11 @@
+(executables
+ (names map)
+ (modes js)
+ (libraries acid acid-jsoo alcotest)
+ (preprocess
+  (pps ppx_here)))
+
+(rule
+ (alias runtest)
+ (action
+  (run node %{dep:map.bc.js})))
