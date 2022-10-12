@@ -22,4 +22,7 @@ module V0_9_0 = struct
   module Sequence = Root.Sequence
   module Split = Split
   module String = Root.String
+
+  (** @inline *)
+  include Select_jsoo.Js
 end

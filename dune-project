@@ -63,3 +63,14 @@
    (and
     (>= 0.15.0)
     (< 0.16.0)))))
+
+(package
+ (name acid-jsoo)
+ (synopsis "Base javascript library")
+ (depends
+  (alcotest
+   (and
+    (>= 1.1.0)
+    :with-test))
+  (acid
+   (= :version))))

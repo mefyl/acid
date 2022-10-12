@@ -27,3 +27,5 @@ module Map = struct
 
   module M (K : KEY) = struct end
 end
+
+module Js = struct end
