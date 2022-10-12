@@ -25,8 +25,5 @@ module List_nonempty = Select.List_nonempty
 module Map = struct
   module type KEY = Base.Comparator.S
 
-  module M (K : KEY) = struct
-    include Base.Map
-    include M (K)
-  end
+  module M (K : KEY) = struct end
 end

@@ -26,7 +26,9 @@ let change_map map k ~f =
 let mem_update map k ~f = Base.Map.change map k ~f:(Option.map ~f)
 
 module M (K : Select_schema.Map.KEY) = struct
+  include Select.Map.M (K)
   include Select_schema.Map.M (K)
+  include Select_jsoo.Map.M (K)
 
   let pp = pp
   let empty = Base.Map.empty (module K)
