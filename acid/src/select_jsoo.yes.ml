@@ -43,31 +43,32 @@ end
 
 module Js = struct
   module Js = struct
+    include Js_of_ocaml.Js
+
     module Pair : sig
       type ('a, 'b) t
     end = struct
-      type ('a, 'b) t = Js_of_ocaml.Js.Unsafe.any Js_of_ocaml.Js.js_array
+      type ('a, 'b) t = Unsafe.any js_array
     end
 
     module Iterator = struct
       type 'a t =
         < next :
-            < done_ : bool Js_of_ocaml.Js.t Js_of_ocaml.Js.readonly_prop
-            ; value : 'a Js_of_ocaml.Js.readonly_prop >
+            < done_ : bool Js_of_ocaml.Js.t readonly_prop
+            ; value : 'a readonly_prop >
             Js_of_ocaml.Js.t
-            Js_of_ocaml.Js.meth >
+            meth >
     end
 
     module Map = struct
       type ('k, 'v) t =
         < entries :
-            ('k, 'v) Pair.t Js_of_ocaml.Js.t Iterator.t Js_of_ocaml.Js.t
-            Js_of_ocaml.Js.meth
-        ; get : 'k -> 'v Js_of_ocaml.Js.Opt.t Js_of_ocaml.Js.meth
-        ; set : 'k -> 'v -> unit Js_of_ocaml.Js.meth
-        ; delete : 'k -> unit Js_of_ocaml.Js.meth
-        ; keys : 'k Iterator.t Js_of_ocaml.Js.t Js_of_ocaml.Js.meth
-        ; values : 'v Iterator.t Js_of_ocaml.Js.t Js_of_ocaml.Js.meth >
+            ('k, 'v) Pair.t Js_of_ocaml.Js.t Iterator.t Js_of_ocaml.Js.t meth
+        ; get : 'k -> 'v Opt.t meth
+        ; set : 'k -> 'v -> unit meth
+        ; delete : 'k -> unit meth
+        ; keys : 'k Iterator.t Js_of_ocaml.Js.t meth
+        ; values : 'v Iterator.t Js_of_ocaml.Js.t meth >
     end
   end
 end
