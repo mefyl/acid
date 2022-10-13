@@ -58,7 +58,7 @@ let () =
                           Atom "--input";
                           Atom ("%{dep:" ^ package ^ ".opam.locked}");
                           Atom "--exclude";
-                          Atom (String.concat ~sep:"," exclude);
+                          Atom (String.concat ~sep:"," (packages @ exclude));
                         ];
                     ];
                 ];
@@ -107,7 +107,33 @@ let () =
           in
           match List.filter_map ~f:(pos f) items with
           | [] -> None
-          | l -> Some (List { value with pelem = l }))
+          | { pos; _ } :: _ as l ->
+            Some
+              (List
+                 {
+                   value with
+                   pelem =
+                     {
+                       pelem =
+                         Option
+                           ( { pelem = String "ocamlformat"; pos },
+                             {
+                               pelem =
+                                 [
+                                   {
+                                     pelem =
+                                       Prefix_relop
+                                         ( { pelem = `Eq; pos },
+                                           { pelem = String "0.20.1"; pos } );
+                                     pos;
+                                   };
+                                 ];
+                               pos;
+                             } );
+                       pos;
+                     }
+                     :: l;
+                 }))
         | _ -> failwith "pin-depends expects a list"
       and rewrite_pin_depends = function
         | List { pelem = [ { pelem = String name; _ }; _ ]; _ } as pin ->

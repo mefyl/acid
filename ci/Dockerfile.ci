@@ -23,7 +23,6 @@ RUN opam update && \
     opam switch create /root --confirm-level=unsafe-yes --deps-only --with-test --with-doc && \
     opam config --switch=/root set jobs $(nproc) && \
     opam switch --switch=/root set-invariant ocamlformat.0.20.1 && \
-    opam install --switch=/root  --yes ocamlformat && \
     opam clean --switch=/root -a -c -s --logs -r && \
     rm -rf /root/.cache/dune
 ENV OPAMSWITCH=/root
