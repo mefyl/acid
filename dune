@@ -1,3 +1,5 @@
+(dirs :standard .logistic)
+
 (alias
  (name default)
  (deps
@@ -19,25 +21,6 @@
      "url {\n  src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\"\n}\n")))))
 
 (rule
- (deps acid.opam)
- (target acid.opam.locked)
- (action
-  (run %{bin:opam} lock acid)))
-
-(rule
- (mode
-  (promote (until-clean)))
- (alias extdeps)
- (target acid.opam.extdeps)
- (action
-  (with-stdout-to
-   %{target}
-   (run
-    %{bin:awk}
-    "/^build: / { exit 0 }; !/^  \"(ocaml|schematic)/ { print($0) }"
-    %{dep:acid.opam.locked}))))
-
-(rule
  (target acid-jsoo.%{version:acid-jsoo}.opam)
  (deps
   (:opam acid-jsoo.opam))
@@ -50,20 +33,18 @@
      "url {\n  src: \"git://git@gitlab.routine.co:routine/acid-jsoo#%{version:acid-jsoo}\"\n}\n")))))
 
 (rule
- (deps acid-jsoo.opam)
- (target acid-jsoo.opam.locked)
- (action
-  (run %{bin:opam} lock acid-jsoo)))
-
-(rule
- (mode
-  (promote (until-clean)))
+ (target dune.extdeps.inc)
  (alias extdeps)
- (target acid-jsoo.opam.extdeps)
+ (mode (promote))
  (action
   (with-stdout-to
    %{target}
    (run
-    %{bin:awk}
-    "/^build: / { exit 0 }; !/^  \"(ocaml|schematic)/ { print($0) }"
-    %{dep:acid-jsoo.opam.locked}))))
+    %{dep:.logistic/dune/extdeps/extdeps.exe}
+    generate
+    --packages
+    acid,acid-jsoo
+    --exclude
+    schematic))))
+
+(include dune.extdeps.inc)
