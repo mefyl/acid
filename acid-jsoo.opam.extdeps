@@ -58,7 +58,6 @@ depends: [
   "ptime" {= "1.0.0"}
   "re" {= "1.10.4" & with-test}
   "result" {= "1.5"}
-  "schematic-jsoo" {= "0.15.0"}
   "semver2" {= "1.2.0"}
   "seq" {= "base"}
   "sexplib0" {= "v0.14.0"}
@@ -72,4 +71,6 @@ depends: [
   "yojson" {= "2.0.2"}
 ]
 dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
-pin-depends: ["acid.0.9.0" "git+ssh://git@gitlab.routine.co/routine/acid"]
+pin-depends: [
+  "acid.0.9.0" "git+ssh://git@gitlab.routine.co/routine/acid#master"
+]

@@ -45,6 +45,6 @@
     --packages
     acid,acid-jsoo
     --exclude
-    schematic))))
+    schematic,schematic-jsoo))))
 
 (include dune.extdeps.inc)
