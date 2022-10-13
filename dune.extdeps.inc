@@ -5,7 +5,8 @@
  (action
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
-    %{dep:acid.opam.locked} --exclude schematic,schematic-jsoo))))
+    %{dep:acid.opam.locked} --exclude
+    acid,acid-jsoo,schematic,schematic-jsoo))))
 (rule (deps (universe)) (target acid-jsoo.opam.locked)
  (action (run %{bin:opam} lock acid-jsoo)))
 (rule (alias extdeps) (mode (promote (until-clean)))
@@ -13,4 +14,5 @@
  (action
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
-    %{dep:acid-jsoo.opam.locked} --exclude schematic,schematic-jsoo))))
+    %{dep:acid-jsoo.opam.locked} --exclude
+    acid,acid-jsoo,schematic,schematic-jsoo))))

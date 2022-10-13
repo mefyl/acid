@@ -58,7 +58,7 @@ let () =
                           Atom "--input";
                           Atom ("%{dep:" ^ package ^ ".opam.locked}");
                           Atom "--exclude";
-                          Atom (String.concat ~sep:"," exclude);
+                          Atom (String.concat ~sep:"," (packages @ exclude));
                         ];
                     ];
                 ];
