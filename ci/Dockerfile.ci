@@ -23,7 +23,6 @@ RUN opam update && \
     opam switch create /root --confirm-level=unsafe-yes --deps-only --with-test --with-doc && \
     opam config --switch=/root set jobs $(nproc) && \
     opam switch --switch=/root set-invariant ocamlformat.0.20.1 && \
-    opam install --switch=/root  --yes ocamlformat && \
     opam clean --switch=/root -a -c -s --logs -r && \
     rm -rf /root/.cache/dune
 ENV OPAMSWITCH=/root
@@ -38,8 +37,9 @@ RUN opam repository add --all routine git@gitlab.routine.co:routine/opam && \
     rm -rf /root/.cache/dune
 ADD .exists package*.json yarn*.lock /root/
 RUN if test -e /root/package.json; then \
-    npm install -g yarn; \
-    cd /root && yarn install --network-concurrency 1; \
+    apk add --no-cache npm && \
+    npm install -g yarn && \
+    cd /root && yarn install --ignore-engines --network-concurrency 1 && \
     rm -rf /usr/local/share/.cache /root/.cache /tmp/*; \
     fi
 ENV NODE_PATH=/root/node_modules
