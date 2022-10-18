@@ -72,6 +72,32 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
     | Result.Ok v -> v >>| fun v -> f (Result.Ok v)
 
   let ( let+!! ) = ( >>|!! )
+
+  (* Nested option result operators *)
+
+  let ( >>=!? ) v f =
+    v >>= function
+    | Result.Error _ as e -> Monad.return e
+    | Result.Ok None as none -> Monad.return none
+    | Result.Ok (Some v) -> f v
+
+  let ( let*!? ) = ( >>=!? )
+
+  let ( and*!? ) l r =
+    Monad.Let_syntax.Let_syntax.both l r >>| function
+    | Result.Ok (Some l), Result.Ok (Some r) -> Result.Ok (Some (l, r))
+    | (Result.Error _ as l), _ -> l
+    | _, (Result.Error _ as r) -> r
+    | Result.Ok None, _ | _, Result.Ok None -> Result.Ok None
+
+  let ( >>|!? ) v f =
+    v >>| function
+    | Result.Error _ as e -> e
+    | Result.Ok None as none -> none
+    | Result.Ok (Some v) -> f v |> Option.return |> Result.return
+
+  let ( let+!? ) = ( >>|!? )
+  let ( and+!? ) = ( and*!? )
 end
 
 module Syntax (Monad : Base.Monad.S) = struct
