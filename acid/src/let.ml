@@ -13,12 +13,18 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
 
   let ( let*? ) = ( >>=? )
 
+  let ( and*? ) l r =
+    Monad.Let_syntax.Let_syntax.both l r >>| function
+    | Some l, Some r -> Some (l, r)
+    | _ -> None
+
   let ( >>|? ) v f =
     v >>= function
     | None -> Monad.return @@ None
     | Some v -> Monad.return (Some (f v))
 
   let ( let+? ) = ( >>|? )
+  let ( and+? ) = ( and*? )
 
   let ( >>=?? ) v f =
     match v with None -> f None | Some v -> v >>= fun v -> f (Some v)
@@ -39,12 +45,19 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
 
   let ( let*! ) = ( >>=! )
 
+  let ( and*! ) l r =
+    Monad.Let_syntax.Let_syntax.both l r >>| function
+    | Result.Ok l, Result.Ok r -> Result.Ok (l, r)
+    | (Result.Error _ as l), _ -> l
+    | _, (Result.Error _ as r) -> r
+
   let ( >>|! ) v f =
     v >>| function
     | Result.Error _ as e -> e
     | Result.Ok v -> f v |> Result.return
 
   let ( let+! ) = ( >>|! )
+  let ( and+! ) = ( and*! )
 
   let ( >>=!! ) v f =
     match v with
