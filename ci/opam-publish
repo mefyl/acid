@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 git_hash () {
-    git show --format=%H --no-patch "$!"
+    git show --format=%H --no-patch "$1"
 }
 
 git clone --depth 1 git@gitlab.routine.co:routine/opam /tmp/opam
