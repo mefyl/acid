@@ -26,3 +26,9 @@ struct
 end
 
 include Monad.MakeNestable2 (ResultNestable)
+
+(** A Result.all that doesn't blow up the call stack. *)
+let all l =
+  Base.List.fold l ~init:(Ok []) ~f:(fun acc -> function
+    | Ok x -> Base.Result.map acc ~f:(fun l -> x :: l) | Error e -> Error e)
+  |> Base.Result.map ~f:Base.List.rev
