@@ -1,30 +1,51 @@
-module Syntax2 (Monad : Base.Monad.S2) = struct
-  let ( >>= ) = Monad.( >>= )
-  let ( >>| ) = Monad.( >>| )
+include Let_intf
+
+module Syntax2_suffixes
+    (M : Base.Monad.S2)
+    (Option : Monad.NESTABLE)
+    (Result : Monad.NESTABLE2) =
+struct
+  let ( >>= ) = M.( >>= )
+  let ( >>| ) = M.( >>| )
   let ( let* ) = ( >>= )
   let ( let+ ) = ( >>| )
-  let ( and* ) = Monad.Let_syntax.Let_syntax.both
-  let ( and+ ) = Monad.Let_syntax.Let_syntax.both
+  let ( and* ) = M.Let_syntax.Let_syntax.both
+  let ( and+ ) = M.Let_syntax.Let_syntax.both
+
+  (* Nested option result operators *)
+
+  module Option_result = Option.Nest2 (Result.Nest2 (M))
+
+  let ( >>=!? ) = Option_result.( >>= )
+  let ( let*!? ) = Option_result.( >>= )
+  let ( and*!? ) = Option_result.Let_syntax.Let_syntax.both
+  let ( >>|!? ) = Option_result.( >>| )
+  let ( let+!? ) = Option_result.( >>| )
+  let ( and+!? ) = Option_result.Let_syntax.Let_syntax.both
 
   (* Nested option operators *)
 
-  let ( >>=? ) v f =
-    v >>= function None -> Monad.return @@ None | Some v -> f v
+  module Option = Option.Nest2 (M)
 
-  let ( let*? ) = ( >>=? )
+  let ( >>=? ) = Option.( >>= )
+  let ( let*? ) = Option.( >>= )
+  let ( and*? ) = Option.Let_syntax.Let_syntax.both
+  let ( >>|? ) = Option.( >>| )
+  let ( let+? ) = Option.( >>| )
+  let ( and+? ) = Option.Let_syntax.Let_syntax.both
 
-  let ( and*? ) l r =
-    Monad.Let_syntax.Let_syntax.both l r >>| function
-    | Some l, Some r -> Some (l, r)
-    | _ -> None
+  (* Nested result operators *)
 
-  let ( >>|? ) v f =
-    v >>= function
-    | None -> Monad.return @@ None
-    | Some v -> Monad.return (Some (f v))
+  module Result = Result.Nest2 (M)
 
-  let ( let+? ) = ( >>|? )
-  let ( and+? ) = ( and*? )
+  let ( >>=! ) = Result.( >>= )
+  let ( let*! ) = Result.( >>= )
+  let ( and*! ) = Result.Let_syntax.Let_syntax.both
+  let ( >>|! ) = Result.( >>| )
+  let ( let+! ) = Result.( >>| )
+  let ( and+! ) = Result.Let_syntax.Let_syntax.both
+
+  (* Option operators *)
 
   let ( >>=?? ) v f =
     match v with None -> f None | Some v -> v >>= fun v -> f (Some v)
@@ -33,102 +54,47 @@ module Syntax2 (Monad : Base.Monad.S2) = struct
 
   let ( >>|?? ) v f =
     match v with
-    | None -> Monad.return @@ f None
+    | None -> M.return @@ f None
     | Some v -> v >>| fun v -> f (Some v)
 
   let ( let+?? ) = ( >>|?? )
 
-  (* Nested result operators *)
-
-  let ( >>=! ) v f =
-    v >>= function Result.Error _ as e -> Monad.return e | Result.Ok v -> f v
-
-  let ( let*! ) = ( >>=! )
-
-  let ( and*! ) l r =
-    Monad.Let_syntax.Let_syntax.both l r >>| function
-    | Result.Ok l, Result.Ok r -> Result.Ok (l, r)
-    | (Result.Error _ as l), _ -> l
-    | _, (Result.Error _ as r) -> r
-
-  let ( >>|! ) v f =
-    v >>| function
-    | Result.Error _ as e -> e
-    | Result.Ok v -> f v |> Result.return
-
-  let ( let+! ) = ( >>|! )
-  let ( and+! ) = ( and*! )
+  (* Result operators *)
 
   let ( >>=!! ) v f =
     match v with
-    | Result.Error _ as e -> f e
-    | Result.Ok v -> v >>= fun v -> f (Result.Ok v)
+    | Base.Result.Error _ as e -> f e
+    | Ok v -> v >>= fun v -> f (Ok v)
 
   let ( let*!! ) = ( >>=!! )
 
   let ( >>|!! ) v f =
     match v with
-    | Result.Error _ as e -> Monad.return @@ f e
-    | Result.Ok v -> v >>| fun v -> f (Result.Ok v)
+    | Base.Result.Error _ as e -> M.return @@ f e
+    | Ok v -> v >>| fun v -> f (Ok v)
 
   let ( let+!! ) = ( >>|!! )
-
-  (* Nested option result operators *)
-
-  let ( >>=!? ) v f =
-    v >>= function
-    | Result.Error _ as e -> Monad.return e
-    | Result.Ok None as none -> Monad.return none
-    | Result.Ok (Some v) -> f v
-
-  let ( let*!? ) = ( >>=!? )
-
-  let ( and*!? ) l r =
-    Monad.Let_syntax.Let_syntax.both l r >>| function
-    | Result.Ok (Some l), Result.Ok (Some r) -> Result.Ok (Some (l, r))
-    | (Result.Error _ as l), _ -> l
-    | _, (Result.Error _ as r) -> r
-    | Result.Ok None, _ | _, Result.Ok None -> Result.Ok None
-
-  let ( >>|!? ) v f =
-    v >>| function
-    | Result.Error _ as e -> e
-    | Result.Ok None as none -> none
-    | Result.Ok (Some v) -> f v |> Option.return |> Result.return
-
-  let ( let+!? ) = ( >>|!? )
-  let ( and+!? ) = ( and*!? )
 end
 
-module Syntax (Monad : Base.Monad.S) = struct
-  include Syntax2 (struct
-    include Monad
-
-    type nonrec ('a, 'b) t = 'a t
-  end)
+module Syntax2 (M : Base.Monad.S2) = struct
+  include Syntax2_suffixes (M) (Option) (Result)
 end
 
-module Syntax2' (Monad : Base.Monad.S2) = struct
-  let ( >>=: ) = Monad.( >>= )
-  let ( >>|: ) = Monad.( >>| )
-  let ( let*: ) = ( >>=: )
-  let ( let+: ) = ( >>|: )
-  let ( and*: ) = Monad.Let_syntax.Let_syntax.both
-  let ( and+: ) = Monad.Let_syntax.Let_syntax.both
+module Syntax_suffixes
+    (M : Base.Monad.S)
+    (Option : Monad.NESTABLE)
+    (Result : Monad.NESTABLE2) =
+  Syntax2_suffixes
+    (struct
+      include M
 
-  let ( let*?: ) v f =
-    match v with None -> f None | Some v -> v >>=: fun v -> f (Some v)
+      type nonrec ('a, 'b) t = 'a t
+    end)
+    (Option)
+    (Result)
 
-  let ( let+?: ) v f =
-    match v with
-    | None -> Monad.return @@ f None
-    | Some v -> v >>|: fun v -> f (Some v)
-end
+module Syntax (Monad : Base.Monad.S) = Syntax2 (struct
+  include Monad
 
-module Syntax' (Monad : Base.Monad.S) = struct
-  include Syntax2' (struct
-    include Monad
-
-    type nonrec ('a, 'b) t = 'a t
-  end)
-end
+  type nonrec ('a, 'b) t = 'a t
+end)

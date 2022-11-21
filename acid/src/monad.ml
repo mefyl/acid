@@ -1,25 +1,7 @@
-include Base.Monad
+include Monad_intf
 
-module type BasicNestable2 = sig
-  include Basic2
-
-  module Nest2 (M : S2) : sig
-    val bind :
-      (('a, 'c) t, 'c) M.t ->
-      f:('a -> (('b, 'c) t, 'c) M.t) ->
-      (('b, 'c) t, 'c) M.t
-  end
-end
-
-module type BasicNestable = sig
-  include Basic
-
-  module Nest2 (M : S2) : sig
-    val bind : ('a t, 'c) M.t -> f:('a -> ('b t, 'c) M.t) -> ('b t, 'c) M.t
-  end
-end
-
-module MakeNestable2 (M : BasicNestable2) = struct
+module MakeNestable2 (M : BASIC_NESTABLE2) = struct
+  include M
   include Make2 (M)
 
   module Nest2 (N : S2) = struct
@@ -53,12 +35,18 @@ module MakeNestable2 (M : BasicNestable2) = struct
   end
 end
 
-module MakeNestable (M : BasicNestable) = struct
-  type nonrec 'a t = 'a M.t
-
+module MakeNestable (M : BASIC_NESTABLE) = struct
   include MakeNestable2 (struct
     include M
 
     type nonrec ('a, 'b) t = 'a t
   end)
+
+  module Nest (N : S) = struct
+    include Nest (N)
+
+    type nonrec 'a t = ('a, unit) t
+  end
+
+  type nonrec 'a t = 'a M.t
 end

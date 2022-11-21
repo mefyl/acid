@@ -1,6 +1,6 @@
 include Base.List
 
-module ListNestable : Monad.BasicNestable with type 't t = 't t = struct
+module ListNestable : Monad.BASIC_NESTABLE with type 't t = 't t = struct
   type nonrec 't t = 't t
 
   let bind = bind

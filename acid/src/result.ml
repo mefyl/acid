@@ -10,8 +10,8 @@ let both l r =
 
 let to_option = function Ok v -> Some v | Error _ -> None
 
-module ResultNestable : Monad.BasicNestable2 with type ('t, 'e) t = ('t, 'e) t =
-struct
+module ResultNestable :
+  Monad.BASIC_NESTABLE2 with type ('t, 'e) t = ('t, 'e) t = struct
   type nonrec ('t, 'e) t = ('t, 'e) t
 
   let bind = bind
@@ -25,7 +25,10 @@ struct
   end
 end
 
-include Monad.MakeNestable2 (ResultNestable)
+include (
+  Monad.MakeNestable2
+    (ResultNestable) :
+      Monad.NESTABLE2 with type ('a, 'b) t := ('a, 'b) Base.Result.t)
 
 (** A Result.all that doesn't blow up the call stack. *)
 let all l =

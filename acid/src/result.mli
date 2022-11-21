@@ -8,3 +8,6 @@ val failf : ('a, Format.formatter, unit, ('b, string) t) format4 -> 'a
 val to_option : ('a, _) t -> 'a option
 
 module Nest (M : Monad.S) : Monad.S2 with type ('a, 'b) t = ('a, 'b) t M.t
+
+module Nest2 (M : Monad.S2) :
+  Monad.S2 with type ('a, 'b) t = (('a, 'b) t, 'b) M.t
