@@ -25,6 +25,9 @@ module Map = Map
 (** @canonical Acid.Mode *)
 module Mode = Mode
 
+(** @canonical Acid.Monad *)
+module Monad = Monad
+
 (** @canonical Acid.Option *)
 module Option = Option
 

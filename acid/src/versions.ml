@@ -17,6 +17,7 @@ module V0_9_2 = struct
   module Lwt_result = Root.Lwt_result
   module Map = Root.Map
   module Mode = Mode
+  module Monad = Root.Monad
   module Option = Root.Option
   module Result = Root.Result
   module Sequence = Root.Sequence
