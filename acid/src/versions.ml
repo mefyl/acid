@@ -28,5 +28,10 @@ module V0_9_2 = struct
   include Select_jsoo.Js
 end
 
+module V0_9_3 = struct
+  include V0_9_2
+  module Multi_index = Multi_index
+end
+
 module V0_9_1 = V0_9_2
 module V0_9_0 = V0_9_1
