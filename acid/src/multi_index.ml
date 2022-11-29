@@ -231,28 +231,27 @@ module Index = struct
       (Third : INDEX with type value = First.value)
       (Fourth : INDEX with type value = First.value) =
   struct
-    module Two = Two (Third) (Fourth)
-    module Three = Add (Second) (Two)
+    module Three = Three (Second) (Third) (Fourth)
     include Add (First) (Three)
 
     module Make (Value : Comparator.S with type t = value) = struct
       include Make (Value)
       module First = Head
-      module Second = Three.Head (Tail)
-      module Third = Two.First (Three.Tail (Tail))
-      module Fourth = Two.Second (Three.Tail (Tail))
+      module Second = Three.First (Tail)
+      module Third = Three.Second (Tail)
+      module Fourth = Three.Third (Tail)
     end
 
     module First (Binder : BINDER with type index = t Hlist.t) = Head (Binder)
 
     module Second (Binder : BINDER with type index = t Hlist.t) =
-      Three.Head (Tail (Binder))
+      Three.First (Tail (Binder))
 
     module Third (Binder : BINDER with type index = t Hlist.t) =
-      Two.First (Three.Tail (Tail (Binder)))
+      Three.Second (Tail (Binder))
 
     module Fourth (Binder : BINDER with type index = t Hlist.t) =
-      Two.Second (Three.Tail (Tail (Binder)))
+      Three.Third (Tail (Binder))
   end
 end
 

@@ -34,15 +34,36 @@ module Ordered_string_by_length =
     end)
     (Ordered_string)
 
-module Strings = struct
-  module Index =
-    Multi_index.Index.Three (Ordered_string_by_length) (Ordered_string_caseless)
-      (Ordered_string_by_hash)
+(* module Strings = struct
+ *   module Index =
+ *     Multi_index.Index.Three (Ordered_string_by_length) (Ordered_string_caseless)
+ *       (Ordered_string_by_hash)
+ *
+ *   include Index.Make (String)
+ *   module By_length = Ordered_string_by_length.Bind (First)
+ *   module Caseless = Ordered_string_caseless.Bind (Second)
+ *   module By_hash = Ordered_string_by_hash.Bind (Third)
+ * end *)
 
-  include Index.Make (String)
-  module By_length = Ordered_string_by_length.Bind (First)
-  module Caseless = Ordered_string_caseless.Bind (Second)
-  module By_hash = Ordered_string_by_hash.Bind (Third)
+module Strings = struct
+  module Index_by_hash = Multi_index.Index.One (Ordered_string_by_hash)
+
+  module Index_caseless =
+    Multi_index.Index.Add (Ordered_string_caseless) (Index_by_hash)
+
+  module Index_by_length =
+    Multi_index.Index.Add (Ordered_string_by_length) (Index_caseless)
+
+  include Index_by_length.Make (String)
+  module By_length = Ordered_string_by_length.Bind (Index_by_length.Head (Bind))
+
+  module Caseless =
+    Ordered_string_caseless.Bind
+      (Index_caseless.Head (Index_by_length.Tail (Bind)))
+
+  module By_hash =
+    Ordered_string_by_hash.Bind
+      (Index_by_hash.First (Index_caseless.Tail (Index_by_length.Tail (Bind))))
 end
 
 module String_set = Caml.Set.Make (String)
