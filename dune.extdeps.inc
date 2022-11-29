@@ -1,3 +1,9 @@
+(rule (target acid.%{version:acid}.opam) (deps (:opam acid.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\" }")))))
 (rule (deps (universe)) (target acid.opam.locked)
  (action (run %{bin:opam} lock acid)))
 (rule (alias extdeps) (mode (promote (until-clean)))
@@ -7,6 +13,13 @@
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
     %{dep:acid.opam.locked} --exclude
     acid,acid-jsoo,schematic,schematic-jsoo))))
+(rule (target acid-jsoo.%{version:acid-jsoo}.opam)
+ (deps (:opam acid-jsoo.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid-jsoo#%{version:acid-jsoo}\" }")))))
 (rule (deps (universe)) (target acid-jsoo.opam.locked)
  (action (run %{bin:opam} lock acid-jsoo)))
 (rule (alias extdeps) (mode (promote (until-clean)))
