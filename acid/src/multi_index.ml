@@ -1,7 +1,7 @@
 open Base
 include Multi_index_intf
 
-module Make_map (Types : sig
+module Make_multi_index (Types : sig
   module Elements : Comparator.S
 
   type indexes
@@ -13,37 +13,47 @@ module Make_map (Types : sig
   end
 end) =
 struct
-  type t = {
-    elements : (Types.Elements.t, Types.Elements.comparator_witness) Set.t;
-    indexes : Types.indexes Hlist.t;
-  }
+  module MI = struct
+    type value = Types.Elements.t
+    type indexes = Types.indexes
+
+    module Indexes = Types.Indexes
+
+    type t = {
+      elements : (value, Types.Elements.comparator_witness) Set.t;
+      indexes : Types.indexes Hlist.t;
+    }
+
+    let add value { elements; indexes } =
+      {
+        elements = Set.add elements value;
+        indexes = Types.Indexes.add value indexes;
+      }
+
+    let empty =
+      {
+        elements = Set.empty (module Types.Elements);
+        indexes = Types.Indexes.empty;
+      }
+
+    let remove value ({ elements; indexes } as t) =
+      if Set.mem elements value then
+        {
+          elements = Set.remove elements value;
+          indexes = Types.Indexes.remove value indexes;
+        }
+      else t
+  end
+
+  include MI
 
   module Bind = struct
-    type nonrec t = t
+    module Multi_index = MI
+
     type index = Types.indexes Hlist.t
 
     let get { indexes; _ } = indexes
   end
-
-  let add value { elements; indexes } =
-    {
-      elements = Set.add elements value;
-      indexes = Types.Indexes.add value indexes;
-    }
-
-  let empty =
-    {
-      elements = Set.empty (module Types.Elements);
-      indexes = Types.Indexes.empty;
-    }
-
-  let remove value ({ elements; indexes } as t) =
-    if Set.mem elements value then
-      {
-        elements = Set.remove elements value;
-        indexes = Types.Indexes.remove value indexes;
-      }
-    else t
 end
 
 (** Indexes *)
@@ -53,7 +63,8 @@ module Index = struct
     type value = Index.value
 
     module First (Binder : BINDER with type index = t Hlist.t) = struct
-      type nonrec t = Binder.t
+      module Multi_index = Binder.Multi_index
+
       type index = Index.t
 
       let get t =
@@ -61,30 +72,33 @@ module Index = struct
         index
     end
 
-    module Make (Value : Comparator.S with type t = Index.value) = struct
-      type value = Index.value
-      type indexes = t
-
+    module Make_multi_index (Value : Comparator.S with type t = Index.value) =
+    struct
       module Value = Value
       module Index_first = Index
 
-      module Indexes = struct
-        let add value Hlist.[ index ] = Hlist.[ Index_first.add value index ]
-        let empty = Hlist.[ Index_first.empty ]
-
-        let remove value Hlist.[ index ] =
-          Hlist.[ Index_first.remove value index ]
-      end
-
-      include Make_map (struct
+      include Make_multi_index (struct
         module Elements = Value
-        module Indexes = Indexes
 
-        type nonrec indexes = indexes
+        module Indexes = struct
+          let add value Hlist.[ index ] = Hlist.[ Index_first.add value index ]
+          let empty = Hlist.[ Index_first.empty ]
+
+          let remove value Hlist.[ index ] =
+            Hlist.[ Index_first.remove value index ]
+        end
+
+        type nonrec indexes = t
       end)
+    end
+
+    module Make (Value : Comparator.S with type t = Index.value) = struct
+      module Multi_index = Make_multi_index (Value)
+      include Multi_index
 
       module First = struct
-        type nonrec t = t
+        module Multi_index = Multi_index
+
         type index = Index.t
 
         let get { indexes = Hlist.[ index ]; _ } = index
@@ -100,7 +114,8 @@ module Index = struct
     type value = Index.value
 
     module Head (Binder : BINDER with type index = t Hlist.t) = struct
-      type nonrec t = Binder.t
+      module Multi_index = Binder.Multi_index
+
       type index = Index.t
 
       let get t =
@@ -109,7 +124,8 @@ module Index = struct
     end
 
     module Tail (Binder : BINDER with type index = t Hlist.t) = struct
-      type nonrec t = Binder.t
+      module Multi_index = Binder.Multi_index
+
       type index = Indexes_tail.t Hlist.t
 
       let get t =
@@ -118,48 +134,49 @@ module Index = struct
     end
 
     module Make (Value : Comparator.S with type t = value) = struct
-      type value = Index.value
-      type indexes = Index.t * Indexes_tail.t
-
       module Value = Value
       module Index_head = Index
 
-      module Indexes = struct
-        module Tail = Indexes_tail.Make (Value)
-
-        let add value Hlist.(index :: indexes) =
-          Hlist.(Index_head.add value index :: Tail.Indexes.add value indexes)
-
-        let empty = Hlist.(Index_head.empty :: Tail.Indexes.empty)
-
-        let remove value Hlist.(index :: indexes) =
-          Hlist.(
-            Index_head.remove value index :: Tail.Indexes.remove value indexes)
-      end
-
-      include Make_map (struct
+      module Multi_index = Make_multi_index (struct
         module Elements = Value
-        module Indexes = Indexes
 
-        type nonrec indexes = indexes
+        module Indexes = struct
+          module Tail = Indexes_tail.Make (Value)
+
+          let add value Hlist.(index :: indexes) =
+            Hlist.(Index_head.add value index :: Tail.Indexes.add value indexes)
+
+          let empty = Hlist.(Index_head.empty :: Tail.Indexes.empty)
+
+          let remove value Hlist.(index :: indexes) =
+            Hlist.(
+              Index_head.remove value index :: Tail.Indexes.remove value indexes)
+        end
+
+        type indexes = Index.t * Indexes_tail.t
       end)
 
+      include Multi_index
+
       module Bind = struct
-        type nonrec t = t
+        module Multi_index = Multi_index
+
         type index = indexes Hlist.t
 
         let get { indexes; _ } = indexes
       end
 
       module Head = struct
-        type nonrec t = t
+        module Multi_index = Multi_index
+
         type index = Index.t
 
         let get { indexes = Hlist.(index :: _); _ } = index
       end
 
       module Tail = struct
-        type nonrec t = t
+        module Multi_index = Multi_index
+
         type index = Indexes_tail.t Hlist.t
 
         let get { indexes = Hlist.(_ :: indexes); _ } = indexes
@@ -214,27 +231,28 @@ module Index = struct
       (Third : INDEX with type value = First.value)
       (Fourth : INDEX with type value = First.value) =
   struct
-    module Three = Three (Second) (Third) (Fourth)
+    module Two = Two (Third) (Fourth)
+    module Three = Add (Second) (Two)
     include Add (First) (Three)
 
     module Make (Value : Comparator.S with type t = value) = struct
       include Make (Value)
       module First = Head
-      module Second = Three.First (Tail)
-      module Third = Three.Second (Tail)
-      module Fourth = Three.Third (Tail)
+      module Second = Three.Head (Tail)
+      module Third = Two.First (Three.Tail (Tail))
+      module Fourth = Two.Second (Three.Tail (Tail))
     end
 
     module First (Binder : BINDER with type index = t Hlist.t) = Head (Binder)
 
     module Second (Binder : BINDER with type index = t Hlist.t) =
-      Three.First (Tail (Binder))
+      Three.Head (Tail (Binder))
 
     module Third (Binder : BINDER with type index = t Hlist.t) =
-      Three.Second (Tail (Binder))
+      Two.First (Three.Tail (Tail (Binder)))
 
     module Fourth (Binder : BINDER with type index = t Hlist.t) =
-      Three.Third (Tail (Binder))
+      Two.Second (Three.Tail (Tail (Binder)))
   end
 end
 
@@ -243,6 +261,7 @@ module Ordered (Value : Comparator.S) = struct
   type value = Value.t
 
   let add value set = Set.add set value
+  let all set = Set.to_sequence set
   let empty = Set.empty (module Value)
   let is_empty = Set.is_empty
 
@@ -262,6 +281,7 @@ module Ordered_by_unique (Value : ORDERED_BY) = struct
   type value = Value.value
 
   let add value map = Map.set map ~key:(Value.get value) ~data:value
+  let all map = Map.to_sequence map |> Sequence.map ~f:snd
   let empty = Map.empty (module Value)
   let is_empty = Map.is_empty
 
@@ -271,9 +291,16 @@ module Ordered_by_unique (Value : ORDERED_BY) = struct
 
   let remove value map = Map.remove map (Value.get value)
 
-  module Bind (Binder : BINDER with type index = t) = struct
+  module Bind
+      (Binder : BINDER with type Multi_index.value = value and type index = t) =
+  struct
     let find value map = Map.find (Binder.get map) value
     let mem value map = Map.mem (Binder.get map) value
+
+    let remove value map =
+      match Map.find (Binder.get map) value with
+      | None -> map
+      | Some value -> Binder.Multi_index.remove value map
   end
 end
 
@@ -288,6 +315,11 @@ struct
     Map.change map (Value.get value) ~f:(function
       | None -> Some (Next.add value Next.empty)
       | Some index -> Some (Next.add value index))
+
+  let all map =
+    Map.to_sequence map
+    |> Sequence.map ~f:(fun (_, data) -> Next.all data)
+    |> Sequence.concat
 
   let empty = Map.empty (module Value)
   let is_empty = Map.is_empty
@@ -304,10 +336,18 @@ struct
         let index = Next.remove value index in
         if Next.is_empty index then None else Some index)
 
-  (* Public API *)
-
-  module Bind (Binder : BINDER with type index = t) = struct
+  module Bind
+      (Binder : BINDER with type Multi_index.value = value and type index = t) =
+  struct
     let mem value map = Map.mem (Binder.get map) value
     let find value map = Map.find (Binder.get map) value
+
+    let remove value map =
+      match Map.find (Binder.get map) value with
+      | None -> map
+      | Some index ->
+        Next.all index
+        |> Sequence.fold ~init:map ~f:(fun map elt ->
+               Binder.Multi_index.remove elt map)
   end
 end

@@ -112,6 +112,41 @@ module Ordered = struct
       @@ Strings.By_length.find 3 test
     in
     ()
+
+  let caseless () =
+    let test =
+      Strings.empty |> Strings.add "Foo" |> Strings.add "foo"
+      |> Strings.add "FOO" |> Strings.add "bar" |> Strings.add "BAR"
+      |> Strings.add "baz"
+    in
+    let check ~here test expected s =
+      Alcotest.(check ~here bool) "mem" (Option.is_some expected)
+      @@ Strings.Caseless.mem s test;
+      Alcotest.(check ~here (option (set string))) "find" expected
+      @@ Strings.Caseless.find s test
+    in
+    let () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "foo"; "Foo"; "FOO" ]))
+        "foo"
+    and () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "foo"; "Foo"; "FOO" ]))
+        "fOo"
+    and () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "bar"; "BAR" ]))
+        "BAR"
+    and () = check ~here:[%here] test None "quux" in
+    let test = Strings.Caseless.remove "FoO" test in
+    let () = check ~here:[%here] test None "foo"
+    and () = check ~here:[%here] test None "fOo"
+    and () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "bar"; "BAR" ]))
+        "BAR"
+    and () = check ~here:[%here] test None "quux" in
+    ()
 end
 
 module Ordered_unique = struct
@@ -149,6 +184,10 @@ let () =
   let open Alcotest in
   run "Acid.Multi_index"
     [
-      ("Ordered", [ test_case "by length" `Quick Ordered.by_length ]);
+      ( "Ordered",
+        [
+          test_case "by length" `Quick Ordered.by_length;
+          test_case "caseless" `Quick Ordered.caseless;
+        ] );
       ("Ordered_unique", [ test_case "by hash" `Quick Ordered_unique.by_hash ]);
     ]

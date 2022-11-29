@@ -6,11 +6,18 @@ module Index : sig
     include INDEXES with type value = Index.value
 
     module First (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Index.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Index.t
 
     module Make (Value : Comparator.S with type t = Index.value) : sig
       include module type of Make (Value)
-      module First : BINDER with type t = t and type index = Index.t
+
+      module First :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Index.t
     end
   end
 
@@ -19,15 +26,29 @@ module Index : sig
 
     module Make (Value : Comparator.S with type t = First.value) : sig
       include module type of Make (Value)
-      module First : BINDER with type t = t and type index = First.t
-      module Second : BINDER with type t = t and type index = Second.t
+
+      module First :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = First.t
+
+      module Second :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Second.t
     end
 
     module First (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = First.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = First.t
 
     module Second (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Second.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Second.t
   end
 
   module Three
@@ -38,19 +59,40 @@ module Index : sig
 
     module Make (Value : Comparator.S with type t = First.value) : sig
       include module type of Make (Value)
-      module First : BINDER with type t = t and type index = First.t
-      module Second : BINDER with type t = t and type index = Second.t
-      module Third : BINDER with type t = t and type index = Third.t
+
+      module First :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = First.t
+
+      module Second :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Second.t
+
+      module Third :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Third.t
     end
 
     module First (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = First.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = First.t
 
     module Second (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Second.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Second.t
 
     module Third (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Third.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Third.t
   end
 
   module Four
@@ -62,39 +104,77 @@ module Index : sig
 
     module Make (Value : Comparator.S with type t = First.value) : sig
       include module type of Make (Value)
-      module First : BINDER with type t = t and type index = First.t
-      module Second : BINDER with type t = t and type index = Second.t
-      module Third : BINDER with type t = t and type index = Third.t
-      module Fourth : BINDER with type t = t and type index = Fourth.t
+
+      module First :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = First.t
+
+      module Second :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Second.t
+
+      module Third :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Third.t
+
+      module Fourth :
+        BINDER
+          with type Multi_index.t = t
+           and type Multi_index.value = value
+           and type index = Fourth.t
     end
 
     module First (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = First.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = First.t
 
     module Second (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Second.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Second.t
 
     module Third (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Third.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Third.t
 
     module Fourth (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Fourth.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Fourth.t
   end
 
   module Add (Index : INDEX) (Tail : INDEXES with type value = Index.value) : sig
     include INDEXES with type t = Index.t * Tail.t and type value = Index.value
 
     module Make (Value : Comparator.S with type t = value) : sig
-      include module type of Make (Value)
-      module Head : BINDER with type t = t and type index = Index.t
-      module Tail : BINDER with type t = t and type index = Tail.t Hlist.t
+      module Head :
+        BINDER with module Multi_index = Make(Value) and type index = Index.t
+
+      module Tail :
+        BINDER
+          with module Multi_index = Head.Multi_index
+           and type index = Tail.t Hlist.t
+
+      include module type of Head.Multi_index
     end
 
     module Head (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Index.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Index.t
 
     module Tail (Binder : BINDER with type index = t Hlist.t) :
-      BINDER with type t = Binder.t and type index = Tail.t Hlist.t
+      BINDER
+        with module Multi_index = Binder.Multi_index
+         and type index = Tail.t Hlist.t
   end
 end
 
@@ -105,16 +185,18 @@ module Ordered (Value : Comparator.S) : sig
        and type value = Value.t
 
   module Bind (Binder : BINDER with type index = t) : sig
-    val mem : Value.t -> Binder.t -> bool
+    val mem : Value.t -> Binder.Multi_index.t -> bool
   end
 end
 
 module Ordered_by_unique (Value : ORDERED_BY) : sig
   include INDEX with type value = Value.value
 
-  module Bind (Binder : BINDER with type index = t) : sig
-    val find : Value.t -> Binder.t -> Value.value option
-    val mem : Value.t -> Binder.t -> bool
+  module Bind
+      (Binder : BINDER with type Multi_index.value = value and type index = t) : sig
+    val find : Value.t -> Binder.Multi_index.t -> Value.value option
+    val mem : Value.t -> Binder.Multi_index.t -> bool
+    val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
   end
 end
 
@@ -123,8 +205,10 @@ module Ordered_by
     (Next : INDEX with type value = Value.value) : sig
   include INDEX with type value = Value.value
 
-  module Bind (Binder : BINDER with type index = t) : sig
-    val find : Value.t -> Binder.t -> Next.t option
-    val mem : Value.t -> Binder.t -> bool
+  module Bind
+      (Binder : BINDER with type Multi_index.value = value and type index = t) : sig
+    val find : Value.t -> Binder.Multi_index.t -> Next.t option
+    val mem : Value.t -> Binder.Multi_index.t -> bool
+    val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
   end
 end

@@ -14,6 +14,7 @@ module type INDEX = sig
   type value
 
   val add : value -> t -> t
+  val all : t -> value Sequence.t
   val empty : t
   val is_empty : t -> bool
   val update : value -> value -> t -> t
@@ -21,10 +22,11 @@ module type INDEX = sig
 end
 
 module type BINDER = sig
-  type t
+  module Multi_index : S
+
   type index
 
-  val get : t -> index
+  val get : Multi_index.t -> index
 end
 
 module type INDEXES = sig
@@ -40,8 +42,12 @@ module type INDEXES = sig
 
     type indexes = t
 
-    include S with type value = Value.t
-    module Bind : BINDER with type t = t and type index = indexes Hlist.t
+    module Bind :
+      BINDER
+        with type Multi_index.value = Value.t
+         and type index = indexes Hlist.t
+
+    include module type of Bind.Multi_index
   end
 end
 
