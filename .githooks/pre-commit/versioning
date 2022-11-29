@@ -9,8 +9,8 @@ VERSION="V${VERSION//./_}"
 
 check () {
     for file in "$@"; do
-        if ! staged "$f" | grep -q "$VERSION"; then
-            echo "missing module $VERSION in $1" 1>&2
+        if ! staged "$file" | grep -q "$VERSION"; then
+            echo "missing module $VERSION in $file" 1>&2
             exit 1
         fi
     done
