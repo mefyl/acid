@@ -45,24 +45,24 @@
   (schematic
    (and
     (and
-     (>= 0.15.0)
-     (< 0.16.0))
+     (>= 0.16.0)
+     (< 0.17.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.15.0)
-     (< 0.16.0))
+     (>= 0.16.0)
+     (< 0.17.0))
     :with-test)))
  (depopts
   (schematic
    (and
-    (>= 0.15.0)
-    (< 0.16.0)))
+    (>= 0.16.0)
+    (< 0.17.0)))
   (schematic-jsoo
    (and
-    (>= 0.15.0)
-    (< 0.16.0)))))
+    (>= 0.16.0)
+    (< 0.17.0)))))
 
 (package
  (name acid-jsoo)
