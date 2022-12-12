@@ -1,4 +1,4 @@
-module V0_9_2 = struct
+module V0_10_0 = struct
   (** @closed *)
   include Base
 
@@ -18,6 +18,7 @@ module V0_9_2 = struct
   module Map = Root.Map
   module Mode = Mode
   module Monad = Root.Monad
+  module Multi_index = Multi_index
   module Option = Root.Option
   module Result = Root.Result
   module Sequence = Root.Sequence
@@ -27,11 +28,3 @@ module V0_9_2 = struct
   (** @inline *)
   include Select_jsoo.Js
 end
-
-module V0_9_3 = struct
-  include V0_9_2
-  module Multi_index = Multi_index
-end
-
-module V0_9_1 = V0_9_2
-module V0_9_0 = V0_9_1

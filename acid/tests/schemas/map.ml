@@ -1,4 +1,4 @@
-open Acid.Versions.V0_9_0
+open Acid.Versions.V0_10_0
 
 module String = struct
   include String
