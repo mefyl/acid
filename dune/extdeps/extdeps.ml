@@ -1,4 +1,5 @@
 open Base
+open Result
 
 let ( let* ) = Result.( >>= )
 let ( let+ ) = Option.( >>| )
@@ -16,7 +17,7 @@ let () =
   let open Cmdliner in
   let generate =
     let generate exclude =
-      let* packages =
+      let* repository, packages =
         let (status, stdout), stderr =
           Shexp_process.(
             run_exit_status "dune" [ "describe"; "opam-files" ]
@@ -27,7 +28,7 @@ let () =
         match status with
         | Exited 0 -> (
           match Sexplib.Sexp.parse stdout with
-          | Done (List files, _) ->
+          | Done (List files, _) -> (
             List.map files ~f:(function
               | List [ Atom name; _ ] ->
                 Result.return
@@ -38,6 +39,9 @@ let () =
                      "dune describe opam-files yielded invalid entry:@ @[%a@]"
                      Sexplib.Sexp.pp sexp))
             |> Result.all
+            >>= function
+            | hd :: _ as packages -> Result.return (hd, packages)
+            | [] -> Result.fail "dune describe opam-files yielded no entries")
           | _ ->
             Result.fail
               (Caml.Format.asprintf
@@ -78,7 +82,8 @@ let () =
                               Atom
                                 ("url { src: \
                                   \"git://git@gitlab.routine.co:routine/"
-                               ^ package ^ "#%{version:" ^ package ^ "}\" }");
+                               ^ repository ^ "#%{version:" ^ package ^ "}\" }"
+                                );
                             ];
                         ];
                     ];
