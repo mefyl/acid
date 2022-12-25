@@ -306,8 +306,13 @@ module Ordered_by_unique (Value : ORDERED_BY) = struct
   let is_empty = Map.is_empty
 
   let update old value map =
-    let map = Map.remove map (Value.get old) in
-    Map.set map ~key:(Value.get value) ~data:value
+    let old_k = Value.get old
+    and value_k = Value.get value in
+    if Value.comparator.compare old_k value_k = 0 then
+      Map.set map ~key:value_k ~data:value
+    else
+      let map = Map.remove map old_k in
+      Map.set map ~key:value_k ~data:value
 
   let remove value map = Map.remove map (Value.get value)
 
@@ -344,17 +349,21 @@ struct
   let empty = Map.empty (module Value)
   let is_empty = Map.is_empty
 
-  let update old value map =
-    Map.change map (Value.get value) ~f:(function
-      | None -> Some (Next.add value Next.empty)
-      | Some index -> Some (Next.update old value index))
-
   let remove value map =
     Map.change map (Value.get value) ~f:(function
       | None -> None
       | Some index ->
         let index = Next.remove value index in
         if Next.is_empty index then None else Some index)
+
+  let update old value map =
+    let old_k = Value.get old
+    and value_k = Value.get value in
+    if Value.comparator.compare old_k value_k = 0 then
+      Map.change map value_k ~f:(function
+        | None -> Some (Next.add value Next.empty)
+        | Some index -> Some (Next.update old value index))
+    else map |> remove old |> add value
 
   module Bind
       (Binder : BINDER with type Multi_index.value = value and type index = t) =
