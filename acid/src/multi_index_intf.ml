@@ -19,6 +19,8 @@ module type S = sig
   (** [empty] is the empty [t] *)
   val empty : t
 
+  val map : t -> f:(value -> value) -> t
+
   (** [add value t] is a new multi index with [value] removed from [t], or [t]
       if it did not contain [value]. *)
   val remove : value -> t -> t
@@ -78,6 +80,10 @@ module type INDEXES = sig
     module Indexes : sig
       (** [add value t] is [t] with [value] added to each individual index. *)
       val add : value -> t Hlist.t -> t Hlist.t
+
+      (** [update old new t] is [t] with [old] removed then [new] added to each
+          individual index. *)
+      val update : value -> value -> t Hlist.t -> t Hlist.t
 
       (** [empty] is a set of empty indexes. *)
       val empty : t Hlist.t

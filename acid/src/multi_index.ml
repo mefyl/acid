@@ -8,6 +8,7 @@ module Make_multi_index (Types : sig
 
   module Indexes : sig
     val add : Elements.t -> indexes Hlist.t -> indexes Hlist.t
+    val update : Elements.t -> Elements.t -> indexes Hlist.t -> indexes Hlist.t
     val empty : indexes Hlist.t
     val remove : Elements.t -> indexes Hlist.t -> indexes Hlist.t
   end
@@ -31,6 +32,15 @@ struct
       }
 
     let all { elements; _ } = Set.to_sequence elements
+
+    let map { elements; indexes } ~f =
+      let f { elements; indexes } old =
+        let v = f old in
+        let elements = Set.add elements v
+        and indexes = Types.Indexes.update old v indexes in
+        { elements; indexes }
+      and init = { elements = Set.empty (module Types.Elements); indexes } in
+      Set.fold elements ~init ~f
 
     let empty =
       {
@@ -84,6 +94,10 @@ module Index = struct
 
         module Indexes = struct
           let add value Hlist.[ index ] = Hlist.[ Index_first.add value index ]
+
+          let update old value Hlist.[ index ] =
+            Hlist.[ Index_first.update old value index ]
+
           let empty = Hlist.[ Index_first.empty ]
 
           let remove value Hlist.[ index ] =
@@ -147,6 +161,11 @@ module Index = struct
 
           let add value Hlist.(index :: indexes) =
             Hlist.(Index_head.add value index :: Tail.Indexes.add value indexes)
+
+          let update old value Hlist.(index :: indexes) =
+            Hlist.(
+              Index_head.update old value index
+              :: Tail.Indexes.update old value indexes)
 
           let empty = Hlist.(Index_head.empty :: Tail.Indexes.empty)
 
