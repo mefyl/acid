@@ -9,6 +9,9 @@ module type S = sig
   (** Values held by a [t] *)
   type value
 
+  (** [all t] is a sequence of all values held by [t]. *)
+  val all : t -> value Sequence.t
+
   (** [add value t] is a new multi index with [value] added to [t], or [t] if it
       already contained [value]. *)
   val add : value -> t -> t

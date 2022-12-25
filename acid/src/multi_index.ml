@@ -30,6 +30,8 @@ struct
         indexes = Types.Indexes.add value indexes;
       }
 
+    let all { elements; _ } = Set.to_sequence elements
+
     let empty =
       {
         elements = Set.empty (module Types.Elements);
