@@ -12,14 +12,17 @@ module type S = sig
   (** [all t] is a sequence of all values held by [t]. *)
   val all : t -> value Sequence.t
 
-  (** [add value t] is a new multi index with [value] added to [t], or [t] if it
-      already contained [value]. *)
+  (** [add value t] is [t] with [value] added, or [t] if it already contained
+      [value]. *)
   val add : value -> t -> t
 
   (** [empty] is the empty [t] *)
   val empty : t
 
   val map : t -> f:(value -> value) -> t
+
+  (** [update old new t] is [t] with [old] removed then [new] added. *)
+  val update : value -> value -> t -> t
 
   (** [add value t] is a new multi index with [value] removed from [t], or [t]
       if it did not contain [value]. *)

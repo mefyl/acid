@@ -42,6 +42,13 @@ struct
       and init = { elements = Set.empty (module Types.Elements); indexes } in
       Set.fold elements ~init ~f
 
+    let update old value { elements; indexes } =
+      let elements =
+        let elements = Set.remove elements old in
+        Set.add elements value
+      and indexes = Types.Indexes.update old value indexes in
+      { elements; indexes }
+
     let empty =
       {
         elements = Set.empty (module Types.Elements);
