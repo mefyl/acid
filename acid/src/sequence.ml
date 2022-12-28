@@ -328,6 +328,18 @@ module Make2 (Monad : Base.Monad.S2) = struct
 
   let to_list seq = to_list_rev seq >>| List.rev
 
+  let to_map comparator seq =
+    let rec to_list_rev acc seq =
+      step seq >>= function
+      | [], _ -> Monad.return acc
+      | items, seq ->
+        to_list_rev
+          (List.fold items ~init:acc ~f:(fun acc (key, data) ->
+               Map.set ~key ~data acc))
+          seq
+    in
+    to_list_rev (Map.empty comparator) seq
+
   let partition_rev seq =
     let rec loop (l, r) seq =
       step seq >>= function

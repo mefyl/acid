@@ -24,6 +24,13 @@ module Make2 (Monad : Base.Monad.S2) : sig
   val to_list : ('a, 'b) t -> ('a list, 'b) Monad.t
   val to_list_rev : ('a, 'b) t -> ('a list, 'b) Monad.t
 
+  val to_map :
+    (module Base.Comparator.S
+       with type comparator_witness = 'witness
+        and type t = 'key) ->
+    ('key * 'data, 'b) t ->
+    (('key, 'data, 'witness) Base.Map.t, 'b) Monad.t
+
   val partition :
     (('a, 'b) Base.Either.t, 'c) t -> ('a list * 'b list, 'c) Monad.t
 
