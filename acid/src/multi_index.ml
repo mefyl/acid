@@ -329,6 +329,17 @@ module Ordered_by_unique (Value : ORDERED_BY) = struct
     let find value map = Map.find (Binder.get map) value
     let mem value map = Map.mem (Binder.get map) value
 
+    let change value map ~f =
+      let found = find value map in
+      match (found, f found) with
+      | None, None -> map
+      | Some value, None -> Binder.Multi_index.remove value map
+      | None, Some value -> Binder.Multi_index.add value map
+      | Some old, Some value -> Binder.Multi_index.update old value map
+
+    let update value map ~f =
+      change value map ~f:(function None -> None | Some v -> f v)
+
     let remove value map =
       match Map.find (Binder.get map) value with
       | None -> map
@@ -385,5 +396,15 @@ struct
         Next.all index
         |> Sequence.fold ~init:map ~f:(fun map elt ->
                Binder.Multi_index.remove elt map)
+
+    let update value map ~f =
+      match find value map with
+      | None -> map
+      | Some next ->
+        Next.all next
+        |> Base.Sequence.fold ~init:map ~f:(fun map old ->
+               match f old with
+               | None -> Binder.Multi_index.remove old map
+               | Some value -> Binder.Multi_index.update old value map)
   end
 end

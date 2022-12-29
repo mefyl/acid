@@ -229,9 +229,21 @@ module Ordered_by_unique (Value : ORDERED_BY) : sig
 
   module Bind
       (Binder : BINDER with type Multi_index.value = value and type index = t) : sig
+    val change :
+      Value.t ->
+      Binder.Multi_index.t ->
+      f:(Value.value option -> Value.value option) ->
+      Binder.Multi_index.t
+
     val find : Value.t -> Binder.Multi_index.t -> Value.value option
     val mem : Value.t -> Binder.Multi_index.t -> bool
     val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
+
+    val update :
+      Value.t ->
+      Binder.Multi_index.t ->
+      f:(Value.value -> Value.value option) ->
+      Binder.Multi_index.t
   end
 end
 
@@ -248,5 +260,11 @@ module Ordered_by
     val find : Value.t -> Binder.Multi_index.t -> Next.t option
     val mem : Value.t -> Binder.Multi_index.t -> bool
     val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
+
+    val update :
+      Value.t ->
+      Binder.Multi_index.t ->
+      f:(Value.value -> Value.value option) ->
+      Binder.Multi_index.t
   end
 end
