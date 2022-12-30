@@ -37,6 +37,9 @@ module Queue = Queue
 (** @canonical Acid.Result *)
 module Result = Result
 
+(** @canonical Acid.Set *)
+module Set = Set
+
 (** @canonical Acid.Sequence *)
 module Sequence = Sequence
 

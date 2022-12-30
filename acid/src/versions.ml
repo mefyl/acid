@@ -22,6 +22,7 @@ module V0_10_0 = struct
   module Option = Root.Option
   module Result = Root.Result
   module Sequence = Root.Sequence
+  module Set = Root.Set
   module Split = Split
   module String = Root.String
 
