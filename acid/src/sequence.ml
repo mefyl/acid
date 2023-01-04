@@ -203,6 +203,27 @@ module Make2 (Monad : Base.Monad.S2) = struct
       unfold ~init:(s, (None, [])) ~f
   end
 
+  module Par = struct
+    let filter_map (Sequence { state; f = step }) ~f =
+      let f state =
+        step state >>= function
+        | Step.Done -> Monad.return @@ Step.Done
+        | Step.Skip state -> Monad.return @@ Step.Skip state
+        | Step.Yield (v, state) -> (
+          f v >>= function
+          | Some v -> Monad.return @@ Step.Yield (v, state)
+          | None -> Monad.return @@ Step.Skip state)
+        | Step.Yields (v, state) -> (
+          List.map v ~f |> Monad.all >>= fun v ->
+          match List.filter_opt v with
+          | [] -> Monad.return Step.Done
+          | l -> Monad.return @@ Step.Yields (l, state))
+      in
+      Sequence { state; f }
+
+    let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
+  end
+
   module Seq = struct
     let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
       let open Base.Container.Continue_or_stop in

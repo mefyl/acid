@@ -48,6 +48,13 @@ module Make2 (Monad : Base.Monad.S2) : sig
       with type ('a, 'b) sequence := ('a, 'b) t
        and type ('a, 'b) monad := ('a, 'b) Monad.t
        and type ('a, 'b) walk := ('a, 'b) Monad.t
+
+  module Par : sig
+    val filter_map :
+      ('a, 'b) t -> f:('a -> ('c option, 'b) Monad.t) -> ('c, 'b) t
+
+    val map : ('a, 'b) t -> f:('a -> ('c, 'b) Monad.t) -> ('c, 'b) t
+  end
 end
 
 module Make (Monad : Base.Monad.S) : sig
