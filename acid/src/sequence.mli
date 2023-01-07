@@ -55,15 +55,31 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
     val map : ('a, 'b) t -> f:('a -> ('c, 'b) Monad.t) -> ('c, 'b) t
   end
+
+  module Monad : sig
+    type ('a, 'b, 'c, 'd) map = {
+      f :
+        'state.
+        (('a, 'state) Step.t, 'b) Monad.t -> (('c, 'state) Step.t, 'd) Monad.t;
+    }
+
+    val map : ('a, 'b) t -> f:('a, 'b, 'c, 'd) map -> ('c, 'd) t
+  end
 end
 
-module Make (Monad : Base.Monad.S) : sig
+module Make (M : Base.Monad.S) : sig
   type 'a t
 
   include module type of Make2 (struct
-      type ('a, 'e) t = 'a Monad.t
+      type ('a, 'e) t = 'a M.t
 
-      include (Monad : Base.Monad.S with type 'a t := 'a Monad.t)
+      include (M : Base.Monad.S with type 'a t := 'a M.t)
     end)
     with type ('a, _) t := 'a t
+
+  module Monad : sig
+    type nonrec ('a, 'b) map = ('a, unit, 'b, unit) Monad.map
+
+    val map : 'a t -> f:('a, 'b) map -> 'b t
+  end
 end

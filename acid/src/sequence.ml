@@ -382,6 +382,17 @@ module Make2 (Monad : Base.Monad.S2) = struct
 
   let head seq = step seq >>| function [], _ -> None | hd :: _, _ -> Some hd
   let length seq = Seq.fold seq ~init:0 ~f:(fun i _ -> Monad.return (i + 1))
+
+  module Monad = struct
+    type ('a, 'b, 'c, 'd) map = {
+      f :
+        'state.
+        (('a, 'state) Step.t, 'b) Monad.t -> (('c, 'state) Step.t, 'd) Monad.t;
+    }
+
+    let map (Sequence { state; f = step } : ('a, 'b) t) ~f:{ f } =
+      Sequence { state; f = (fun state -> f (step state)) }
+  end
 end
 
 module Make (Monad : Base.Monad.S) = struct
@@ -402,4 +413,10 @@ module Make (Monad : Base.Monad.S) = struct
   include Make2 (Monad2)
 
   type nonrec 'a t = ('a, unit) t
+
+  module Monad = struct
+    include Monad
+
+    type nonrec ('a, 'b) map = ('a, unit, 'b, unit) Monad.map
+  end
 end
