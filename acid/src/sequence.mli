@@ -36,6 +36,7 @@ module Make2 (Monad : Base.Monad.S2) : sig
 
   val head : ('a, 'b) t -> ('a option, 'b) Monad.t
   val length : ('a, 'b) t -> (int, 'b) Monad.t
+  val memoize : ('a, 'b) t -> ('a, 'b) t
 
   include
     WALKERS2

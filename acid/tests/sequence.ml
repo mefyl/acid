@@ -35,6 +35,31 @@ module Lwt = struct
       |> Lwt.return
   end
 
+  let memoize _ () =
+    let operations = ref 0 in
+    let perform i =
+      operations := !operations + 1;
+      i * i
+    in
+    let seq =
+      let f i =
+        if i < 5 then Lwt.return (Some (perform i, i + 1)) else Lwt.return None
+      in
+      Sequence.unfold_step ~init:0 ~f |> Sequence.memoize
+    in
+    let () =
+      Alcotest.(check ~here:[%here] int) "operations count" 0 !operations
+    in
+    let* squares = Sequence.to_list seq in
+    let () =
+      Alcotest.(check ~here:[%here] (list int))
+        "squares" [ 0; 1; 4; 9; 16 ] squares
+    and () =
+      Alcotest.(check ~here:[%here] int) "operations count" 5 !operations
+    in
+    let+ _squares_again = Sequence.to_list seq in
+    Alcotest.(check ~here:[%here] int) "operations count" 5 !operations
+
   include Make (Base.Monad.Ident) (Sequence)
   module Seq = Make (Lwt) (Sequence.Seq)
 end
@@ -115,6 +140,7 @@ let () =
            [
              test_case "unfold" Lwt.unfold;
              test_case "filter_map" Lwt.filter_map;
+             test_case "memoize" Lwt.memoize;
              test_case "Seq.filter_map" Lwt.Seq.filter_map;
            ] );
          ( "Result",

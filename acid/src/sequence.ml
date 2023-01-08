@@ -383,6 +383,21 @@ module Make2 (Monad : Base.Monad.S2) = struct
   let head seq = step seq >>| function [], _ -> None | hd :: _, _ -> Some hd
   let length seq = Seq.fold seq ~init:0 ~f:(fun i _ -> Monad.return (i + 1))
 
+  (* Shamelessly stolen from Base *)
+  let memoize (type a b) (Sequence { state; f }) =
+    let module M = struct
+      type t = T of ((a, t) Step.t, b) Monad.t Lazy.t
+    end in
+    let rec memoize s = M.T (lazy (find_step s))
+    and find_step s =
+      f s >>= function
+      | Step.Done -> Monad.return Step.Done
+      | Skip s -> find_step s
+      | Yield (a, s) -> Monad.return (Step.Yield (a, memoize s))
+      | Yields (a, s) -> Monad.return (Step.Yields (a, memoize s))
+    in
+    Sequence { state = memoize state; f = (fun (M.T l) -> Lazy.force l) }
+
   module Monad = struct
     type ('a, 'b, 'c, 'd) map = {
       f :
