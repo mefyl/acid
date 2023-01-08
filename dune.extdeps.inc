@@ -19,7 +19,7 @@
   (with-stdout-to %{target}
    (progn (cat %{opam})
     (echo
-     "url { src: \"git://git@gitlab.routine.co:routine/acid-jsoo#%{version:acid-jsoo}\" }")))))
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-jsoo}\" }")))))
 (rule (deps (universe)) (target acid-jsoo.opam.locked)
  (action (run %{bin:opam} lock acid-jsoo)))
 (rule (alias extdeps) (mode (promote (until-clean)))

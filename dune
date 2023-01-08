@@ -18,8 +18,6 @@
    (run
     %{dep:.logistic/dune/extdeps/extdeps.exe}
     generate
-    --packages
-    acid,acid-jsoo
     --exclude
     schematic,schematic-jsoo))))
 
