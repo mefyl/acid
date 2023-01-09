@@ -216,7 +216,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
         | Step.Yields (v, state) -> (
           List.map v ~f |> Monad.all >>= fun v ->
           match List.filter_opt v with
-          | [] -> Monad.return Step.Done
+          | [] -> Monad.return @@ Step.Skip state
           | l -> Monad.return @@ Step.Yields (l, state))
       in
       Sequence { state; f }
