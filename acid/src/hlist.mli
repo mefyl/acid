@@ -14,7 +14,11 @@ include module type of Make (struct
   type 'a t = 'a
 end)
 
-val to_pairs : 'l t -> 'l
+type (_, _) convert =
+  | Cons : ('b, 'c) convert -> ('a -> 'b, 'a * 'c) convert
+  | Null : (unit, unit) convert
+
+val to_pairs : ('l, 'pairs) convert -> 'l t -> 'pairs
 
 module Zip2 (L : S2) (R : S2) : sig
   include S2 with type ('a, 'b) value = ('a, 'b) L.value * ('a, 'b) R.value

@@ -181,7 +181,7 @@ module Index : sig
 
   (** A set of indexes adding an index to an other set. *)
   module Add (Index : INDEX) (Tail : INDEXES with type value = Index.value) : sig
-    include INDEXES with type t = Index.t * Tail.t and type value = Index.value
+    include INDEXES with type t = Index.t -> Tail.t and type value = Index.value
 
     module Make (Value : Comparator.S with type t = value) : sig
       (** Binder to the added index. *)

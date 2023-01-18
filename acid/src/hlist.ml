@@ -102,9 +102,15 @@ include Make (struct
   type 'a t = 'a
 end)
 
-let rec to_pairs : type l. l t -> l = function
-  | a :: b -> (a, to_pairs b)
-  | [] -> ()
+type (_, _) convert =
+  | Cons : ('b, 'c) convert -> ('a -> 'b, 'a * 'c) convert
+  | Null : (unit, unit) convert
+
+let rec to_pairs : type a b. (a, b) convert -> a t -> b =
+ fun convert l ->
+  match (convert, l) with
+  | Cons next, a :: b -> (a, to_pairs next b)
+  | Null, [] -> ()
 
 module Make2 (T : sig
   type ('a, 'b) t

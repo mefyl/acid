@@ -1,4 +1,4 @@
-type ('a, 'b) desc = 'a * 'b
+type ('a, 'b) desc = 'a -> 'b
 
 module type S_BASE = sig
   type 'a value

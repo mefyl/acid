@@ -78,7 +78,7 @@ end
 (** Indexes *)
 module Index = struct
   module One (Index : INDEX) = struct
-    type t = Index.t * unit
+    type t = Index.t -> unit
     type value = Index.value
 
     module First (Binder : BINDER with type index = t Hlist.t) = struct
@@ -133,7 +133,7 @@ module Index = struct
       (Index : INDEX)
       (Indexes_tail : INDEXES with type value = Index.value) =
   struct
-    type t = Index.t * Indexes_tail.t
+    type t = Index.t -> Indexes_tail.t
     type value = Index.value
 
     module Head (Binder : BINDER with type index = t Hlist.t) = struct
@@ -181,7 +181,7 @@ module Index = struct
               Index_head.remove value index :: Tail.Indexes.remove value indexes)
         end
 
-        type indexes = Index.t * Indexes_tail.t
+        type indexes = Index.t -> Indexes_tail.t
       end)
 
       include Multi_index
