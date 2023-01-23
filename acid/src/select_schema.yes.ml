@@ -127,12 +127,12 @@ module Map = struct
                          };
                    })
           and decode l =
-            let l = List.map l ~f:(fun (k, (d, ())) -> (k, d)) in
+            let l = List.map l ~f:(fun Hlist.[ k; d ] -> (k, d)) in
             match Base.Map.of_alist (module K) l with
             | `Duplicate_key k -> Result.failf "duplicate key: %a" pp_key k
             | `Ok map -> Result.return map
           and encode map =
-            Base.Map.to_alist map |> List.map ~f:(fun (k, d) -> (k, (d, ())))
+            Base.Map.to_alist map |> List.map ~f:(fun (k, d) -> Hlist.[ k; d ])
           in
           Map { descriptor; decode; encode }
         in

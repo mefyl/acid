@@ -4,6 +4,7 @@
  (libraries
   base
   fmt
+  hlist
   lwt
   (select
    select_schema.ml
