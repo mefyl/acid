@@ -33,6 +33,7 @@
     :with-test))
   (base
    (>= 0.13.1))
+  (crowbar :with-test)
   fmt
   (hlist
    (and
@@ -40,6 +41,7 @@
     (< 0.3.0)))
   (lwt
    (>= 5.0.0))
+  (ppx_deriving :with-test)
   (ppx_here
    (= v0.14.0))
   (ppx_yojson

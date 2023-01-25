@@ -20,6 +20,7 @@ module V0_11_0 = struct
   module Monad = Root.Monad
   module Multi_index = Multi_index
   module Option = Root.Option
+  module Queue = Root.Queue
   module Result = Root.Result
   module Sequence = Root.Sequence
   module Set = Root.Set

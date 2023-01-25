@@ -19,12 +19,32 @@
  (preprocess
   (pps ppx_here)))
 
+; Queues
+
+(library
+ (name queue_tests)
+ (modules queue_tests)
+ (libraries acid fmt)
+ (preprocess
+  (pps ppx_deriving.show ppx_here)))
+
 (test
  (name queue)
  (modules queue)
- (libraries alcotest alcotest-lwt acid)
+ (libraries alcotest alcotest-lwt acid queue_tests)
  (preprocess
   (pps ppx_here)))
+
+(executable
+ (name queue_afl)
+ (modules queue_afl)
+ (libraries acid crowbar fmt queue_tests)
+ (preprocess
+  (pps ppx_deriving.show)))
+
+(alias
+ (name afl)
+ (deps queue_afl.exe))
 
 (test
  (name result)

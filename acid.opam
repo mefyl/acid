@@ -12,9 +12,11 @@ depends: [
   "alcotest" {>= "1.1.0" & with-test}
   "alcotest-lwt" {>= "1.1.0" & with-test}
   "base" {>= "0.13.1"}
+  "crowbar" {with-test}
   "fmt"
   "hlist" {>= "0.2.0" & < "0.3.0"}
   "lwt" {>= "5.0.0"}
+  "ppx_deriving" {with-test}
   "ppx_here" {= "v0.14.0"}
   "ppx_yojson" {>= "1.2.0" & with-test}
   "schematic" {>= "0.17.0" & < "0.18.0" & with-test}

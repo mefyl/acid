@@ -1,60 +1,34 @@
 open Acid
 
-let find_update () =
-  let q = IQueue.of_list [ 0; 1; 2; 3; 2; 1; 0 ] in
-  let () =
-    let f _ = None in
-    let q, res = IQueue.find_update ~f q in
-    Alcotest.(
-      check
-        (pair (list int) (option int))
-        "untouched"
-        ([ 0; 1; 2; 3; 2; 1; 0 ], None)
-        (IQueue.to_list q, res))
-  in
-  let () =
-    let f = function 2 -> Some 3 | _ -> None in
-    let q, res = IQueue.find_update ~f q in
-    Alcotest.(
-      check
-        (pair (list int) (option int))
-        "updated"
-        ([ 0; 1; 3; 3; 2; 1; 0 ], Some 3)
-        (IQueue.to_list q, res))
-  in
-  ()
+let check =
+  {
+    Queue_tests.f =
+      (fun ~here ~pp ~cmp:_ ~eq name exp eff ->
+        Alcotest.check ~here (Alcotest.testable pp eq) name exp eff);
+  }
 
-let rfind_update () =
-  let q = IQueue.of_list [ 0; 1; 2; 3; 2; 1; 0 ] in
-  let () =
-    let f _ = None in
-    let q, res = IQueue.rfind_update ~f q in
-    Alcotest.(
-      check
-        (pair (list int) (option int))
-        "untouched"
-        ([ 0; 1; 2; 3; 2; 1; 0 ], None)
-        (IQueue.to_list q, res))
+let queuing () =
+  let check ops =
+    List.fold ops ~init:([], Queue.empty) ~f:(Queue_tests.apply_op check)
+    |> ignore
   in
-  let () =
-    let f = function 2 -> Some 3 | _ -> None in
-    let q, res = IQueue.rfind_update ~f q in
-    Alcotest.(
-      check
-        (pair (list int) (option int))
-        "updated"
-        ([ 0; 1; 2; 3; 3; 1; 0 ], Some 3)
-        (IQueue.to_list q, res))
-  in
-  ()
+  check [];
+  check
+    [ Queue 0; Queue 1; Queue 2; Queue 4; Dequeue; Dequeue; Dequeue; Dequeue ];
+  check
+    [
+      Dequeue;
+      Queue 1;
+      Queue 2;
+      Dequeue;
+      Queue 3;
+      Queue 4;
+      Dequeue;
+      Dequeue;
+      Dequeue;
+      Dequeue;
+    ]
 
 let () =
   let test_case name f = Alcotest.test_case name `Quick f in
-  Alcotest.run "Acid.Queue"
-    [
-      ( "find_update",
-        [
-          test_case "find_update" find_update;
-          test_case "rfind_update" rfind_update;
-        ] );
-    ]
+  Alcotest.run "Acid.Queue" [ ("queuing", [ test_case "queuing" queuing ]) ]
