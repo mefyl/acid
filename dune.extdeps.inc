@@ -12,7 +12,7 @@
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
     %{dep:acid.opam.locked} --exclude
-    acid,acid-jsoo,schematic,schematic-jsoo))))
+    acid,acid-jsoo,hlist,schematic,schematic-jsoo))))
 (rule (target acid-jsoo.%{version:acid-jsoo}.opam)
  (deps (:opam acid-jsoo.opam))
  (action
@@ -28,4 +28,4 @@
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
     %{dep:acid-jsoo.opam.locked} --exclude
-    acid,acid-jsoo,schematic,schematic-jsoo))))
+    acid,acid-jsoo,hlist,schematic,schematic-jsoo))))
