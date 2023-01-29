@@ -1,7 +1,7 @@
 (executables
- (names map)
+ (names map promise)
  (modes js)
- (libraries acid acid-jsoo alcotest)
+ (libraries acid acid-jsoo alcotest js_of_ocaml-lwt)
  (preprocess
   (pps ppx_here)))
 
@@ -10,3 +10,9 @@
  (package acid-jsoo)
  (action
   (run node %{dep:map.bc.js})))
+
+(rule
+ (alias runtest)
+ (package acid-jsoo)
+ (action
+  (run node %{dep:promise.bc.js})))

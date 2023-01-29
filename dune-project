@@ -82,4 +82,5 @@
     :with-test))
   (conf-npm :with-test)
   js_of_ocaml
-  js_of_ocaml-ppx))
+  js_of_ocaml-ppx
+  (js_of_ocaml-lwt :with-test)))
