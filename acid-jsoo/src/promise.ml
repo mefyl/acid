@@ -31,30 +31,36 @@ let of_lwt p =
   new%js _Promise
     (Js.wrap_callback (fun resolve reject ->
          let ( >>= ) = Lwt.( >>= ) in
-         let p =
-           Lwt.catch p (fun e ->
-               let msg = Caml.Printexc.to_string e in
-               Js.Unsafe.fun_call reject
-                 [| Js.Unsafe.inject (new%js Js.error_constr (Js.string msg)) |])
+         let p () =
+           p () >>= function
+           | v ->
+             Lwt.return @@ Js.Unsafe.fun_call resolve [| Js.Unsafe.inject v |]
          in
-         p >>= function
-         | v ->
-           Lwt.return @@ Js.Unsafe.fun_call resolve [| Js.Unsafe.inject v |]))
+         Lwt.catch p (fun e ->
+             let msg = Caml.Printexc.to_string e in
+             let () =
+               Js.Unsafe.fun_call reject
+                 [| Js.Unsafe.inject (new%js Js.error_constr (Js.string msg)) |]
+             in
+             Lwt.return ())))
 
 let of_lwt_result ~error p =
   let open Let.Syntax2 (Lwt_result) in
   new%js _Promise
     (Js.wrap_callback (fun resolve reject ->
          let ( >>= ) = Lwt.( >>= ) in
-         let p =
-           Lwt.catch p (fun e ->
-               let msg = Caml.Printexc.to_string e in
-               Js.Unsafe.fun_call reject
-                 [| Js.Unsafe.inject (new%js Js.error_constr (Js.string msg)) |])
+         let p () =
+           p () >>= function
+           | Result.Ok v ->
+             Lwt.return @@ Js.Unsafe.fun_call resolve [| Js.Unsafe.inject v |]
+           | Result.Error e ->
+             Lwt.return
+             @@ Js.Unsafe.fun_call reject [| Js.Unsafe.inject @@ error e |]
          in
-         p >>= function
-         | Result.Ok v ->
-           Lwt.return @@ Js.Unsafe.fun_call resolve [| Js.Unsafe.inject v |]
-         | Result.Error e ->
-           Lwt.return
-           @@ Js.Unsafe.fun_call reject [| Js.Unsafe.inject @@ error e |]))
+         Lwt.catch p (fun e ->
+             let msg = Caml.Printexc.to_string e in
+             let () =
+               Js.Unsafe.fun_call reject
+                 [| Js.Unsafe.inject (new%js Js.error_constr (Js.string msg)) |]
+             in
+             Lwt_result.return ())))
