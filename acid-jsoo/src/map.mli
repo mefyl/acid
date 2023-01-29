@@ -1,5 +1,7 @@
 include module type of Acid.Js.Map
 
+val empty : unit -> ('key, 'data) t Js_of_ocaml.Js.t
+
 val of_map :
   ('key -> 'js_key) ->
   ('data -> 'js_data) ->

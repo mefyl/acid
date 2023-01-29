@@ -3,9 +3,12 @@ include Acid.Js.Map
 
 let ctor () : ('k, 'v) t Js.t Js.constr = Js.Unsafe.pure_js_expr "Map"
 
-let of_map key data map =
+let empty () =
   let ctor = ctor () in
-  let res = new%js ctor in
+  new%js ctor
+
+let of_map key data map =
+  let res = empty () in
   let () =
     let f ~key:k ~data:d =
       let key = key k
