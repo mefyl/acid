@@ -1,4 +1,4 @@
-module V0_11_0 = struct
+module V0_11_1 = struct
   (** @closed *)
   include Base
 
@@ -30,3 +30,5 @@ module V0_11_0 = struct
   (** @inline *)
   include Select_jsoo.Js
 end
+
+module V0_11_0 = V0_11_1

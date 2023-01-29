@@ -1,4 +1,4 @@
-module V0_11_0 = struct
+module V0_11_1 = struct
   module Js = struct
     include Js_of_ocaml.Js
     module Array = Array
@@ -9,3 +9,5 @@ module V0_11_0 = struct
     module Promise = Promise
   end
 end
+
+module V0_11_0 = V0_11_1
