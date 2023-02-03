@@ -36,6 +36,7 @@ module V0_11_2 = struct
   include V0_11_1
 
   module Hook = Hook
+  module Ticker = Ticker
 end
 
 module V0_11_0 = V0_11_1

@@ -59,7 +59,11 @@
     (and
      (>= 0.17.0)
      (< 0.18.0))
-    :with-test)))
+    :with-test))
+  (timmy
+   (and
+    (>= 0.16.0)
+    (< 0.17.0))))
  (depopts
   (schematic
    (and
