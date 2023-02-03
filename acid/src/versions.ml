@@ -31,4 +31,11 @@ module V0_11_1 = struct
   include Select_jsoo.Js
 end
 
+module V0_11_2 = struct
+  (** @inline *)
+  include V0_11_1
+
+  module Hook = Hook
+end
+
 module V0_11_0 = V0_11_1
