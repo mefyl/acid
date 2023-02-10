@@ -42,8 +42,7 @@
   (lwt
    (>= 5.0.0))
   (ppx_deriving :with-test)
-  (ppx_here
-   (= v0.14.0))
+  ppx_here
   (ppx_yojson
    (and
     (>= 1.2.0)
