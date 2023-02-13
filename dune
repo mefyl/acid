@@ -19,6 +19,6 @@
     %{dep:.logistic/dune/extdeps/extdeps.exe}
     generate
     --exclude
-    hlist,schematic,schematic-jsoo))))
+    hlist,schematic,schematic-jsoo,timmy))))
 
 (include dune.extdeps.inc)
