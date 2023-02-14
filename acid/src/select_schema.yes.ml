@@ -185,3 +185,32 @@ module Map = struct
     let schema data_schema = schema_versioned (fun _ -> None) data_schema
   end
 end
+
+module Set = struct
+  module type ELT = sig
+    include Base.Comparator.S
+
+    val schema_versioned : Schematic.Schema.version -> t Schematic.Schema.t
+  end
+
+  module M (E : ELT) = struct
+    include Base.Set
+    include Base.Set.M (E)
+
+    let schema_versioned version =
+      let elt_schema = E.schema_versioned version in
+      let open Schematic.Schema in
+      let id =
+        let open Fmt in
+        str "%amap" (option (string ++ const char '-')) elt_schema.id
+      and descriptor =
+        let descriptor = List elt_schema
+        and decode l = Base.Set.of_list (module E) l |> Result.return
+        and encode set = Base.Set.to_list set in
+        Map { descriptor; decode; encode }
+      in
+      make ~id descriptor
+
+    let schema = schema_versioned (fun _ -> None)
+  end
+end

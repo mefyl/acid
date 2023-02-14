@@ -1,17 +1,17 @@
 include Base.Set
 
-module M (Elt : Base.Comparator.S) = struct
-  include Base.Set
-  include Base.Set.M (Elt)
+module M (Elt : Select_schema.Set.ELT) = struct
+  include Select.Set.M (Elt)
+  include Select_schema.Set.M (Elt)
 
   let empty = empty (module Elt)
-  let singleton = singleton (module Elt)
-  let union_list = union_list (module Elt)
-  let of_list = of_list (module Elt)
-  let of_array = of_array (module Elt)
-  let of_sorted_array = of_sorted_array (module Elt)
-  let of_sorted_array_unchecked = of_sorted_array_unchecked (module Elt)
+  let singleton v = singleton (module Elt) v
+  let union_list l = union_list (module Elt) l
+  let of_list l = of_list (module Elt) l
+  let of_array a = of_array (module Elt) a
+  let of_sorted_array a = of_sorted_array (module Elt) a
+  let of_sorted_array_unchecked a = of_sorted_array_unchecked (module Elt) a
 
-  let of_increasing_iterator_unchecked =
-    of_increasing_iterator_unchecked (module Elt)
+  let of_increasing_iterator_unchecked ~len ~f =
+    of_increasing_iterator_unchecked (module Elt) ~len ~f
 end

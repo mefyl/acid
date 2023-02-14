@@ -28,4 +28,10 @@ module Map = struct
   module M (K : KEY) = struct end
 end
 
+module Set = struct
+  module type ELT = Base.Comparator.S
+
+  module M (E : ELT) = struct end
+end
+
 module Js = struct end

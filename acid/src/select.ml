@@ -8,3 +8,10 @@ module Map = struct
     include M (K)
   end
 end
+
+module Set = struct
+  module M (E : Base.Comparator.S) = struct
+    include Base.Set
+    include M (E)
+  end
+end
