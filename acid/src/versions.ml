@@ -39,4 +39,5 @@ module V0_11_2 = struct
   module Ticker = Ticker
 end
 
+module V0_11_3 = V0_11_2
 module V0_11_0 = V0_11_1
