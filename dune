@@ -9,7 +9,7 @@
   (alias_rec acid-jsoo/default)))
 
 (rule
- (target dune.extdeps.inc)
+ (target dune.inc)
  (alias extdeps)
  (mode (promote))
  (action
@@ -18,7 +18,7 @@
    (run
     %{dep:.logistic/dune/extdeps/extdeps.exe}
     generate
-    --exclude
+    --local
     hlist,schematic,schematic-jsoo,timmy))))
 
-(include dune.extdeps.inc)
+(include dune.inc)
