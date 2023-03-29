@@ -1,4 +1,11 @@
 (test
+ (name circular)
+ (modules circular)
+ (libraries alcotest acid)
+ (preprocess
+  (pps ppx_here)))
+
+(test
  (name list_nonempty)
  (modules list_nonempty)
  (libraries alcotest alcotest-lwt acid)
