@@ -18,6 +18,12 @@
    (run
     %{dep:.logistic/dune/extdeps/extdeps.exe}
     generate
+    --cross
+    base,fmt,lwt
+    --cross-both
+    ppx_here
+    --cross-exclude
+    schematic-jsoo
     --local
     hlist,schematic,schematic-jsoo,timmy))))
 
