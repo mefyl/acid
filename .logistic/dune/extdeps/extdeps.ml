@@ -393,13 +393,15 @@ let () =
                _;
              } as command) ->
           let tail =
-            List.filter_map
-              ~f:(function
-                | { pelem = Ident "name"; _ } as item ->
-                  Some { item with pelem = String package }
-                | { pelem; _ } as item ->
-                  Option.some_if (filter_doc_test pelem) item)
-              tail
+            { pelem = String "-x"; pos = dune_command.pos }
+            :: { pelem = String "ios"; pos = dune_command.pos }
+            :: List.filter_map
+                 ~f:(function
+                   | { pelem = Ident "name"; _ } as item ->
+                     Some { item with pelem = String package }
+                   | { pelem; _ } as item ->
+                     Option.some_if (filter_doc_test pelem) item)
+                 tail
           in
           Result.return
             (List { command with pelem = dune :: dune_command :: tail })
