@@ -61,7 +61,7 @@ ci/image:
 		CACHE='--no-cache'; \
 	fi; \
 	if test -n "$(DOCKER_TARGET)"; then DOCKER_TARGET="--target $(DOCKER_TARGET)"; fi; \
-	docker build -f "$(DOCKER_FILE)" "$(DOCKER_DIR)" $$DOCKER_TARGET --tag "$(or $(IMAGE_CI)$(VARIANT),ci)" --build-arg OCAML_VERSION=$(OCAML_VERSION) --build-arg PACKAGES="$(PACKAGES)" --build-arg OPAM_PACKAGES="$(OPAM_PACKAGES)" --build-arg OPAM_WITHOUT_PACKAGES="$(OPAM_WITHOUT_PACKAGES)" --build-arg AWS_SECRET_ACCESS_KEY="$(AWS_SECRET_ACCESS_KEY)" $$CACHE
+	docker build -f "$(DOCKER_FILE)" "$(DOCKER_DIR)" $$DOCKER_TARGET --tag "$(or $(IMAGE_CI)$(VARIANT),ci)" --build-arg OCAML_VERSION=$(OCAML_VERSION) --build-arg PACKAGES="$(PACKAGES)" --build-arg OPAM_PACKAGES="$(OPAM_PACKAGES)" --build-arg OPAM_WITHOUT_PACKAGES="$(OPAM_WITHOUT_PACKAGES)" --build-arg AWS_SECRET_ACCESS_KEY="$(AWS_SECRET_ACCESS_KEY)" --build-arg CI_VARIANT=$(subst -,,$(VARIANT)) $$CACHE
 
 image/%:
 	if test -n "$(FROM_SCRATCH)"; then CACHE="--no-cache"; \
