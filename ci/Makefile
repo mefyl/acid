@@ -1,4 +1,4 @@
-MAKEFILE=$(abspath $(lastword $(MAKEFILE_LIST)))
+MAKEFILE=$(abspath $(firstword $(MAKEFILE_LIST)))
 DIR=$(patsubst %/,%,$(dir $(MAKEFILE)))
 OCAML_VERSION ?= $(shell ocamlc --version)
 DUNE=opam exec -- dune
@@ -6,6 +6,11 @@ DUNE=opam exec -- dune
 ifdef DOCKERFILE_BASE
 DOCKERFILE_SUFFIX=.$(DOCKERFILE_BASE)
 endif
+
+DOCKER_DIR := .
+DOCKER_FILE := $(dir $(MAKEFILE_LIST))Dockerfile.ci$(DOCKERFILE_SUFFIX)
+
+-include Makefile.ci
 
 build:
 	if test -d /root/node_modules; then ln -s /root/node_modules; fi
@@ -35,9 +40,8 @@ package/clean:
 	docker rmi "$(IMAGE):$$(git describe --always)" "$(IMAGE):$$SLUG"
 
 ci/image:
-	cp "$(CI_ID_RSA)" .logistic/id_rsa
-	cp "$(CI_ID_RSA_PUB)" .logistic/id_rsa.pub
-	if test -e Dockerfile.ci; then cat Dockerfile.ci >> "$(dir $(MAKEFILE_LIST))Dockerfile.ci$(DOCKERFILE_SUFFIX)"; fi
+	if test -n "$(CI_ID_RSA)"; then cp "$(CI_ID_RSA)" $(DOCKER_DIR)/id_rsa; fi
+	if test -n "$(CI_ID_RSA_PUB)"; then cp "$(CI_ID_RSA_PUB)" $(DOCKER_DIR)/id_rsa.pub; fi
 	if test -z "$$FROM_SCRATCH"; then \
 		if test -n "$(IMAGE_CI)$(VARIANT)" && docker pull "$(IMAGE_CI)$(VARIANT)"; then \
 			echo "using remote $(CI_COMMIT_REF_NAME) cache";  \
@@ -56,14 +60,14 @@ ci/image:
 		echo "building from scratch"; \
 		CACHE='--no-cache'; \
 	fi; \
-	docker build -f "$(dir $(MAKEFILE_LIST))Dockerfile.ci$(DOCKERFILE_SUFFIX)" . --tag "$(or $(IMAGE_CI)$(VARIANT),ci)" --build-arg OCAML_VERSION=$(OCAML_VERSION) --build-arg PACKAGES="$(PACKAGES)" --build-arg OPAM_PACKAGES="$(OPAM_PACKAGES)" --build-arg OPAM_WITHOUT_PACKAGES="$(OPAM_WITHOUT_PACKAGES)" --build-arg AWS_SECRET_ACCESS_KEY="$(AWS_SECRET_ACCESS_KEY)" $$CACHE
+	if test -n "$(DOCKER_TARGET)"; then DOCKER_TARGET="--target $(DOCKER_TARGET)"; fi; \
+	docker build -f "$(DOCKER_FILE)" "$(DOCKER_DIR)" $$DOCKER_TARGET --tag "$(or $(IMAGE_CI)$(VARIANT),ci)" --build-arg OCAML_VERSION=$(OCAML_VERSION) --build-arg PACKAGES="$(PACKAGES)" --build-arg OPAM_PACKAGES="$(OPAM_PACKAGES)" --build-arg OPAM_WITHOUT_PACKAGES="$(OPAM_WITHOUT_PACKAGES)" --build-arg AWS_SECRET_ACCESS_KEY="$(AWS_SECRET_ACCESS_KEY)" $$CACHE
 
 image/%:
-	if test -e Dockerfile.$*; then cat Dockerfile.$* >> "$(dir $(MAKEFILE_LIST))Dockerfile.$*"; fi
 	if test -n "$(FROM_SCRATCH)"; then CACHE="--no-cache"; \
 	else if docker pull "$(IMAGE)/$*"; then CACHE="--cache-from $(IMAGE)/$*"; fi; \
 	fi; \
-	docker build -f "$(dir $(MAKEFILE_LIST))Dockerfile.$*" . --tag "$(IMAGE)/$*" $$CACHE --build-arg PACKAGES="$(PACKAGES)"
+	docker build -f "Dockerfile.$*" . --tag "$(IMAGE)/$*" $$CACHE --build-arg PACKAGES="$(PACKAGES)"
 
 opam:
 	$(DIR)/opam-publish
