@@ -60,6 +60,35 @@ module Lwt = struct
     let+ _squares_again = Sequence.to_list seq in
     Alcotest.(check ~here:[%here] int) "operations count" 5 !operations
 
+  let memoize_error _ () =
+    let module Sequence = Acid.Sequence.Make2 (Lwt_result) in
+    let fail_once =
+      let first_time = ref true in
+      let f () =
+        if !first_time then
+          let open Let.Syntax (Lwt) in
+          let () = first_time := false in
+          Lwt_result.fail ()
+        else Lwt_result.return None
+      in
+      Sequence.unfold_step ~init:() ~f
+    in
+    let s =
+      let unless p =
+        match Lwt.state p with Return (Result.Error _) -> true | _ -> false
+      in
+      Sequence.concat (Sequence.of_list [ fail_once; Sequence.of_list [] ])
+      |> Sequence.memoize_unless ~f:{ f = unless }
+    in
+    let* first = Sequence.to_list s in
+    let () =
+      Alcotest.(check ~here:[%here] (result (list pass) unit))
+        "first" (Result.Error ()) first
+    in
+    let+ second = Sequence.to_list s in
+    Alcotest.(check ~here:[%here] (result (list pass) unit))
+      "second" (Result.Ok []) second
+
   include Make (Base.Monad.Ident) (Sequence)
   module Seq = Make (Lwt) (Sequence.Seq)
 end
@@ -141,6 +170,7 @@ let () =
              test_case "unfold" Lwt.unfold;
              test_case "filter_map" Lwt.filter_map;
              test_case "memoize" Lwt.memoize;
+             test_case "memoize error" Lwt.memoize_error;
              test_case "Seq.filter_map" Lwt.Seq.filter_map;
            ] );
          ( "Result",

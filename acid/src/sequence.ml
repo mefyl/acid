@@ -398,6 +398,49 @@ module Make2 (Monad : Base.Monad.S2) = struct
     in
     Sequence { state = memoize state; f = (fun (M.T l) -> Lazy.force l) }
 
+  (* Like Lazy, but evaluation can be re-forced *)
+  module Relazy = struct
+    type 'a t = {
+      f : unit -> 'a;
+      mutable l : 'a Lazy.t;
+    }
+
+    let make f = { f; l = Lazy.from_fun f }
+    let is_val { l; _ } = Lazy.is_val l
+    let force { l; _ } = Lazy.force l
+
+    let reforce ({ f; _ } as t) =
+      let l = Lazy.from_fun f in
+      let () = t.l <- l in
+      Lazy.force l
+  end
+
+  type 'b unless = { f : 'a. ('a, 'b) Monad.t -> bool }
+
+  let memoize_unless (type a b) ~f:({ f = unless } : b unless)
+      (Sequence { state; f } : (a, b) t) =
+    let module M = struct
+      type t = T of ((a, t) Step.t, b) Monad.t Relazy.t
+    end in
+    let rec memoize s = M.T (Relazy.make (fun () -> find_step s))
+    and find_step s =
+      f s >>= function
+      | Step.Done -> Monad.return Step.Done
+      | Skip s -> find_step s
+      | Yield (a, s) -> Monad.return (Step.Yield (a, memoize s))
+      | Yields (a, s) -> Monad.return (Step.Yields (a, memoize s))
+    in
+    Sequence
+      {
+        state = memoize state;
+        f =
+          (fun (M.T l) ->
+            if Relazy.is_val l then
+              let v = Relazy.force l in
+              if unless v then Relazy.reforce l else v
+            else Relazy.force l);
+      }
+
   module Monad = struct
     type ('a, 'b, 'c, 'd) map = {
       f :

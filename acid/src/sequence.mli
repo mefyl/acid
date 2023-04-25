@@ -38,6 +38,10 @@ module Make2 (Monad : Base.Monad.S2) : sig
   val length : ('a, 'b) t -> (int, 'b) Monad.t
   val memoize : ('a, 'b) t -> ('a, 'b) t
 
+  type 'b unless = { f : 'a. ('a, 'b) Monad.t -> bool }
+
+  val memoize_unless : f:'b unless -> ('a, 'b) t -> ('a, 'b) t
+
   include
     WALKERS2
       with type ('a, 'b) sequence := ('a, 'b) t
@@ -83,4 +87,6 @@ module Make (M : Base.Monad.S) : sig
 
     val map : 'a t -> f:('a, 'b) map -> 'b t
   end
+
+  val memoize_unless : f:unit unless -> 'a t -> 'a t
 end
