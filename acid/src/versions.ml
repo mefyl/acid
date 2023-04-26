@@ -49,3 +49,5 @@ module V0_11_4 = struct
 
   module Circular = Circular
 end
+
+module V0_11_5 = V0_11_4
