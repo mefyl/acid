@@ -2,13 +2,13 @@ include:
   - local: '/.logistic/ci/.gitlab-ci-template.yml'
 
 toolchain:
-  extends: .ocaml-toolchain
+  extends: .toolchain
   variables:
     OCAML_VERSION: "4.12.0"
     OPAM_PACKAGES: "js_of_ocaml schematic"
 
 toolchain:no-schematic:
-  extends: .ocaml-toolchain
+  extends: .toolchain
   variables:
     OCAML_VERSION: "4.12.0"
     OPAM_PACKAGES: "js_of_ocaml"
@@ -16,7 +16,7 @@ toolchain:no-schematic:
     VARIANT: "-no-schematic"
 
 toolchain:no-jsoo:
-  extends: .ocaml-toolchain
+  extends: .toolchain
   variables:
     OCAML_VERSION: "4.12.0"
     OPAM_PACKAGES: "schematic"
@@ -24,7 +24,7 @@ toolchain:no-jsoo:
     VARIANT: "-no-jsoo"
 
 toolchain:none:
-  extends: .ocaml-toolchain
+  extends: .toolchain
   variables:
     OCAML_VERSION: "4.12.0"
     OPAM_WITHOUT_PACKAGES: "schematic js_of_ocaml"
