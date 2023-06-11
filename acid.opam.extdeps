@@ -12,8 +12,11 @@ depends: [
   "opam-file-format"
   "sexplib"
   "shexp"
+  "afl-persistent" {= "1.4" & with-test}
+  "alcotest" {= "1.7.0" & with-test}
+  "alcotest-lwt" {= "1.7.0" & with-test}
   "angstrom" {= "0.15.0"}
-  "astring" {= "0.8.5" & with-doc}
+  "astring" {= "0.8.5" & with-test}
   "base" {= "v0.15.1"}
   "base-bigarray" {= "base"}
   "base-bytes" {= "base"}
@@ -24,6 +27,7 @@ depends: [
   "camlp-streams" {= "5.0.1" & with-doc}
   "cmdliner" {= "1.2.0"}
   "cppo" {= "1.6.9"}
+  "crowbar" {= "0.2.1" & with-test}
   "csexp" {= "1.5.2"}
   "cstruct" {= "6.2.0"}
   "dune" {= "3.8.1"}
@@ -35,9 +39,11 @@ depends: [
   "hex" {= "1.5.0"}
   "js_of_ocaml" {= "5.2.0"}
   "js_of_ocaml-compiler" {= "5.2.0"}
+  "js_of_ocaml-ppx" {= "5.2.0"}
   "jsonm" {= "1.0.2"}
   "landmarks" {= "1.4"}
   "landmarks-ppx" {= "1.4"}
+  "logs" {= "0.7.0" & with-test}
   "lwt" {= "5.6.1"}
   "menhir" {= "20230415"}
   "menhirLib" {= "20230415"}
@@ -55,11 +61,12 @@ depends: [
   "odoc" {= "2.2.0" & with-doc}
   "odoc-parser" {= "2.0.0" & with-doc}
   "ppx_derivers" {= "1.2.1"}
-  "ppx_deriving" {= "5.2.1"}
+  "ppx_deriving" {= "5.2.1" & with-test}
   "ppx_here" {= "v0.15.0"}
+  "ppx_yojson" {= "1.2.0" & with-test}
   "ppxlib" {= "0.29.1"}
   "ptime" {= "1.1.0"}
-  "re" {= "1.10.4" & with-doc}
+  "re" {= "1.10.4" & with-test}
   "result" {= "1.5"}
   "sedlex" {= "3.1"}
   "semver2" {= "1.2.0"}
@@ -75,7 +82,6 @@ depends: [
   "uutf" {= "1.0.3"}
   "yojson" {= "2.1.0"}
 ]
-conflicts: ["schematic-jsoo"]
 dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
 pin-depends: [
   ["landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js"]
