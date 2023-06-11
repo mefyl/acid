@@ -51,3 +51,4 @@ module V0_11_4 = struct
 end
 
 module V0_11_5 = V0_11_4
+module V0_11_6 = V0_11_5
