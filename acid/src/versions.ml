@@ -53,3 +53,12 @@ end
 module V0_11_5 = V0_11_4
 module V0_11_6 = V0_11_5
 module V0_11_7 = V0_11_6
+
+module V0_11_8 = struct
+  include V0_11_7
+
+  module Lwt = struct
+    include Lwt
+    module Rw_mutex = Lwt_rw_mutex
+  end
+end

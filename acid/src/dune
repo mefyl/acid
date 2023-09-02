@@ -18,4 +18,4 @@
    (js_of_ocaml -> select_jsoo.yes.ml)
    (!js_of_ocaml -> select_jsoo.no.ml)))
  (preprocess
-  (pps ppx_here)))
+  (pps ppx_here ppx_deriving.show)))
