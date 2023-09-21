@@ -61,4 +61,6 @@ module V0_11_8 = struct
     include Lwt
     module Rw_mutex = Lwt_rw_mutex
   end
+
+  let logs_src = Acid_logs.src
 end

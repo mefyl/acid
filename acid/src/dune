@@ -5,6 +5,7 @@
   base
   fmt
   hlist
+  logs
   lwt
   timmy
   (select
