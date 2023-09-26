@@ -41,6 +41,7 @@
    (and
     (>= 0.2.0)
     (< 0.3.0)))
+  logs
   (lwt
    (>= 5.0.0))
   (ppx_deriving :with-test)
