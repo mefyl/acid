@@ -5,7 +5,7 @@
  (modules queue_tests)
  (libraries acid fmt)
  (preprocess
-  (pps ppx_here)))
+  (pps ppx_deriving.show ppx_here)))
 
 (test
  (name queue)
