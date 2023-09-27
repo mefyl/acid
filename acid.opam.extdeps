@@ -8,7 +8,7 @@ license: "LGPL-3.0-or-later"
 homepage: "https://gitlab.routine.co/routine/acid"
 bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
 depends: [
-  "ocamlformat" {= "0.25.1"}
+  "ocamlformat" {= "0.26.1"}
   "opam-file-format"
   "sexplib"
   "shexp"

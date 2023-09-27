@@ -34,14 +34,16 @@ end
 module type NESTABLE2 = sig
   include Base.Monad.S2
 
-  module Nest (Outer : S) : sig
+  module Nest
+      (Outer : S) : sig
     type ('a, 'b) nested
 
     include S2 with type ('a, 'b) t = ('a, 'b) nested Outer.t
   end
   with type ('a, 'b) nested := ('a, 'b) t
 
-  module Nest2 (Outer : S2) : sig
+  module Nest2
+      (Outer : S2) : sig
     type ('a, 'b) nested
 
     include S2 with type ('a, 'b) t = (('a, 'b) nested, 'b) Outer.t

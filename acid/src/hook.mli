@@ -22,7 +22,8 @@ module Expert : sig
   include module type of Expert
 
   module Make2
-      (Monad : Base.Monad.S2) (Res : sig
+      (Monad : Base.Monad.S2)
+      (Res : sig
         type value
         type result
 
@@ -30,7 +31,8 @@ module Expert : sig
       end) : S2
 
   module Make
-      (Monad : Base.Monad.S) (Res : sig
+      (Monad : Base.Monad.S)
+      (Res : sig
         type value
         type result
 

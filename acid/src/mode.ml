@@ -26,7 +26,7 @@ module R = struct
     let schema_versioned _ r _ = r
 
     let schema r w = schema_versioned None r w
-      [@@ocaml.warning "-unused-value-declaration"]
+    [@@ocaml.warning "-unused-value-declaration"]
 
     let equal r_eq _ = r_eq
     let pp pp_r _ = pp_r
@@ -63,7 +63,7 @@ module W = struct
     let schema_versioned _ _ w = w
 
     let schema r w = schema_versioned None r w
-      [@@ocaml.warning "-unused-value-declaration"]
+    [@@ocaml.warning "-unused-value-declaration"]
 
     let equal _ w_eq = w_eq
     let pp _ pp_w = pp_w

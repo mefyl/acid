@@ -29,7 +29,9 @@ module Index : sig
   end
 
   (** A set of indexes consisting of two indexes. *)
-  module Two (First : INDEX) (Second : INDEX with type value = First.value) : sig
+  module Two
+      (First : INDEX)
+      (Second : INDEX with type value = First.value) : sig
     include INDEXES with type value = First.value
 
     module Make (Value : Comparator.S with type t = First.value) : sig
@@ -180,7 +182,9 @@ module Index : sig
   end
 
   (** A set of indexes adding an index to an other set. *)
-  module Add (Index : INDEX) (Tail : INDEXES with type value = Index.value) : sig
+  module Add
+      (Index : INDEX)
+      (Tail : INDEXES with type value = Index.value) : sig
     include INDEXES with type t = Index.t -> Tail.t and type value = Index.value
 
     module Make (Value : Comparator.S with type t = value) : sig

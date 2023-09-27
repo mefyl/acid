@@ -41,7 +41,7 @@ module Nest = struct
   let list () =
     let open Acid.Let.Syntax2 (ResultList) in
     let inc v =
-      let+ v = v in
+      let+ v in
       v + 1
     in
     Alcotest.(check (list (result int string)) "[]" [] (inc []));
