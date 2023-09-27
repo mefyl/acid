@@ -71,7 +71,15 @@ let acquire_read ?reason t =
     in
     let () = t.state <- Reading (n + 1) in
     true
-  | Writing -> false
+  | Writing ->
+    let () =
+      match t.name with
+      | None -> ()
+      | Some name ->
+        Acid_logs.info (fun m ->
+            m "%s: block acquiring for reading%a" name pp_reason reason)
+    in
+    false
 
 and release_read ?reason t =
   match t.state with
@@ -113,7 +121,16 @@ let acquire_write ?reason t =
     in
     let () = t.state <- Writing in
     true
-  | _ -> false
+  | state ->
+    let () =
+      match t.name with
+      | None -> ()
+      | Some name ->
+        Acid_logs.info (fun m ->
+            m "%s: block acquiring for writing%a: %a" name pp_reason reason
+              pp_state state)
+    in
+    false
 
 and release_write ?reason t =
   match t.state with
@@ -127,7 +144,7 @@ and release_write ?reason t =
     in
     let () = t.state <- Free in
     true
-  | _ -> failwith "write-releasing a rw-mutex locked for writing"
+  | _ -> failwith "write-releasing a rw-mutex not locked for writing"
 
 let write t ?reason f = protect ?reason t acquire_write release_write f
 let lock_write t = _lock t acquire_write
