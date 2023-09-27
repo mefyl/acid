@@ -4,7 +4,7 @@
    (progn (cat %{opam})
     (echo
      "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\" }")))))
-(rule (alias default) (target acid-ios.opam)
+(rule (target acid-ios.opam)
  (action
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
@@ -33,7 +33,7 @@
    (progn (cat %{opam})
     (echo
      "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-jsoo}\" }")))))
-(rule (alias default) (target acid-jsoo-ios.opam)
+(rule (target acid-jsoo-ios.opam)
  (action
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
