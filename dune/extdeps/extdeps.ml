@@ -166,7 +166,6 @@ let () =
           List
             [
               Atom "rule";
-              List [ Atom "alias"; Atom "default" ];
               List [ Atom "target"; Atom (package ^ "-ios.opam") ];
               List
                 [
