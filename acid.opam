@@ -22,11 +22,11 @@ depends: [
   "ppx_yojson" {>= "1.2.0" & with-test}
   "schematic" {>= "0.18.2" & < "0.19.0" & with-test}
   "schematic-jsoo" {>= "0.18.2" & < "0.19.0" & with-test}
-  "timmy" {>= "1.0.1" & < "1.1.0"}
+  "timmy" {>= "1.0.1" & < "2.0.0"}
   "odoc" {with-doc}
 ]
 depopts: [
-  "schematic" {>= "0.18.2" & < "0.19.0"}
+  "schematic" {>= "0.18.2" & < "0.20.0"}
   "schematic-jsoo" {>= "0.18.2" & < "0.19.0"}
 ]
 build: [
