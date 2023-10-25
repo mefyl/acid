@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.11.9)
+(version 0.11.10)
 
 (homepage https://gitlab.routine.co/routine/acid)
 
@@ -54,13 +54,13 @@
    (and
     (and
      (>= 0.18.2)
-     (< 0.19.0))
+     (< 0.20.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
      (>= 0.18.2)
-     (< 0.19.0))
+     (< 0.20.0))
     :with-test))
   (timmy
    (and
@@ -74,7 +74,7 @@
   (schematic-jsoo
    (and
     (>= 0.18.2)
-    (< 0.19.0)))))
+    (< 0.20.0)))))
 
 (package
  (name acid-jsoo)
