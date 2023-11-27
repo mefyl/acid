@@ -5,7 +5,7 @@ module Ordered_string_by_hash = Multi_index.Ordered_by_unique (struct
 
   let get v =
     (* Hoping this is unique enough for the purpose of this test suite *)
-    Caml.Hashtbl.hash v
+    Stdlib.Hashtbl.hash v
 
   include Int
 end)
@@ -66,7 +66,7 @@ module Strings = struct
       (Index_by_hash.First (Index_caseless.Tail (Index_by_length.Tail (Bind))))
 end
 
-module String_set = Caml.Set.Make (String)
+module String_set = Stdlib.Set.Make (String)
 
 let set elt =
   let pp fmt set =

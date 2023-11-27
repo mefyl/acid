@@ -6,8 +6,8 @@ module Step = struct
 
   let of_base = function
     | Base.Sequence.Step.Done -> Done
-    | Skip state -> Skip state
-    | Yield (v, state) -> Yield (v, state)
+    | Skip { state } -> Skip state
+    | Yield { value; state } -> Yield (value, state)
 end
 
 module Make2 (Monad : Base.Monad.S2) = struct

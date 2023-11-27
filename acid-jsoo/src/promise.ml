@@ -37,7 +37,7 @@ let of_lwt p =
              Lwt.return @@ Js.Unsafe.fun_call resolve [| Js.Unsafe.inject v |]
          in
          Lwt.catch p (fun e ->
-             let msg = Caml.Printexc.to_string e in
+             let msg = Stdlib.Printexc.to_string e in
              let () =
                Js.Unsafe.fun_call reject
                  [| Js.Unsafe.inject (new%js Js.error_constr (Js.string msg)) |]
@@ -58,7 +58,7 @@ let of_lwt_result ~error p =
              @@ Js.Unsafe.fun_call reject [| Js.Unsafe.inject @@ error e |]
          in
          Lwt.catch p (fun e ->
-             let msg = Caml.Printexc.to_string e in
+             let msg = Stdlib.Printexc.to_string e in
              let () =
                Js.Unsafe.fun_call reject
                  [| Js.Unsafe.inject (new%js Js.error_constr (Js.string msg)) |]

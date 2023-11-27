@@ -48,7 +48,7 @@ module Expert = struct
         make_witness = (fun () -> object end);
         reduce =
           (fun acc value -> Monad.map acc ~f:(fun acc -> Res.reduce acc value));
-        witness_to_int = Caml.Oo.id;
+        witness_to_int = Stdlib.Oo.id;
       }
   end
 
