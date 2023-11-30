@@ -59,6 +59,18 @@ struct
 
   let ( let+?? ) = ( >>|?? )
 
+  let ( >>=??! ) v f =
+    match v with None -> f None | Some v -> v >>=! fun v -> f (Some v)
+
+  let ( let*??! ) = ( >>=??! )
+
+  let ( >>|??! ) v f =
+    match v with
+    | None -> Result.return @@ f None
+    | Some v -> v >>|! fun v -> f (Some v)
+
+  let ( let+??! ) = ( >>|??! )
+
   (* Result operators *)
 
   let ( >>=!! ) v f =
@@ -74,6 +86,20 @@ struct
     | Ok v -> v >>| fun v -> f (Ok v)
 
   let ( let+!! ) = ( >>|!! )
+
+  let ( >>=!!? ) v f =
+    match v with
+    | Base.Result.Error _ as e -> f e
+    | Ok v -> v >>=? fun v -> f (Ok v)
+
+  let ( let*!!? ) = ( >>=!!? )
+
+  let ( >>|!!? ) v f =
+    match v with
+    | Base.Result.Error _ as e -> Option.return @@ f e
+    | Ok v -> v >>|? fun v -> f (Ok v)
+
+  let ( let+!!? ) = ( >>|!!? )
 end
 
 module Syntax2 (M : Base.Monad.S2) = struct

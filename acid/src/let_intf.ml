@@ -101,6 +101,26 @@ module type S2 = sig
   val ( let+?? ) :
     ('a, 'b) t Base.Option.t -> ('a Base.Option.t -> 'c) -> ('c, 'b) t
 
+  val ( >>=??! ) :
+    (('a, 'b) result, 'b) t Base.Option.t ->
+    ('a Base.Option.t -> (('c, 'b) result, 'b) t) ->
+    (('c, 'b) result, 'b) t
+
+  val ( let*??! ) :
+    (('a, 'b) result, 'b) t Base.Option.t ->
+    ('a Base.Option.t -> (('c, 'b) result, 'b) t) ->
+    (('c, 'b) result, 'b) t
+
+  val ( >>|??! ) :
+    (('a, 'b) result, 'b) t Base.Option.t ->
+    ('a Base.Option.t -> 'c) ->
+    (('c, 'b) result, 'b) t
+
+  val ( let+??! ) :
+    (('a, 'b) result, 'b) t Base.Option.t ->
+    ('a Base.Option.t -> 'c) ->
+    (('c, 'b) result, 'b) t
+
   (* Result operators *)
 
   val ( >>=!! ) :
@@ -122,6 +142,26 @@ module type S2 = sig
     (('a, 'b) t, 'b) Base.Result.t ->
     (('a, 'b) Base.Result.t -> 'c) ->
     ('c, 'b) t
+
+  val ( >>=!!? ) :
+    (('a option, 'b) t, 'b) Base.Result.t ->
+    (('a, 'b) Base.Result.t -> ('c option, 'b) t) ->
+    ('c option, 'b) t
+
+  val ( let*!!? ) :
+    (('a option, 'b) t, 'b) Base.Result.t ->
+    (('a, 'b) Base.Result.t -> ('c option, 'b) t) ->
+    ('c option, 'b) t
+
+  val ( >>|!!? ) :
+    (('a option, 'b) t, 'b) Base.Result.t ->
+    (('a, 'b) Base.Result.t -> 'c) ->
+    ('c option, 'b) t
+
+  val ( let+!!? ) :
+    (('a option, 'b) t, 'b) Base.Result.t ->
+    (('a, 'b) Base.Result.t -> 'c) ->
+    ('c option, 'b) t
 end
 
 module type S = sig
