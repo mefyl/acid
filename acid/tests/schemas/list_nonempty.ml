@@ -60,4 +60,7 @@ let schema () =
 let () =
   let test_case name f = Alcotest.test_case name `Quick f in
   Alcotest.run "Acid.List_nonempty"
-    [ ("schematic coding", [ test_case "schema" schema ]) ]
+    [
+      ( "schematic coding",
+        [ test_case "literal" literal; test_case "schema" schema ] );
+    ]

@@ -408,3 +408,81 @@ struct
                | Some value -> Binder.Multi_index.update old value map)
   end
 end
+
+module Multi_ordered_by
+    (Value : MULTI_ORDERED_BY)
+    (Next : INDEX with type value = Value.value) =
+struct
+  type t = (Value.t, Next.t, Value.comparator_witness) Map.t
+  type value = Value.value
+
+  let _add keys value (map : t) =
+    Set.fold keys ~init:map ~f:(fun map key ->
+        Map.change map key ~f:(function
+          | None -> Some (Next.add value Next.empty)
+          | Some index -> Some (Next.add value index)))
+
+  let add value map = _add (Value.get value) value map
+
+  let _remove keys value map =
+    Set.fold keys ~init:map ~f:(fun map key ->
+        Map.change map key ~f:(function
+          | None -> None
+          | Some index ->
+            let index = Next.remove value index in
+            if Next.is_empty index then None else Some index))
+
+  let remove value map = _remove (Value.get value) value map
+
+  let all map =
+    Map.to_sequence map
+    |> Sequence.map ~f:(fun (_, data) -> Next.all data)
+    |> Sequence.concat
+
+  let empty = Map.empty (module Value)
+  let is_empty = Map.is_empty
+
+  let _update keys old_value new_value map =
+    Set.fold keys ~init:map ~f:(fun map key ->
+        Map.change map key ~f:(function
+          | None -> Some (Next.add new_value Next.empty)
+          | Some index -> Some (Next.update old_value new_value index)))
+
+  let update old_value new_value map =
+    let removed_keys, added_keys, preserved_keys =
+      let old_keys = Value.get old_value
+      and new_keys = Value.get new_value in
+      ( Set.diff old_keys new_keys,
+        Set.diff new_keys old_keys,
+        Set.inter new_keys old_keys )
+    in
+    map
+    |> _remove removed_keys old_value
+    |> _add added_keys new_value
+    |> _update preserved_keys old_value new_value
+
+  module Bind
+      (Binder : BINDER with type Multi_index.value = value and type index = t) =
+  struct
+    let mem value map = Map.mem (Binder.get map) value
+    let find value map = Map.find (Binder.get map) value
+
+    let remove value map =
+      match Map.find (Binder.get map) value with
+      | None -> map
+      | Some index ->
+        Next.all index
+        |> Sequence.fold ~init:map ~f:(fun map elt ->
+               Binder.Multi_index.remove elt map)
+
+    let update value map ~f =
+      match find value map with
+      | None -> map
+      | Some next ->
+        Next.all next
+        |> Base.Sequence.fold ~init:map ~f:(fun map old ->
+               match f old with
+               | None -> Binder.Multi_index.remove old map
+               | Some value -> Binder.Multi_index.update old value map)
+  end
+end

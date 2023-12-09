@@ -1,4 +1,5 @@
 open Acid
+module Ordered_string = Multi_index.Ordered (String)
 
 module Ordered_string_by_hash = Multi_index.Ordered_by_unique (struct
   type value = string
@@ -10,7 +11,16 @@ module Ordered_string_by_hash = Multi_index.Ordered_by_unique (struct
   include Int
 end)
 
-module Ordered_string = Multi_index.Ordered (String)
+module Multi_ordered_string_by_characters =
+  Multi_index.Multi_ordered_by
+    (struct
+      type value = string
+
+      let get = String.fold ~init:(Set.empty (module Char)) ~f:Set.add
+
+      include Char
+    end)
+    (Ordered_string)
 
 module Ordered_string_caseless =
   Multi_index.Ordered_by
@@ -46,7 +56,10 @@ module Ordered_string_by_length =
  * end *)
 
 module Strings = struct
-  module Index_by_hash = Multi_index.Index.One (Ordered_string_by_hash)
+  module Index_by_hash =
+    Multi_index.Index.Two
+      (Ordered_string_by_hash)
+      (Multi_ordered_string_by_characters)
 
   module Index_caseless =
     Multi_index.Index.Add (Ordered_string_caseless) (Index_by_hash)
@@ -64,6 +77,10 @@ module Strings = struct
   module By_hash =
     Ordered_string_by_hash.Bind
       (Index_by_hash.First (Index_caseless.Tail (Index_by_length.Tail (Bind))))
+
+  module By_characters =
+    Multi_ordered_string_by_characters.Bind
+      (Index_by_hash.Second (Index_caseless.Tail (Index_by_length.Tail (Bind))))
 end
 
 module String_set = Stdlib.Set.Make (String)
@@ -201,6 +218,35 @@ module Ordered_unique = struct
     ()
 end
 
+module Multi_ordered = struct
+  let by_characters () =
+    let test =
+      Strings.empty |> Strings.add "Foo" |> Strings.add "foo"
+      |> Strings.add "FOO" |> Strings.add "bar" |> Strings.add "BAR"
+      |> Strings.add "baz"
+    in
+    let check ~here test expected c =
+      Alcotest.(check ~here bool) "mem" (Option.is_some expected)
+      @@ Strings.By_characters.mem c test;
+      Alcotest.(check ~here (option (set string))) "find" expected
+      @@ Strings.By_characters.find c test
+    in
+    let () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "foo"; "Foo" ]))
+        'o'
+    and () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "bar"; "baz" ]))
+        'a'
+    and () =
+      check ~here:[%here] test
+        (Some (Set.of_list (module String) [ "baz" ]))
+        'z'
+    and () = check ~here:[%here] test None 'x' in
+    ()
+end
+
 let () =
   let open Alcotest in
   run "Acid.Multi_index"
@@ -211,4 +257,6 @@ let () =
           test_case "caseless" `Quick Ordered.caseless;
         ] );
       ("Ordered_unique", [ test_case "by hash" `Quick Ordered_unique.by_hash ]);
+      ( "Multi_ordered",
+        [ test_case "by characters" `Quick Multi_ordered.by_characters ] );
     ]

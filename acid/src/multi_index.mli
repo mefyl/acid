@@ -272,3 +272,25 @@ module Ordered_by
       Binder.Multi_index.t
   end
 end
+
+(** An index that index values by a set of injective property.
+
+    Values mapped to the same property are further indexed by the [Next] index. *)
+module Multi_ordered_by
+    (Value : MULTI_ORDERED_BY)
+    (Next : INDEX with type value = Value.value) : sig
+  include INDEX with type value = Value.value
+
+  module Bind
+      (Binder : BINDER with type Multi_index.value = value and type index = t) : sig
+    val find : Value.t -> Binder.Multi_index.t -> Next.t option
+    val mem : Value.t -> Binder.Multi_index.t -> bool
+    val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
+
+    val update :
+      Value.t ->
+      Binder.Multi_index.t ->
+      f:(Value.value -> Value.value option) ->
+      Binder.Multi_index.t
+  end
+end

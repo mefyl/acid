@@ -135,3 +135,34 @@ module type ORDERED_BY = sig
   (** [get value] is the [t] to index [value] by. *)
   val get : value -> t
 end
+
+(** A type indexable by a list of extracted property.
+
+    For instance, to index persons by nicknames:
+
+    {[
+      type person = {
+        first : string;
+        last : string;
+        nick : string list;
+      }
+
+      module Ordered_by_lastname :
+        ORDERED_BY with type value = person and type t = string = struct
+        type value = person
+
+        let get { nick; _ } = nick
+
+        include String
+      end
+    ]} *)
+module type MULTI_ORDERED_BY = sig
+  (** Ordered values *)
+  type value
+
+  (** Type the values are sorted by. *)
+  include Comparator.S
+
+  (** [get value] is the set of [t] to index [value] by. *)
+  val get : value -> (t, comparator_witness) Set.t
+end
