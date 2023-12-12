@@ -222,6 +222,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
       Sequence { state; f }
 
     let map s ~f = filter_map s ~f:(fun v -> f v >>| Option.return)
+    let iter s ~f = map s ~f |> fold ~init:() ~f:(fun () () -> ())
   end
 
   module Seq = struct

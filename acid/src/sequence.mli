@@ -58,6 +58,7 @@ module Make2 (Monad : Base.Monad.S2) : sig
     val filter_map :
       ('a, 'b) t -> f:('a -> ('c option, 'b) Monad.t) -> ('c, 'b) t
 
+    val iter : ('a, 'b) t -> f:('a -> (unit, 'b) Monad.t) -> (unit, 'b) Monad.t
     val map : ('a, 'b) t -> f:('a -> ('c, 'b) Monad.t) -> ('c, 'b) t
   end
 
