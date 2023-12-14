@@ -28,7 +28,7 @@ module Expert : sig
         type result
 
         val reduce : result -> value -> result
-      end) : S2
+      end) : S2 with module Monad = Monad and module Res = Res
 
   module Make
       (Monad : Base.Monad.S)
@@ -37,7 +37,7 @@ module Expert : sig
         type result
 
         val reduce : result -> value -> result
-      end) : S
+      end) : S with module Monad = Monad and module Res = Res
 end
 
 module Make () : S
