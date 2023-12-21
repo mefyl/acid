@@ -351,16 +351,27 @@ module Make2 (Monad : Base.Monad.S2) = struct
   let to_list seq = to_list_rev seq >>| List.rev
 
   let to_map comparator seq =
-    let rec to_list_rev acc seq =
+    let rec to_map acc seq =
       step seq >>= function
       | [], _ -> Monad.return acc
       | items, seq ->
-        to_list_rev
+        to_map
           (List.fold items ~init:acc ~f:(fun acc (key, data) ->
                Map.set ~key ~data acc))
           seq
     in
-    to_list_rev (Map.empty comparator) seq
+    to_map (Map.empty comparator) seq
+
+  let to_set comparator seq =
+    let rec to_set acc seq =
+      step seq >>= function
+      | [], _ -> Monad.return acc
+      | items, seq ->
+        to_set
+          (List.fold items ~init:acc ~f:(fun acc data -> Set.add acc data))
+          seq
+    in
+    to_set (Set.empty comparator) seq
 
   let partition_rev seq =
     let rec loop (l, r) seq =
