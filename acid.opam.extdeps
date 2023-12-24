@@ -1,6 +1,6 @@
 opam-version: "2.0"
 name: "acid"
-version: "0.11.9"
+version: "0.11.11"
 synopsis: "Base library"
 maintainer: "mefyl <mefyl@gruntech.org>"
 authors: "mefyl <mefyl@gruntech.org>"
@@ -11,13 +11,12 @@ depends: [
   "ocamlformat" {= "0.26.1"}
   "opam-file-format"
   "sexplib"
-  "shexp"
-  "afl-persistent" {= "1.1" & with-test}
+  "afl-persistent" {= "1.4" & with-test}
   "alcotest" {= "1.7.0" & with-test}
   "alcotest-lwt" {= "1.7.0" & with-test}
-  "angstrom" {= "0.15.0"}
+  "angstrom" {= "0.16.0"}
   "astring" {= "0.8.5" & with-test}
-  "base" {= "v0.15.1"}
+  "base" {= "v0.16.3"}
   "base-bigarray" {= "base"}
   "base-bytes" {= "base"}
   "base-threads" {= "base"}
@@ -30,18 +29,19 @@ depends: [
   "conf-which" {= "1"}
   "cppo" {= "1.6.9"}
   "crowbar" {= "0.2.1" & with-test}
+  "crunch" {= "3.3.1" & with-doc}
   "csexp" {= "1.5.2"}
   "cstruct" {= "6.2.0"}
-  "dune" {= "3.10.0"}
-  "dune-configurator" {= "3.10.0"}
+  "dune" {= "3.12.1"}
+  "dune-configurator" {= "3.12.1"}
   "ezjsonm" {= "1.3.0"}
   "fmt" {= "0.9.0"}
   "fpath" {= "0.7.3" & with-doc}
   "gen" {= "1.1"}
   "hex" {= "1.5.0"}
-  "js_of_ocaml" {= "5.4.0"}
-  "js_of_ocaml-compiler" {= "5.4.0"}
-  "js_of_ocaml-ppx" {= "5.4.0"}
+  "js_of_ocaml" {= "5.5.2"}
+  "js_of_ocaml-compiler" {= "5.5.2"}
+  "js_of_ocaml-ppx" {= "5.5.2"}
   "jsonm" {= "1.0.2"}
   "landmarks" {= "1.4"}
   "landmarks-ppx" {= "1.4"}
@@ -57,31 +57,31 @@ depends: [
   "ocaml-config" {= "2"}
   "ocaml-options-vanilla" {= "1"}
   "ocaml-syntax-shims" {= "1.0.0"}
-  "ocamlbuild" {= "0.14.2"}
+  "ocamlbuild" {= "0.14.3"}
   "ocamlfind" {= "1.9.6"}
   "ocplib-endian" {= "1.2"}
-  "odoc" {= "2.2.1" & with-doc}
-  "odoc-parser" {= "2.0.0" & with-doc}
+  "odoc" {= "2.4.0" & with-doc}
+  "odoc-parser" {= "2.4.0" & with-doc}
   "ppx_derivers" {= "1.2.1"}
   "ppx_deriving" {= "5.2.1" & with-test}
-  "ppx_here" {= "v0.15.0"}
+  "ppx_here" {= "v0.16.0"}
   "ppx_yojson" {= "1.3.0" & with-test}
-  "ppxlib" {= "0.30.0"}
+  "ppxlib" {= "0.31.0"}
   "ptime" {= "1.1.0"}
   "re" {= "1.11.0" & with-test}
   "result" {= "1.5"}
   "sedlex" {= "3.2"}
   "semver2" {= "1.2.0"}
   "seq" {= "base"}
-  "sexplib0" {= "v0.15.1"}
+  "sexplib0" {= "v0.16.0"}
   "stdcompat" {= "19"}
   "stdlib-shims" {= "0.3.0"}
   "stringext" {= "1.6.0"}
   "topkg" {= "1.0.7"}
-  "tyxml" {= "4.5.0" & with-doc}
-  "uri" {= "4.2.0"}
+  "tyxml" {= "4.6.0" & with-doc}
+  "uri" {= "4.4.0"}
   "uutf" {= "1.0.3"}
-  "yojson" {= "2.1.0"}
+  "yojson" {= "2.1.2"}
 ]
 dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
 pin-depends: [
