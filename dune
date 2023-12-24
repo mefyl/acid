@@ -25,6 +25,6 @@
     --cross-exclude
     schematic-jsoo
     --local
-    hlist,schematic,schematic-jsoo,timmy))))
+    hlist,metaversion,schematic,schematic-jsoo,timmy))))
 
 (include dune.inc)

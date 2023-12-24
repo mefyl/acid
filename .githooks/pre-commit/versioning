@@ -4,7 +4,7 @@ staged () {
     git show ":$1"
 }
 
-VERSION=$(sed -n 's/(version \(.*\))/\1/p' dune-project)
+VERSION=$(staged dune-project | sed -n 's/(version \(.*\))/\1/p')
 VERSION="V${VERSION//./_}"
 
 check () {

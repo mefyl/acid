@@ -1,4 +1,5 @@
 pin-depends: [
+  [ "metaversion.0.0.1" "git+ssh://git@gitlab.routine.co/routine/metaversion.git#a25f3b0457d56ff7c5d6484d9ef8ddf938488038" ]
   [ "landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js" ]
   [ "landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js" ]
 ]
