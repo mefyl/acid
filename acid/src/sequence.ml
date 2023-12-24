@@ -2,7 +2,7 @@ open Base
 include Sequence_intf
 
 module Step = struct
-  include Step
+  include Sequence_intf.Step
 
   let of_base = function
     | Base.Sequence.Step.Done -> Done

@@ -21,4 +21,4 @@
  (preprocessor_deps
   (package metaversion))
  (preprocess
-  (pps ppx_here ppx_deriving.show)))
+  (pps metapp.ppx ppx_here ppx_deriving.show)))

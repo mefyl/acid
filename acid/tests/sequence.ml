@@ -1,8 +1,12 @@
-open Acid
+open Base
+module Let = Acid.Let
+module List_nonempty = Acid.List_nonempty
+module Result = Acid.Result
 
 module Lwt = struct
-  open Let.Syntax (Lwt)
-  module Sequence = Acid.Sequence.Make (Lwt)
+  include Acid.Lwt
+  open Let.Syntax (Acid.Lwt)
+  module Sequence = Acid.Sequence.Make (Acid.Lwt)
 
   let squared_odds init =
     let f = function
@@ -61,12 +65,12 @@ module Lwt = struct
     Alcotest.(check ~here:[%here] int) "operations count" 5 !operations
 
   let memoize_error _ () =
-    let module Sequence = Acid.Sequence.Make2 (Lwt_result) in
+    let module Sequence = Acid.Sequence.Make2 (Acid.Lwt_result) in
     let fail_once =
       let first_time = ref true in
       let f () =
         if !first_time then
-          let open Let.Syntax (Lwt) in
+          let open Let.Syntax (Acid.Lwt) in
           let () = first_time := false in
           Lwt_result.fail ()
         else Lwt_result.return None
@@ -90,11 +94,21 @@ module Lwt = struct
       "second" (Result.Ok []) second
 
   include Make (Base.Monad.Ident) (Sequence)
-  module Seq = Make (Lwt) (Sequence.Seq)
+  module Seq = Make (Acid.Lwt) (Sequence.Seq)
+
+  module Par = struct
+    let iter _ () =
+      let sequence = Sequence.of_list [ 1; 2; 3 ]
+      and beacon = ref 0 in
+      Sequence.Par.iter sequence ~f:(fun i ->
+          let () = beacon := !beacon + i in
+          let+ () = Lwt.pause () in
+          Alcotest.(check ~here:[%here] int "beacon" 6 !beacon))
+  end
 end
 
-module Result = struct
-  module Sequence = Acid.Sequence.Make2 (Result)
+module Result_tests = struct
+  module Sequence = Acid.Sequence.Make2 (Acid.Result)
 
   let div init =
     let f = function
@@ -172,12 +186,14 @@ let () =
              test_case "memoize" Lwt.memoize;
              test_case "memoize error" Lwt.memoize_error;
              test_case "Seq.filter_map" Lwt.Seq.filter_map;
+             test_case "Par.iter" Lwt.Par.iter;
            ] );
          ( "Result",
-           [
-             test_case_res "unfold" Result.unfold;
-             test_case_res "fold" Result.fold;
-             test_case_res "length" Result.length;
-             test_case_res "group_fold" Result.group_fold;
-           ] );
+           Result_tests.
+             [
+               test_case_res "unfold" unfold;
+               test_case_res "fold" fold;
+               test_case_res "length" length;
+               test_case_res "group_fold" group_fold;
+             ] );
        ]

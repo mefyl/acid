@@ -23,6 +23,7 @@ depends: [
   "schematic" {>= "0.18.2" & < "0.20.0" & with-test}
   "schematic-jsoo" {>= "0.18.2" & < "0.20.0" & with-test}
   "timmy" {>= "1.0.1" & < "2.0.0"}
+  "metaversion"
   "odoc" {with-doc}
 ]
 depopts: [
