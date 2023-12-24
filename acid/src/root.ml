@@ -10,6 +10,9 @@ module Either = Either
 (** @canonical Acid.Int *)
 module Int = Int
 
+(** @canonical Acid.Let *)
+module Let = Let
+
 (** @canonical Acid.List *)
 module List = List
 

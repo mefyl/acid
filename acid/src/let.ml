@@ -1,4 +1,4 @@
-include Let_intf
+include Let_intf.V0_11_11
 
 module Syntax2_suffixes
     (M : Base.Monad.S2)

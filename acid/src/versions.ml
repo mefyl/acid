@@ -9,7 +9,7 @@ module V0_11_0 = struct
   module Hlist = Hlist
   module IQueue = Root.Queue
   module Int = Root.Int
-  module Let = Let
+  module Let : Let_versions.V0_11_0 = Root.Let
   module List = Root.List
   module List_nonempty = List_nonempty
   module Lwt = Root.Lwt
@@ -66,3 +66,10 @@ end
 
 module V0_11_9 = V0_11_8
 module V0_11_10 = V0_11_9
+
+module V0_11_11 = struct
+  include V0_11_10
+  module Let = Root.Let
+  module Pair = Pair
+  module Sequence = Root.Sequence
+end
