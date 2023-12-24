@@ -37,45 +37,47 @@ let pp_pos fmt
     Stdlib.Format.fprintf fmt "%s:%d.%d-%d" filename start_line start_col
       stop_col
 
+let run command =
+  let stdout, stdin, stderr =
+    Unix.open_process_args_full command.(0) command (Unix.environment ())
+  in
+  let () = Out_channel.close stdin in
+  let output = In_channel.input_all stdout
+  and error = In_channel.input_all stderr in
+  match Unix.close_process_full (stdout, stdin, stderr) with
+  | WEXITED 0 -> Result.Ok output
+  | _ ->
+    Result.fail
+      (Stdlib.Format.asprintf "%a failed:@ @[%s@]"
+         Fmt.(array string)
+         command error)
+
 let () =
   let open Cmdliner in
   let generate =
     let generate name local cross_both cross_exclude cross_only =
       let* repository, packages =
-        let (status, stdout), stderr =
-          Shexp_process.(
-            run_exit_status "dune" [ "describe"; "opam-files" ]
-            |> capture [ Stdout ] |> capture [ Stderr ] |> eval)
-        in
-        match status with
-        | Exited 0 -> (
-          match Sexplib.Sexp.parse stdout with
-          | Done (List files, _) -> (
-            List.map files ~f:(function
-              | List [ Atom name; _ ] ->
-                Result.return
-                  (String.chop_suffix_if_exists ~suffix:".opam" name)
-              | sexp ->
-                Result.fail
-                  (Stdlib.Format.asprintf
-                     "dune describe opam-files yielded invalid entry:@ @[%a@]"
-                     Sexplib.Sexp.pp sexp))
-            |> Result.all
-            >>= function
-            | hd :: _ as packages -> (
-              match name with
-              | Some name -> Result.return (name, packages)
-              | None -> Result.return (hd, packages))
-            | [] -> Result.fail "dune describe opam-files yielded no entries")
-          | _ ->
-            Result.fail
-              (Stdlib.Format.asprintf
-                 "dune describe opam-files yielded invalid sexp:@ @[%s@]" stdout)
-          )
+        let* description = run [| "dune"; "describe"; "opam-files" |] in
+        match Sexplib.Sexp.parse description with
+        | Done (List files, _) -> (
+          List.map files ~f:(function
+            | List [ Atom name; _ ] ->
+              Result.return (String.chop_suffix_if_exists ~suffix:".opam" name)
+            | sexp ->
+              Result.fail
+                (Stdlib.Format.asprintf
+                   "dune describe opam-files yielded invalid entry:@ @[%a@]"
+                   Sexplib.Sexp.pp sexp))
+          |> Result.all
+          >>= function
+          | hd :: _ as packages -> (
+            match name with
+            | Some name -> Result.return (name, packages)
+            | None -> Result.return (hd, packages))
+          | [] -> Result.fail "dune describe opam-files yielded no entries")
         | _ ->
-          Result.fail
-            (Stdlib.Format.asprintf "dune describe opam-files failed:@ @[%s@]"
-               stderr)
+          Result.failf "dune describe opam-files yielded invalid sexp:@ @[%s@]"
+            description
       in
       let generate package =
         let open Sexplib.Sexp in
@@ -272,7 +274,6 @@ let () =
                      pin_depend "ocamlformat" "0.26.1"
                      :: { pelem = String "opam-file-format"; pos }
                      :: { pelem = String "sexplib"; pos }
-                     :: { pelem = String "shexp"; pos }
                      :: l;
                  }))
         | _ -> failwith "pin-depends expects a list"
