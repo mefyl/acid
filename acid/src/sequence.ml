@@ -1,18 +1,15 @@
 open Base
-include Sequence_intf
+include Sequence_intf.V0_11_11
 
-module Step = struct
-  include Sequence_intf.Step
+let step_of_base = function
+  | Base.Sequence.Step.Done -> Step.Done
+  | Skip { state } -> Skip state
+  | Yield { value; state } -> Yield (value, state)
 
-  let of_base = function
-    | Base.Sequence.Step.Done -> Done
-    | Skip { state } -> Skip state
-    | Yield { value; state } -> Yield (value, state)
-end
-
-module Make2 (Monad : Base.Monad.S2) = struct
+module Make2 (Monad : Monad.S2) = struct
   open Monad
   module Step = Step
+  module M = Monad
 
   type ('a, 'b) t =
     | Sequence : {
@@ -34,7 +31,7 @@ module Make2 (Monad : Base.Monad.S2) = struct
 
   let of_base init =
     let f s =
-      Base.Sequence.Expert.next_step s |> Step.of_base |> Monad.return
+      Base.Sequence.Expert.next_step s |> step_of_base |> Monad.return
     in
     unfold ~init ~f
 
@@ -465,22 +462,21 @@ module Make2 (Monad : Base.Monad.S2) = struct
   end
 end
 
-module Make (Monad : Base.Monad.S) = struct
-  module Monad2 = struct
-    type ('a, 'b) t = 'a Monad.t
-
-    module Step = Step
+module Make (M1 : Monad.S) = struct
+  module M2 = struct
+    type ('a, 'b) t = 'a M1.t
 
     include Base.Monad.Make2 (struct
-      include Monad
+      include M1
 
-      type nonrec ('a, 'b) t = 'a Monad.t
+      type nonrec ('a, 'b) t = 'a M1.t
 
       let map = `Custom map
     end)
   end
 
-  include Make2 (Monad2)
+  include Make2 (M2)
+  module M = M1
 
   type nonrec 'a t = ('a, unit) t
 

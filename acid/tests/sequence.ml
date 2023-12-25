@@ -97,8 +97,11 @@ module Lwt = struct
   module Seq = Make (Acid.Lwt) (Sequence.Seq)
 
   module Par = struct
+    (* Check interoperability between backward compatibility interfaces *)
+    module Sequence_0_11_0 = Acid.Versions.V0_11_0.Sequence.Make (Acid.Lwt)
+
     let iter _ () =
-      let sequence = Sequence.of_list [ 1; 2; 3 ]
+      let sequence = Sequence_0_11_0.of_list [ 1; 2; 3 ]
       and beacon = ref 0 in
       Sequence.Par.iter sequence ~f:(fun i ->
           let () = beacon := !beacon + i in

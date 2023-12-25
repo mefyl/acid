@@ -22,7 +22,7 @@ module V0_11_0 = struct
   module Option = Root.Option
   module Queue = Root.Queue
   module Result = Root.Result
-  module Sequence : Sequence_versions.V0_11_0 = Root.Sequence
+  module Sequence = Sequence_versions.V0_11_0
   module Set = Root.Set
   module Split = Split
   module String = Root.String
@@ -71,5 +71,5 @@ module V0_11_11 = struct
   include V0_11_10
   module Let = Root.Let
   module Pair = Pair
-  module Sequence = Root.Sequence
+  module Sequence = Sequence_versions.V0_11_11
 end
