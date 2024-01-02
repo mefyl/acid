@@ -1,5 +1,5 @@
 (tests
- (names circular list_nonempty monad multi_index result rw_mutex sequence)
- (libraries alcotest alcotest-lwt acid)
+ (names circular list_nonempty monad multi_index result sequence)
+ (libraries alcotest acid)
  (preprocess
   (pps ppx_deriving.show ppx_here)))

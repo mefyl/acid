@@ -16,4 +16,4 @@ check () {
     done
 }
 
-check "acid/src/acid.ml" "acid/src/versions.ml" "acid-jsoo/src/acid_jsoo.ml" "acid-jsoo/src/versions.ml"
+check "acid/src/acid.ml" "acid/src/versions.ml" "acid-jsoo/src/acid_jsoo.ml" "acid-jsoo/src/versions.ml" "acid-lwt/src/acid_lwt.ml" "acid-lwt/src/versions.ml"

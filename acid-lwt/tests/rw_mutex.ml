@@ -1,4 +1,4 @@
-open Acid
+open Acid_lwt
 open Let.Syntax (Lwt)
 
 let read_then_write () =

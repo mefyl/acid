@@ -1,5 +1,5 @@
 open Base
-include Sequence_intf.V0_11_11
+include Sequence_intf
 
 let step_of_base = function
   | Base.Sequence.Step.Done -> Step.Done

@@ -10,3 +10,5 @@ include Base.Monad.Make (struct
   let return = Lwt.return
   let map = `Custom map
 end)
+
+let all = Lwt.all

@@ -5,7 +5,7 @@
 (** {1 API} *)
 
 (** @inline *)
-include Versions.V0_11_11
+include Versions.V0_12_0
 
 (** {1 Backward compatibility} *)
 

@@ -1,4 +1,5 @@
-open Let.Syntax (Acid_lwt)
+open Acid
+open Let.Syntax (Lwt_acid)
 
 type t = {
   condition : unit Lwt_condition.t;
@@ -56,7 +57,7 @@ let acquire_read ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: acquire for reading%a" name pp_reason reason)
     in
     let () = t.state <- Reading 1 in
@@ -66,7 +67,7 @@ let acquire_read ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: acquire additionally for reading%a" name pp_reason reason)
     in
     let () = t.state <- Reading (n + 1) in
@@ -76,7 +77,7 @@ let acquire_read ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: block acquiring for reading%a" name pp_reason reason)
     in
     false
@@ -88,7 +89,7 @@ and release_read ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: release  for reading%a" name pp_reason reason)
     in
     let () = t.state <- Free in
@@ -98,7 +99,7 @@ and release_read ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: release partially for reading%a" name pp_reason reason)
     in
     let () = t.state <- Reading (n - 1) in
@@ -116,7 +117,7 @@ let acquire_write ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: acquire for writing%a" name pp_reason reason)
     in
     let () = t.state <- Writing in
@@ -126,7 +127,7 @@ let acquire_write ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: block acquiring for writing%a: %a" name pp_reason reason
               pp_state state)
     in
@@ -139,7 +140,7 @@ and release_write ?reason t =
       match t.name with
       | None -> ()
       | Some name ->
-        Acid_logs.info (fun m ->
+        Logs.info ~src:Acid.logs_src (fun m ->
             m "%s: release for writing%a" name pp_reason reason)
     in
     let () = t.state <- Free in

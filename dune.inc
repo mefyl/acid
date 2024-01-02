@@ -9,7 +9,7 @@
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
     %{dep:acid.opam} --cross
-    acid,acid-jsoo,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
     --cross-both ppx_here --cross-exclude schematic-jsoo))))
 (rule (target acid-ios.%{version:acid}.opam) (deps (:opam acid-ios.opam))
  (action
@@ -25,7 +25,7 @@
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
     %{dep:acid.opam.locked} --local
-    acid,acid-jsoo,hlist,metaversion,schematic,schematic-jsoo,timmy))))
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy))))
 (rule (target acid-jsoo.%{version:acid-jsoo}.opam)
  (deps (:opam acid-jsoo.opam))
  (action
@@ -38,7 +38,7 @@
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
     %{dep:acid-jsoo.opam} --cross
-    acid,acid-jsoo,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
     --cross-both ppx_here --cross-exclude schematic-jsoo))))
 (rule (target acid-jsoo-ios.%{version:acid-jsoo}.opam)
  (deps (:opam acid-jsoo-ios.opam))
@@ -55,4 +55,33 @@
   (with-stdout-to %{target}
    (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
     %{dep:acid-jsoo.opam.locked} --local
-    acid,acid-jsoo,hlist,metaversion,schematic,schematic-jsoo,timmy))))
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy))))
+(rule (target acid-lwt.%{version:acid-lwt}.opam) (deps (:opam acid-lwt.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-lwt}\" }")))))
+(rule (target acid-lwt-ios.opam)
+ (action
+  (with-stdout-to %{target}
+   (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
+    %{dep:acid-lwt.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
+    --cross-both ppx_here --cross-exclude schematic-jsoo))))
+(rule (target acid-lwt-ios.%{version:acid-lwt}.opam)
+ (deps (:opam acid-lwt-ios.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-lwt}\" }")))))
+(rule (deps (universe)) (target acid-lwt.opam.locked)
+ (action (run %{bin:opam} lock acid-lwt)))
+(rule (alias extdeps) (mode (promote (until-clean)))
+ (target acid-lwt.opam.extdeps)
+ (action
+  (with-stdout-to %{target}
+   (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite --input
+    %{dep:acid-lwt.opam.locked} --local
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy))))

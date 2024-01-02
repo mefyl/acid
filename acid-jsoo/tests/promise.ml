@@ -1,4 +1,4 @@
-open Acid
+open Acid_lwt
 
 module Of_lwt = struct
   open Let.Syntax (Lwt)
@@ -15,6 +15,5 @@ end
 
 let () =
   let open Alcotest in
-  Fmt.epr "ntm@.";
   run ~and_exit:false "Acid_jsoo.Promise"
     [ ("of_lwt", [ test_case "exception" `Quick Of_lwt.exn ]) ]

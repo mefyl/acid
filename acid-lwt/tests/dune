@@ -1,0 +1,6 @@
+(tests
+ (package acid-lwt)
+ (names rw_mutex sequence)
+ (libraries alcotest alcotest-lwt acid-lwt)
+ (preprocess
+  (pps ppx_deriving.show ppx_here)))

@@ -1,0 +1,6 @@
+(library
+ (name acid_lwt)
+ (public_name acid-lwt)
+ (libraries acid lwt)
+ (preprocess
+  (pps ppx_deriving.show)))

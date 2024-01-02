@@ -1,4 +1,4 @@
-open Acid
+open Acid_lwt
 open Js_of_ocaml
 
 type 'a promise

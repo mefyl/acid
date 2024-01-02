@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.11.11)
+(version 0.12.0)
 
 (homepage https://gitlab.routine.co/routine/acid)
 
@@ -27,10 +27,6 @@
    (and
     (>= 1.1.0)
     :with-test))
-  (alcotest-lwt
-   (and
-    (>= 1.1.0)
-    :with-test))
   (base
    (and
     (>= v0.16.0)
@@ -42,8 +38,6 @@
     (>= 0.2.0)
     (< 0.3.0)))
   logs
-  (lwt
-   (>= 5.0.0))
   (ppx_deriving :with-test)
   ppx_here
   (ppx_yojson
@@ -78,10 +72,23 @@
     (< 0.20.0)))))
 
 (package
+ (name acid-lwt)
+ (synopsis "Base lwt extension library")
+ (depends
+  (acid
+   (= :version))
+  (alcotest-lwt
+   (and
+    (>= 1.1.0)
+    :with-test))
+  (lwt
+   (>= 5.0.0))))
+
+(package
  (name acid-jsoo)
  (synopsis "Base javascript library")
  (depends
-  (acid
+  (acid-lwt
    (= :version))
   (alcotest
    (and

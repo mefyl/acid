@@ -16,12 +16,6 @@ module Let = Let
 (** @canonical Acid.List *)
 module List = List
 
-(** @canonical Acid.Lwt *)
-module Lwt = Acid_lwt
-
-(** @canonical Acid.Lwt_result *)
-module Lwt_result = Acid_lwt_result
-
 (** @canonical Acid.Map *)
 module Map = Map
 
