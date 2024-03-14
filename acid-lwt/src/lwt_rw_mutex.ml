@@ -31,10 +31,11 @@ let rec protect t ?reason acquire release f =
         in
         res)
       (fun e ->
+        let backtrace = Backtrace.get () in
         let () =
           if release ?reason t then Lwt_condition.broadcast t.condition ()
         in
-        raise e)
+        Exn.raise_with_original_backtrace e backtrace)
   else
     let* () = Lwt_condition.wait t.condition in
     protect t ?reason acquire release f
