@@ -10,7 +10,7 @@ bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
 depends: [
   "dune" {>= "3.0"}
   "alcotest" {>= "1.1.0" & with-test}
-  "base" {>= "v0.16.0" & < "v0.17.0"}
+  "base" {>= "v0.16.0" & < "v0.18.0"}
   "crowbar" {with-test}
   "fmt"
   "hlist" {>= "0.2.0" & < "0.3.0"}

@@ -30,7 +30,7 @@
   (base
    (and
     (>= v0.16.0)
-    (< v0.17.0)))
+    (< v0.18.0)))
   (crowbar :with-test)
   fmt
   (hlist
