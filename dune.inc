@@ -17,6 +17,19 @@
    (progn (cat %{opam})
     (echo
      "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\" }")))))
+(rule (target acid-macos.opam)
+ (action
+  (with-stdout-to %{target}
+   (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-macos --input
+    %{dep:acid.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
+    --cross-both ppx_here --cross-exclude schematic-jsoo))))
+(rule (target acid-macos.%{version:acid}.opam) (deps (:opam acid-macos.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid}\" }")))))
 (rule (deps (universe)) (target acid.opam.locked)
  (action (run %{bin:opam} lock acid)))
 (rule (alias extdeps) (mode (promote (until-clean)))
@@ -47,6 +60,20 @@
    (progn (cat %{opam})
     (echo
      "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-jsoo}\" }")))))
+(rule (target acid-jsoo-macos.opam)
+ (action
+  (with-stdout-to %{target}
+   (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-macos --input
+    %{dep:acid-jsoo.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
+    --cross-both ppx_here --cross-exclude schematic-jsoo))))
+(rule (target acid-jsoo-macos.%{version:acid-jsoo}.opam)
+ (deps (:opam acid-jsoo-macos.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-jsoo}\" }")))))
 (rule (deps (universe)) (target acid-jsoo.opam.locked)
  (action (run %{bin:opam} lock acid-jsoo)))
 (rule (alias extdeps) (mode (promote (until-clean)))
@@ -71,6 +98,20 @@
     --cross-both ppx_here --cross-exclude schematic-jsoo))))
 (rule (target acid-lwt-ios.%{version:acid-lwt}.opam)
  (deps (:opam acid-lwt-ios.opam))
+ (action
+  (with-stdout-to %{target}
+   (progn (cat %{opam})
+    (echo
+     "url { src: \"git://git@gitlab.routine.co:routine/acid#%{version:acid-lwt}\" }")))))
+(rule (target acid-lwt-macos.opam)
+ (action
+  (with-stdout-to %{target}
+   (run %{dep:.logistic/dune/extdeps/extdeps.exe} rewrite-macos --input
+    %{dep:acid-lwt.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
+    --cross-both ppx_here --cross-exclude schematic-jsoo))))
+(rule (target acid-lwt-macos.%{version:acid-lwt}.opam)
+ (deps (:opam acid-lwt-macos.opam))
  (action
   (with-stdout-to %{target}
    (progn (cat %{opam})
