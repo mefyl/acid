@@ -9,4 +9,7 @@ module V0_12_0 = struct
 
   (** @canonical Acid_lwt.Lwt_result *)
   module Lwt_result = Lwt_result_acid
+
+  (** @canonical Acid_lwt.Lwt_guarded *)
+  module Lwt_guarded = Lwt_guarded
 end
