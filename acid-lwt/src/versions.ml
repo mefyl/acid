@@ -1,5 +1,5 @@
 module V0_12_0 = struct
-  include Acid
+  include Acid.Versions.V0_12_0
 
   (** @canonical Acid_lwt.Lwt *)
   module Lwt = struct
