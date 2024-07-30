@@ -45,8 +45,16 @@ toolchain/%:
 	$(eval SUFFIX = $(if $(filter $*,default),,.$*))
 	if test -n "$(CI_ID_RSA)"; then cp "$(CI_ID_RSA)" $(DOCKER_DIR)/id_rsa; fi
 	if test -n "$(CI_ID_RSA_PUB)"; then cp "$(CI_ID_RSA_PUB)" $(DOCKER_DIR)/id_rsa.pub; fi
+	set -x; \
 	if test -z "$$FROM_SCRATCH" && ! test -z "$(IMAGE_CI)"; then \
-		CACHE='--cache-from "$(IMAGE_CI)$(VARIANT)$(SUFFIX)" --cache-from "$(IMAGE_CI_MASTER)$(VARIANT)$(SUFFIX)" --cache-from "$(IMAGE_CI_MASTER)"'; \
+		CACHE=""; \
+		for image in "$(IMAGE_CI)$(VARIANT)$(SUFFIX)" "$(IMAGE_CI_MASTER)$(VARIANT)$(SUFFIX)" "$(IMAGE_CI_MASTER)$(SUFFIX)"; do \
+			if docker pull "$$image"; then \
+				CACHE="--cache-from $$image"; \
+				echo "building with cache: $$image"; \
+				break; \
+			fi; \
+		done; \
 	else \
 		echo "building from scratch"; \
 		CACHE='--no-cache'; \
