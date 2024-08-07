@@ -125,7 +125,6 @@ let () =
                   Atom "target";
                   Atom (package ^ suffix ^ ".%{version:" ^ package ^ "}.opam");
                 ];
-              promote_until_clean;
               List
                 [
                   Atom "deps";
@@ -266,7 +265,11 @@ let () =
           List
             (Atom "subdir" :: Atom "opam"
             :: List.concat
-                 ([ opam_rule ""; locked_rule ""; extdeps_rule None ]
+                 ([
+                    opam_rule ~source:"../" "";
+                    locked_rule "";
+                    extdeps_rule None;
+                  ]
                  :: List.map cross_toolchains ~f:(fun toolchain ->
                         [
                           cross_rule toolchain;

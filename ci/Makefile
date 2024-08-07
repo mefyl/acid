@@ -1,3 +1,4 @@
+.PHONY: opam
 MAKEFILE=$(abspath $(firstword $(MAKEFILE_LIST)))
 DIR=$(patsubst %/,%,$(dir $(MAKEFILE)))
 OCAML_VERSION ?= $(shell ocamlc --version)
