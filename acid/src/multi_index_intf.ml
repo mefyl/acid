@@ -19,6 +19,9 @@ module type S = sig
   (** [empty] is the empty [t] *)
   val empty : t
 
+  (** [length t] is the number of elements in [t] *)
+  val length : t -> int
+
   val map : t -> f:(value -> value) -> t
 
   (** [update old new t] is [t] with [old] removed then [new] added. *)

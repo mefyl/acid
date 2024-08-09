@@ -55,6 +55,8 @@ struct
         indexes = Types.Indexes.empty;
       }
 
+    let length { elements; _ } = Set.length elements
+
     let remove value ({ elements; indexes } as t) =
       if Set.mem elements value then
         {
