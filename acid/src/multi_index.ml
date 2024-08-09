@@ -342,6 +342,9 @@ module Ordered_by_unique (Value : ORDERED_BY) = struct
     let update value map ~f =
       change value map ~f:(function None -> None | Some v -> f v)
 
+    let set value new_value map =
+      change value map ~f:(function _ -> Some new_value)
+
     let remove value map =
       match Map.find (Binder.get map) value with
       | None -> map

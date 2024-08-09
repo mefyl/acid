@@ -243,6 +243,9 @@ module Ordered_by_unique (Value : ORDERED_BY) : sig
     val mem : Value.t -> Binder.Multi_index.t -> bool
     val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
 
+    val set :
+      Value.t -> Value.value -> Binder.Multi_index.t -> Binder.Multi_index.t
+
     val update :
       Value.t ->
       Binder.Multi_index.t ->
