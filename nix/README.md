@@ -4,4 +4,4 @@ This folder provides a simple `shell.nix` for developing on the Routine reposito
 
 It requires `direnv` and `nix` to be installed.
 
-To set it up, run (once) `path-to-setup.sh` from the root of your project.
+To set it up, run (once) `relative/path/to/setup.sh` from the root of your project.
