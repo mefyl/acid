@@ -1,2 +1,2 @@
-use nix .logistics/nix/shell.nix
+use nix .logistic/nix/shell.nix
 eval $(opam env --switch .)
