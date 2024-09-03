@@ -27,6 +27,7 @@ pkgs.mkShell ({
     # Dev tooling
     pkgs."ocamlformat_${ocamlformatVersion}"
     pkgs.ocamlPackages.ocaml-lsp
+    pkgs.ocamlPackages.merlin
 
     # System libraries
     pkgs.appimage-run
