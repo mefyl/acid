@@ -34,8 +34,8 @@ variables:
   extends: .ocaml
   stage: build
   script:
-    - make -f .logistic/ci/Makefile build
     - make -f .logistic/ci/Makefile lint
+    - make -f .logistic/ci/Makefile build
   artifacts:
     expire_in: 10 days
     paths:
