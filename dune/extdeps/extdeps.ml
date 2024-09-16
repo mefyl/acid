@@ -144,12 +144,14 @@ let () =
                           List [ Atom "cat"; Atom "%{opam}" ];
                           List
                             [
-                              Atom "echo";
+                              Atom "run";
+                              Atom "git";
+                              Atom "log";
                               Atom
-                                ("url { src: \
-                                  \"git://git@gitlab.routine.co:routine/"
-                               ^ repository ^ "#%{version:" ^ package ^ "}\" }"
-                                );
+                                ("--pretty=url { src: \
+                                  \"git+ssh://git@gitlab.routine.co:routine/"
+                               ^ repository ^ "#%H\" }");
+                              Atom "-n1";
                             ];
                         ];
                     ];
