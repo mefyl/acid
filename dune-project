@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.12.0)
+(version 0.12.1)
 
 (homepage https://gitlab.routine.co/routine/acid)
 

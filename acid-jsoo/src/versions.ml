@@ -9,3 +9,5 @@ module V0_12_0 = struct
     module Promise = Promise
   end
 end
+
+module V0_12_1 = V0_12_0

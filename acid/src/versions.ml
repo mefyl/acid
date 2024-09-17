@@ -32,3 +32,8 @@ module V0_12_0 = struct
   (** @inline *)
   include Select_jsoo.Js
 end
+
+module V0_12_1 = struct
+  include V0_12_0
+  module State_effect = State_effect
+end

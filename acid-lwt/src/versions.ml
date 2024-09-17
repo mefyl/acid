@@ -13,3 +13,5 @@ module V0_12_0 = struct
   (** @canonical Acid_lwt.Lwt_guarded *)
   module Lwt_guarded = Lwt_guarded
 end
+
+module V0_12_1 = V0_12_0
