@@ -1,0 +1,32 @@
+opam-version: "2.0"
+version: "0.12.1"
+synopsis: "Base library"
+maintainer: ["mefyl <mefyl@gruntech.org>"]
+authors: ["mefyl <mefyl@gruntech.org>"]
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.routine.co/routine/acid"
+bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "base-macos" {>= "v0.16.0" & < "v0.18.0"}
+  "fmt-macos"
+  "hlist-macos" {>= "0.2.0" & < "0.3.0"}
+  "logs"
+  "ocaml-macos" {>= "5.0.0"}
+  "ppx_here"
+  "ppx_here-macos"
+  "timmy-macos" {>= "1.0.1" & < "2.0.0"}
+  "metaversion-macos"
+]
+depopts: [
+  "schematic-macos" {>= "0.18.2" & < "0.20.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-x" "macos" "-p" "acid" "-j" jobs "@install"]
+]
+dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
+pin-depends: [
+  ["landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js"]
+  ["landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js"]
+]
