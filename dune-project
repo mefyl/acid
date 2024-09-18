@@ -38,6 +38,8 @@
     (>= 0.2.0)
     (< 0.3.0)))
   logs
+  (ocaml
+   (>= 5.0.0))
   (ppx_deriving :with-test)
   ppx_here
   (ppx_yojson
