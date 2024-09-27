@@ -46,6 +46,11 @@ pkgs.mkShell
       # JS tooling
       pkgs.yarn
       pkgs.nodejs
+
+      # Kotlin/Android tooling
+      pkgs.gradle # Build tool for Kotlin projects
+      pkgs.kotlin # The Kotlin compiler and runtime
+      pkgs.ktfmt # Kotlin formatter
     ] ++ (extraPackages pkgs);
 
   } // extraArgs)
