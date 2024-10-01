@@ -17,6 +17,9 @@
   */
 , extraArgs ? { }
 }:
+let
+  ci-packages = import ./ci-packages.nix;
+in
 pkgs.mkShell
   ({
     packages = [
@@ -46,11 +49,8 @@ pkgs.mkShell
       # JS tooling
       pkgs.yarn
       pkgs.nodejs
-
-      # Kotlin/Android tooling
-      pkgs.gradle # Build tool for Kotlin projects
-      pkgs.kotlin # The Kotlin compiler and runtime
-      pkgs.ktfmt # Kotlin formatter
-    ] ++ (extraPackages pkgs);
+    ] ++
+    ci-packages ++
+    (extraPackages pkgs);
 
   } // extraArgs)
