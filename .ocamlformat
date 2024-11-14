@@ -1,5 +1,5 @@
 version=0.26.2
-ocaml-version=4.14.0
+ocaml-version=5.2.0
 
 cases-exp-indent=2
 doc-comments=before
