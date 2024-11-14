@@ -1,6 +1,6 @@
 # Nix setup for the routine projects
 
-This folder provides a simple `shell.nix` for developing on the Routine repositories.
+This folder provides a `shell.nix` for developing on the Routine repositories.
 
 It requires `direnv` and `nix` to be installed.
 
