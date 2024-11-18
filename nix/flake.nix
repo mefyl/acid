@@ -42,12 +42,13 @@
         flake-utils.lib.eachDefaultSystem (
           system:
           let
+            gitPath = builtins.fetchGit path;
             pkgs = nixpkgs.legacyPackages.${system};
             on = opam-nix.lib.${system};
             localPackages_ = if localPackages != null then localPackages else
             builtins.attrNames
               (builtins.mapAttrs (_: pkgs.lib.last)
-                (on.listRepo (on.makeOpamRepo (builtins.fetchGit path))));
+                (on.listRepo (on.makeOpamRepo gitPath)));
             devPackagesQuery =
               {
                 # You can add "development" packages here. They will get added to the devShell automatically.
@@ -68,7 +69,7 @@
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
-                (builtins.fetchGit path)
+                gitPath
                 query;
             overlay = final: prev: {
               # You can add overrides here
