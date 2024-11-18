@@ -47,7 +47,7 @@
             localPackages_ = if localPackages != null then localPackages else
             builtins.attrNames
               (builtins.mapAttrs (_: pkgs.lib.last)
-                (on.listRepo (on.makeOpamRepo path)));
+                (on.listRepo (on.makeOpamRepo (builtins.fetchGit path))));
             devPackagesQuery =
               {
                 # You can add "development" packages here. They will get added to the devShell automatically.
@@ -68,10 +68,18 @@
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
-                path
+                (builtins.fetchGit path)
                 query;
             overlay = final: prev: {
               # You can add overrides here
+              # To add a local, development repo (e.g. your hacked `schematic` rather than the one from Routine's `opam` repo), you can `overrideAttrs` to replace the source like this:
+              #
+              # schematic = prev.schematic.overrideAttrs (a: {
+              #   buildInputs = a.buildInputs or [ ] ++ [ prev.logs ];
+              #   src = builtins.fetchGit /home/sir4ur0n/code/routine/schematic;
+              # });
+              #
+              # Remember to update your nix-shell (e.g. with `direnv reload`) after every change in the local repo.
               timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ pkgs.nodejs prev.logs ]; });
               timmy-unix = prev.timmy-unix.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ]; });
               timmy-lwt = prev.timmy-lwt.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
