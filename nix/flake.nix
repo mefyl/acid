@@ -136,7 +136,9 @@
 
             };
 
-            ciPackages = import ./ci-packages.nix;
+            ciPackages = import ./ci-packages.nix {
+              inherit pkgs;
+            };
 
           in
           {
