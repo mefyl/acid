@@ -53,23 +53,25 @@
               (builtins.mapAttrs (_: pkgs.lib.last)
                 (on.listRepo (on.makeOpamRepo gitPath)));
 
+            # You can add "development" Opam packages here. They will get added to the devShell automatically.
             devPackagesQuery =
               {
-                # You can add "development" packages here. They will get added to the devShell automatically.
-
                 # Dependencies needed for `extdeps.exe` which does not have an Opam file for some reason.
                 cmdliner = "*";
                 fmt = "*";
                 opam-file-format = "*";
                 sexplib = "*";
                 stdio = "*";
+
+                # Useful development packages
+                utop = "*";
               }
               // extraDevPackagesQuery;
 
             query =
               devPackagesQuery
               // {
-                ## - force the ocaml compiler to be taken from opam-repository:
+                # Force the OCaml compiler to be taken from opam-repository:
                 ocaml-base-compiler = "*";
                 angstrom = "0.15.0";
 
