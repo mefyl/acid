@@ -50,3 +50,18 @@ module type NESTABLE2 = sig
   end
   with type ('a, 'b) nested := ('a, 'b) t
 end
+
+module S_to_S2 (X : S) : S2 with type ('a, 'e) t = 'a X.t = struct
+  include X
+
+  type ('a, 'e) t = 'a X.t
+end
+
+module S2_to_S3 (X : S2) : S3 with type ('a, 'd, 'e) t = ('a, 'd) X.t = struct
+  include X
+
+  type ('a, 'd, 'e) t = ('a, 'd) X.t
+end
+
+module Ident2 = S_to_S2 (Ident)
+module Ident3 = S2_to_S3 (Ident2)
