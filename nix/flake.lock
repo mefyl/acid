@@ -200,17 +200,17 @@
         "nixpkgs": "nixpkgs",
         "opam-nix": "opam-nix",
         "opam-repository": "opam-repository_2",
-        "routine-opam-repo": "routine-opam-repo"
+        "routine-opam-repository": "routine-opam-repository"
       }
     },
-    "routine-opam-repo": {
+    "routine-opam-repository": {
       "flake": false,
       "locked": {
-        "lastModified": 1731661365,
-        "narHash": "sha256-7b9PZQ5cF3G45TN0dTEQusTP4gR0idI6EuLqV8d7cY8=",
+        "lastModified": 1732003664,
+        "narHash": "sha256-EgBtd1Mj5Q4kupK5PZqNtgvb4F2JUANg1KQjA1nPUg8=",
         "ref": "refs/heads/master",
-        "rev": "caf07f3c74a357392408fdab47a43ac65e88b860",
-        "revCount": 486,
+        "rev": "99fd3040bf962dbd5e91627067ec30c3f66e9786",
+        "revCount": 487,
         "type": "git",
         "url": "ssh://git@gitlab.routine.co/routine/opam.git"
       },

@@ -13,7 +13,7 @@
       url = "github:ocaml/opam-repository";
       flake = false;
     };
-    routine-opam-repo = {
+    routine-opam-repository = {
       url = "git+ssh://git@gitlab.routine.co/routine/opam.git";
       flake = false;
     };
@@ -24,7 +24,7 @@
     , opam-nix
     , nixpkgs
     , opam-repository
-    , routine-opam-repo
+    , routine-opam-repository
     , ...
     }: {
       templates.default = {
@@ -65,7 +65,7 @@
             scope =
               on.buildOpamProject'
                 (resolveArgsOverride {
-                  repos = [ opam-repository routine-opam-repo ] ++ extraRepos;
+                  repos = [ opam-repository routine-opam-repository ] ++ extraRepos;
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
