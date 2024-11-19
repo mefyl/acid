@@ -43,12 +43,16 @@
           system:
           let
             gitPath = builtins.fetchGit path;
+
             pkgs = nixpkgs.legacyPackages.${system};
+
             on = opam-nix.lib.${system};
+
             localPackages_ = if localPackages != null then localPackages else
             builtins.attrNames
               (builtins.mapAttrs (_: pkgs.lib.last)
                 (on.listRepo (on.makeOpamRepo gitPath)));
+
             devPackagesQuery =
               {
                 # You can add "development" packages here. They will get added to the devShell automatically.
@@ -61,6 +65,7 @@
                 stdio = "*";
               }
               // extraDevPackagesQuery;
+
             query =
               devPackagesQuery
               // {
@@ -69,6 +74,7 @@
                 angstrom = "0.15.0";
 
               };
+
             scope =
               on.buildOpamProject'
                 (resolveArgsOverride {
@@ -78,6 +84,7 @@
                 })
                 gitPath
                 query;
+
             overlay = final: prev: {
               # You can add overrides here
               # To add a local, development repo (e.g. your hacked `schematic` rather than the one from Routine's `opam` repo), you can `overrideAttrs` to replace the source like this:
@@ -96,7 +103,9 @@
               routine-front-controller = prev.routine-front-controller.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.nodejs pkgs.yarn ]; });
               conf-tzdata = null;
             };
+
             scope' = scope.overrideScope overlay;
+
             # Packages from devPackagesQuery
             devPackages = [
               pkgs.ocaml-ng.ocamlPackages_5_2.ocamlformat_0_26_2
@@ -104,10 +113,10 @@
             ] ++
             builtins.attrValues
               (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope');
+
             # Packages in this workspace
             packages =
               pkgs.lib.getAttrs localPackages_ scope';
-
 
             routine_run = pkgs.buildFHSEnv {
               name = "routine-run";
