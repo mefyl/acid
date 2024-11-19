@@ -52,6 +52,13 @@
             devPackagesQuery =
               {
                 # You can add "development" packages here. They will get added to the devShell automatically.
+
+                # Dependencies needed for `extdeps.exe` which does not have an Opam file for some reason.
+                cmdliner = "*";
+                fmt = "*";
+                opam-file-format = "*";
+                sexplib = "*";
+                stdio = "*";
               }
               // extraDevPackagesQuery;
             query =
