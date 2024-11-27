@@ -1,18 +1,30 @@
 {
   inputs = {
     # Point to our fork until https://github.com/tweag/opam-nix/issues/99 is done
-    opam-nix.url = "github:sir4ur0n/opam-nix/support-git-urls";
-    opam-nix.inputs.nixpkgs.follows = "nixpkgs";
+    opam-nix = {
+      url = "github:tweag/opam-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     flake-compat = {
       url = "github:edolstra/flake-compat";
       flake = false;
     };
+
     flake-utils.url = "github:numtide/flake-utils";
+
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    gitignore = {
+      url = "github:hercules-ci/gitignore.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     opam-repository = {
       url = "github:ocaml/opam-repository";
       flake = false;
     };
+
     routine-opam-repository = {
       url = "git+ssh://git@gitlab.routine.co/routine/opam.git";
       flake = false;
@@ -23,6 +35,7 @@
     , flake-utils
     , opam-nix
     , nixpkgs
+    , gitignore
     , opam-repository
     , routine-opam-repository
     , ...
@@ -32,49 +45,77 @@
         description = "Initialize a setup for developing on a Routine OCaml repository";
       };
       lib.mkRoutineRepo = path: { localPackages ? null
+                                  # Extra Opam packages to install for development (in the form of an opam-nix query).
+                                  # E.g.,
+                                  # { acid = "*"; logs = "0.7.0"; }
                                 , extraDevPackagesQuery ? { }
                                 , extraDevPackages ? (pkgs: [ ])
                                 , extraOverlay ? (final: prev: { })
                                 , resolveArgsOverride ? (args: args)
                                 , extraRepos ? [ ]
+                                  # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
+                                , ocamlVersion ? "5.2.0"
                                 ,
                                 }:
         flake-utils.lib.eachDefaultSystem (
           system:
           let
-            gitPath = builtins.fetchGit path;
+            ocamlPackagesVersion =
+              let parsedVersion = builtins.splitVersion ocamlVersion;
+              in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1;
 
             pkgs = nixpkgs.legacyPackages.${system};
+
+            # Only keep the Opam files to maximize Nix caching
+            opamFilesFilter = gitignore.lib.gitignoreFilterWith {
+              basePath = path;
+              extraRules = ''
+                *
+                !*.opam
+              '';
+            };
+            opamFiles = pkgs.lib.cleanSourceWith { src = path; filter = opamFilesFilter; };
 
             on = opam-nix.lib.${system};
 
             localPackages_ = if localPackages != null then localPackages else
             builtins.attrNames
               (builtins.mapAttrs (_: pkgs.lib.last)
-                (on.listRepo (on.makeOpamRepo gitPath)));
+                (on.listRepo (on.makeOpamRepo opamFiles)));
 
             # You can add "development" Opam packages here. They will get added to the devShell automatically.
             devPackagesQuery =
-              {
+              let
                 # Dependencies needed for `extdeps.exe` which does not have an Opam file for some reason.
-                cmdliner = "*";
-                fmt = "*";
-                opam-file-format = "*";
-                sexplib = "*";
-                stdio = "*";
+                # `extdeps.exe` is present in all our repositories (part of `logistic`) so we put the dependencies here rather than in each single `shell.nix`.
+                extdepsQuery =
+                  {
+                    cmdliner = "*";
+                    fmt = "*";
+                    opam-file-format = "*";
+                    sexplib = "*";
+                    stdio = "*";
+                  };
 
                 # Useful development packages
-                utop = "*";
-              }
-              // extraDevPackagesQuery;
+                developmentQuery = {
+                  utop = "*";
+                } // pkgs.lib.optionalAttrs
+                  (builtins.compareVersions ocamlVersion "5.2.0" >= 0)
+                  {
+                    # `ocaml-index` requires OCaml >= 5.2.0
+                    ocaml-index = "*";
+                  };
+              in
+              extdepsQuery //
+              developmentQuery //
+              extraDevPackagesQuery;
 
             query =
               devPackagesQuery
               // {
-                # Force the OCaml compiler to be taken from opam-repository:
-                ocaml-base-compiler = "*";
+                ocaml-base-compiler = ocamlVersion;
                 angstrom = "0.15.0";
-
               };
 
             scope =
@@ -84,7 +125,7 @@
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
-                gitPath
+                opamFiles
                 query;
 
             overlay = final: prev: {
@@ -110,8 +151,10 @@
 
             # Packages from devPackagesQuery
             devPackages = [
-              pkgs.ocaml-ng.ocamlPackages_5_2.ocamlformat_0_26_2
-              pkgs.ocaml-ng.ocamlPackages_5_2.ocaml-lsp
+              # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
+              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_26_2
+              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
+              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
             ] ++
             builtins.attrValues
               (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope');
@@ -170,7 +213,6 @@
               inputsFrom = builtins.attrValues packages;
               buildInputs =
                 devPackages ++
-                # TODO Take `pkgs` as argument for `ciPackages` without breaking Ubuntu CI
                 ciPackages ++
                 (extraDevPackages pkgs) ++
                 [ routine_run ];
