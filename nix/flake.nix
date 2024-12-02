@@ -64,7 +64,11 @@
               let parsedVersion = builtins.splitVersion ocamlVersion;
               in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1;
 
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = import nixpkgs {
+              inherit system;
+              # Required for steam-run
+              config.allowUnfree = true;
+            };
 
             # Only keep the Opam files to maximize Nix caching
             opamFilesFilter = gitignore.lib.gitignoreFilterWith {
@@ -138,23 +142,37 @@
               # });
               #
               # Remember to update your nix-shell (e.g. with `direnv reload`) after every change in the local repo.
-              timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ pkgs.nodejs prev.logs ]; });
+              timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
               timmy-unix = prev.timmy-unix.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ]; });
               timmy-lwt = prev.timmy-lwt.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
               schematic = prev.schematic.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
-              routine-controller-lib = prev.routine-controller-lib.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.nodejs pkgs.yarn ]; });
-              routine-front-controller = prev.routine-front-controller.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.nodejs pkgs.yarn ]; });
               conf-tzdata = null;
             };
 
             scope' = scope.overrideScope overlay;
 
-            # Packages from devPackagesQuery
             devPackages = [
               # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_26_2
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
+
+              # System libraries
+              pkgs.appimage-run
+              pkgs.autoconf
+              pkgs.gmp.dev
+              pkgs.libev
+              pkgs.libffi
+              pkgs.openssl.dev
+              pkgs.pkg-config
+              pkgs.postgresql
+              pkgs.sqlite
+              pkgs.steam-run
+              pkgs.zlib.dev
+
+              # JS tooling
+              pkgs.yarn
+              pkgs.nodejs
             ] ++
             builtins.attrValues
               (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope');
