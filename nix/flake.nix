@@ -51,6 +51,10 @@
                                 , extraDevPackagesQuery ? { }
                                 , extraDevPackages ? (pkgs: [ ])
                                 , extraOverlay ? (final: prev: { })
+                                , opamSourceFilterRules ? ''
+                                    *
+                                    !*.opam
+                                  ''
                                 , resolveArgsOverride ? (args: args)
                                 , extraRepos ? [ ]
                                   # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
@@ -73,10 +77,7 @@
             # Only keep the Opam files to maximize Nix caching
             opamFilesFilter = gitignore.lib.gitignoreFilterWith {
               basePath = path;
-              extraRules = ''
-                *
-                !*.opam
-              '';
+              extraRules = opamSourceFilterRules;
             };
             opamFiles = pkgs.lib.cleanSourceWith { src = path; filter = opamFilesFilter; };
 
