@@ -1,4 +1,6 @@
+module Monad_ = Monad
 open Base
+module Monad = Monad_
 include Sequence_intf
 
 let step_of_base = function
@@ -466,7 +468,7 @@ module Make (M1 : Monad.S) = struct
   module M2 = struct
     type ('a, 'b) t = 'a M1.t
 
-    include Base.Monad.Make2 (struct
+    include Monad.Make2 (struct
       include M1
 
       type nonrec ('a, 'b) t = 'a M1.t

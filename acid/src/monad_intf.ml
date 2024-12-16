@@ -1,5 +1,23 @@
 include Base.Monad
 
+module type S = sig
+  include S
+
+  val traverse : 'a list -> f:('a -> 'b t) -> 'b list t
+end
+
+module type S2 = sig
+  include S2
+
+  val traverse : 'a list -> f:('a -> ('b, 'c) t) -> ('b list, 'c) t
+end
+
+module type S3 = sig
+  include S3
+
+  val traverse : 'a list -> f:('a -> ('b, 'c, 'd) t) -> ('b list, 'c, 'd) t
+end
+
 module type BASIC_NESTABLE2 = sig
   include Basic2
 
@@ -61,6 +79,12 @@ module S2_to_S3 (X : S2) : S3 with type ('a, 'd, 'e) t = ('a, 'd) X.t = struct
   include X
 
   type ('a, 'd, 'e) t = ('a, 'd) X.t
+end
+
+module Ident = struct
+  include Ident
+
+  let traverse = Base.List.map
 end
 
 module Ident2 = S_to_S2 (Ident)
