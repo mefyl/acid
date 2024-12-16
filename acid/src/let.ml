@@ -1,7 +1,7 @@
 include Let_intf.V0_11_11
 
 module Syntax2_suffixes
-    (M : Base.Monad.S2)
+    (M : Monad.S2)
     (Option : Monad.NESTABLE)
     (Result : Monad.NESTABLE2) =
 struct
@@ -102,12 +102,12 @@ struct
   let ( let+!!? ) = ( >>|!!? )
 end
 
-module Syntax2 (M : Base.Monad.S2) = struct
+module Syntax2 (M : Monad.S2) = struct
   include Syntax2_suffixes (M) (Option) (Result)
 end
 
 module Syntax_suffixes
-    (M : Base.Monad.S)
+    (M : Monad.S)
     (Option : Monad.NESTABLE)
     (Result : Monad.NESTABLE2) =
   Syntax2_suffixes
@@ -119,7 +119,7 @@ module Syntax_suffixes
     (Option)
     (Result)
 
-module Syntax (Monad : Base.Monad.S) = Syntax2 (struct
+module Syntax (Monad : Monad.S) = Syntax2 (struct
   include Monad
 
   type nonrec ('a, 'b) t = 'a t

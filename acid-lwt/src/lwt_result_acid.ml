@@ -1,8 +1,8 @@
-(** Lwt_result converted to the Base monadic interface *)
+(** Lwt_result converted to the Acid monadic interface *)
 
 include Lwt_result
 
-include Base.Monad.Make2 (struct
+include Acid.Monad.Make2 (struct
   type nonrec ('t, 'error) t = ('t, 'error) Lwt_result.t
 
   let bind v ~f = Lwt_result.bind v f
