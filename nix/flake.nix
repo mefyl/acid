@@ -59,7 +59,10 @@
                                 , extraRepos ? [ ]
                                   # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
                                 , ocamlVersion ? "5.2.0"
-                                ,
+                                , withSwift ? false
+                                  # Whether to make the shell swift-compatible.
+                                  # This isn't enabled by default as it is
+                                  # somewhat invasive (forcing the stdenv to use clang in particular)
                                 }:
         flake-utils.lib.eachDefaultSystem (
           system:
@@ -221,19 +224,27 @@
               inherit pkgs;
             };
 
+            swiftPackages = let p = pkgs; in [
+              p.swift p.swiftPackages.Dispatch p.swiftPackages.Foundation
+              p.swift-format p.swift-corelibs-libdispatch p.gcc
+            ];
+
           in
           {
             legacyPackages = scope';
 
             inherit packages;
 
-            devShells.default = pkgs.mkShell {
+            devShells.default =
+              let mkShell = if withSwift then pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } else pkgs.mkShell; in
+              mkShell {
               NODE_OPTIONS = "--max_old_space_size=4096";
               inputsFrom = builtins.attrValues packages;
               buildInputs =
                 devPackages ++
                 ciPackages ++
                 (extraDevPackages pkgs) ++
+                (if withSwift then swiftPackages else []) ++
                 [ routine_run ];
             };
           }
