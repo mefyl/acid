@@ -188,26 +188,9 @@
             routine_run = pkgs.buildFHSEnv {
               name = "routine-run";
 
-              targetPkgs = pkgs: [
-                pkgs.xdg-utils
-                pkgs.glibc.bin
-                pkgs.glib
-                pkgs.iana-etc
-                pkgs.nss
-                pkgs.libdrm
-                pkgs.gtk3
-                pkgs.pango
-                pkgs.nspr
-                pkgs.dbus
-                pkgs.dbus-glib
-                pkgs.cairo
-                pkgs.xorg.libX11
-                pkgs.xorg.libXext
-                pkgs.xorg.libXfixes
-                pkgs.xorg.libXrandr
-                pkgs.xorg.libxcb
-                pkgs.xorg.libXcomposite
-              ] ++ pkgs.electron.buildInputs ++ pkgs.electron.unwrapped.buildInputs;
+              targetPkgs = pkgs:
+                (pkgs.appimageTools.defaultFhsEnvArgs.targetPkgs pkgs) ++
+                (pkgs.appimageTools.defaultFhsEnvArgs.multiPkgs pkgs);
 
               runScript = pkgs.writers.writeBash "routine-run" ''
                 executable="''${1:-./dist_electron/linux-unpacked/routine}"
