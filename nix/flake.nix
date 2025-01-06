@@ -226,8 +226,12 @@
             };
 
             swiftPackages = let p = pkgs; in [
-              p.swift p.swiftPackages.Dispatch p.swiftPackages.Foundation
-              p.swift-format p.swift-corelibs-libdispatch p.gcc
+              p.swift
+              p.swiftPackages.Dispatch
+              p.swiftPackages.Foundation
+              p.swift-format
+              p.swift-corelibs-libdispatch
+              p.gcc
             ];
 
           in
@@ -239,15 +243,15 @@
             devShells.default =
               let mkShell = if withSwift then pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } else pkgs.mkShell; in
               mkShell {
-              NODE_OPTIONS = "--max_old_space_size=4096";
-              inputsFrom = builtins.attrValues packages;
-              buildInputs =
-                devPackages ++
-                ciPackages ++
-                (extraDevPackages pkgs) ++
-                (if withSwift then swiftPackages else []) ++
-                [ routine_run ];
-            };
+                NODE_OPTIONS = "--max_old_space_size=4096";
+                inputsFrom = builtins.attrValues packages;
+                buildInputs =
+                  devPackages ++
+                  ciPackages ++
+                  (extraDevPackages pkgs) ++
+                  (if withSwift then swiftPackages else [ ]) ++
+                  [ routine_run ];
+              };
           }
         );
     };
