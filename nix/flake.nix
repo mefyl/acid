@@ -146,11 +146,29 @@
               # });
               #
               # Remember to update your nix-shell (e.g. with `direnv reload`) after every change in the local repo.
+              schematic-http = prev.schematic-http.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
               timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
               timmy-unix = prev.timmy-unix.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ]; });
               timmy-lwt = prev.timmy-lwt.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
-              schematic = prev.schematic.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
+              acid-jsoo = prev.acid-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.acid-lwt ]; });
               conf-tzdata = null;
+
+              # Because of our pin of cohttp 6.0.0~beta2, which is weird
+              cohttp-eio = prev.cohttp-eio.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [
+                  prev.uri
+                  prev.logs
+                  prev.fmt
+
+                  final.http
+                  final.cohttp
+                ];
+              });
+              cohttp = prev.cohttp.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [
+                  final.http
+                ];
+              });
             };
 
             scope' = scope.overrideScope overlay;
@@ -208,8 +226,12 @@
             };
 
             swiftPackages = let p = pkgs; in [
-              p.swift p.swiftPackages.Dispatch p.swiftPackages.Foundation
-              p.swift-format p.swift-corelibs-libdispatch p.gcc
+              p.swift
+              p.swiftPackages.Dispatch
+              p.swiftPackages.Foundation
+              p.swift-format
+              p.swift-corelibs-libdispatch
+              p.gcc
             ];
 
           in
@@ -221,15 +243,15 @@
             devShells.default =
               let mkShell = if withSwift then pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } else pkgs.mkShell; in
               mkShell {
-              NODE_OPTIONS = "--max_old_space_size=4096";
-              inputsFrom = builtins.attrValues packages;
-              buildInputs =
-                devPackages ++
-                ciPackages ++
-                (extraDevPackages pkgs) ++
-                (if withSwift then swiftPackages else []) ++
-                [ routine_run ];
-            };
+                NODE_OPTIONS = "--max_old_space_size=4096";
+                inputsFrom = builtins.attrValues packages;
+                buildInputs =
+                  devPackages ++
+                  ciPackages ++
+                  (extraDevPackages pkgs) ++
+                  (if withSwift then swiftPackages else [ ]) ++
+                  [ routine_run ];
+              };
           }
         );
     };
