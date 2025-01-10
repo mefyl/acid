@@ -171,7 +171,7 @@
               });
             };
 
-            scope' = scope.overrideScope overlay;
+            scope' = scope.overrideScope (pkgs.lib.composeExtensions overlay extraOverlay);
 
             devPackages = [
               # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
