@@ -137,7 +137,7 @@
                 query;
 
             overlay = final: prev: {
-              # You can add overrides here
+              # You can add overrides here or pass them from each individual `shell.nix` via `extraOverlay`.
               # To add a local, development repo (e.g. your hacked `schematic` rather than the one from Routine's `opam` repo), you can `overrideAttrs` to replace the source like this:
               #
               # schematic = prev.schematic.overrideAttrs (a: {
@@ -151,6 +151,8 @@
               timmy-unix = prev.timmy-unix.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ]; });
               timmy-lwt = prev.timmy-lwt.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
               acid-jsoo = prev.acid-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.acid-lwt ]; });
+
+              # On NixOS, this looks for timezone files in a non-existent location.
               conf-tzdata = null;
 
               # Because of our pin of cohttp 6.0.0~beta2, which is weird
@@ -166,7 +168,7 @@
               });
               cohttp = prev.cohttp.overrideAttrs (a: {
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
-                  final.http
+                  (final.http or null)
                 ];
               });
             };
