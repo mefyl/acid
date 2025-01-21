@@ -34,10 +34,11 @@ package:
 	if ! test -e Dockerfile; then echo "FROM alpine" > Dockerfile; fi
 	sed '1aADD _install/ /usr/' Dockerfile > Dockerfile.package
 	docker buildx build --cache-to type=inline -f "Dockerfile.package" . -t "$(IMAGE):$$(git describe --always)"
+	echo "$(IMAGE):$$(git describe --always)"
 	docker push "$(IMAGE):$$(git describe --always)"
 	docker tag "$(IMAGE):$$(git describe --always)" "$(IMAGE):$$SLUG"
+	echo "$(IMAGE):$$SLUG"
 	docker push "$(IMAGE):$$SLUG"
-	echo "docker-image \"$(IMAGE):$$(git describe --always)\"" > metrics.txt
 
 package/clean:
 	docker rmi "$(IMAGE):$$(git describe --always)" "$(IMAGE):$$SLUG"
