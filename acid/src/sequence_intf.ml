@@ -171,7 +171,7 @@ module type S2 = sig
   (** {1 Memoization} *)
 
   (** [memoize s] is equivalent to [s], but with the property that any monadic
-      operation required to access the elements of [s] will be done at mont
+      operation required to access the elements of [s] will be done at most
       once, even if the sequence is consumed several times. *)
   val memoize : ('a, 'b) t -> ('a, 'b) t
 
