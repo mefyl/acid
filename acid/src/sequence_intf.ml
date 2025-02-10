@@ -1,14 +1,23 @@
 module Step = struct
+  (** A sequence step *)
   type ('a, 's) t =
-    | Done
+    | Done  (** End of the sequence *)
     | Skip of 's
-    | Yield of 'a * 's
-    | Yields of 'a list * 's
+        (** A step that is a pure monadic action and doesn't yield a new
+            sequence element *)
+    | Yield of 'a * 's  (** A step that yields a single element *)
+    | Yields of 'a list * 's  (** A step that yields several elements *)
 end
 
+(** Iterators over a sequence. *)
 module type WALKERS2 = sig
+  (** The type of the underlying sequence to walk *)
   type ('a, 'b) sequence
+
+  (** The monad underpinning {!sequence} *)
   type ('a, 'b) monad
+
+  (** The return wrapper for the waking functions *)
   type ('a, 'b) walk
 
   val filter :
@@ -61,6 +70,7 @@ module type WALKERS2 = sig
     ('c, 'b) sequence
 end
 
+(** 1-parameter version of [WALKERS2] *)
 module type WALKERS = sig
   type 'a sequence
   type 'a monad
@@ -73,14 +83,21 @@ module type WALKERS = sig
        and type ('a, _) walk := 'a walk
 end
 
+(** The type of a sequence over a 2-parameter monad *)
 module type S2 = sig
   type ('a, 'b) t
 
   module M : Monad.S2
+
+  (** Individual sequence steps *)
   module Step : module type of Step
+
+  (** {1 Base sequence operations} *)
 
   val empty : ('a, 'b) t
   val cons : 'a -> ('a, 'b) t -> ('a, 'b) t
+  val head : ('a, 'b) t -> ('a option, 'b) M.t
+  val step : ('a, 'b) t -> ('a list * ('a, 'b) t, 'b) M.t
 
   val unfold :
     init:'state -> f:('state -> (('a, 'state) Step.t, 'b) M.t) -> ('a, 'b) t
@@ -88,11 +105,15 @@ module type S2 = sig
   val unfold_step :
     init:'state -> f:('state -> (('a * 'state) option, 'b) M.t) -> ('a, 'b) t
 
-  val step : ('a, 'b) t -> ('a list * ('a, 'b) t, 'b) M.t
+  val concat : (('a, 'b) t, 'b) t -> ('a, 'b) t
+  val partition : (('a, 'b) Base.Either.t, 'c) t -> ('a list * 'b list, 'c) M.t
+  val length : ('a, 'b) t -> (int, 'b) M.t
+
+  (** {1 Conversions} *)
+
   val of_base : 'a Base.Sequence.t -> ('a, 'b) t
   val of_list : 'a list -> ('a, 'b) t
   val of_lists : 'a list list -> ('a, 'b) t
-  val concat : (('a, 'b) t, 'b) t -> ('a, 'b) t
   val to_list : ('a, 'b) t -> ('a list, 'b) M.t
   val to_list_rev : ('a, 'b) t -> ('a list, 'b) M.t
 
@@ -110,27 +131,29 @@ module type S2 = sig
     ('data, 'b) t ->
     (('data, 'witness) Base.Set.t, 'b) M.t
 
-  val partition : (('a, 'b) Base.Either.t, 'c) t -> ('a list * 'b list, 'c) M.t
-  val head : ('a, 'b) t -> ('a option, 'b) M.t
-  val length : ('a, 'b) t -> (int, 'b) M.t
-  val memoize : ('a, 'b) t -> ('a, 'b) t
+  (** {1 Traversals} *)
 
-  type 'b unless = { f : 'a. ('a, 'b) M.t -> bool }
-
-  val memoize_unless : f:'b unless -> ('a, 'b) t -> ('a, 'b) t
-
-  include
+  (** Traversals of the sequence by pure functions *)
+  module Pure :
     WALKERS2
       with type ('a, 'b) sequence := ('a, 'b) t
        and type ('a, 'b) monad := ('a, 'b) M.t
        and type ('a, 'b) walk := 'a
 
+  (** @closed *)
+  include module type of Pure
+
+  (** Sequential traversals of the sequence by monadic functions *)
   module Seq :
     WALKERS2
       with type ('a, 'b) sequence := ('a, 'b) t
        and type ('a, 'b) monad := ('a, 'b) M.t
        and type ('a, 'b) walk := ('a, 'b) M.t
 
+  (** Parallel monadic traversals of the sequence.
+
+      Parallel here means that the monadic operations don't depend on each
+      other, not that they will be scheduled in parallel. *)
   module Par : sig
     val filter_map : ('a, 'b) t -> f:('a -> ('c option, 'b) M.t) -> ('c, 'b) t
     val iter : ('a, 'b) t -> f:('a -> (unit, 'b) M.t) -> (unit, 'b) M.t
@@ -144,26 +167,48 @@ module type S2 = sig
 
     val map : ('a, 'b) t -> f:('a, 'b, 'c, 'd) map -> ('c, 'd) t
   end
+
+  (** {1 Memoization} *)
+
+  (** [memoize s] is equivalent to [s], but with the property that any monadic
+      operation required to access the elements of [s] will be done at mont
+      once, even if the sequence is consumed several times. *)
+  val memoize : ('a, 'b) t -> ('a, 'b) t
+
+  type 'b unless = { f : 'a. ('a, 'b) M.t -> bool }
+
+  (** [memoize_unless ~f s] is similar to [memoize s], except that only the
+      elements of [s] for which [f] returns [true] will be memoized *)
+  val memoize_unless : f:'b unless -> ('a, 'b) t -> ('a, 'b) t
 end
 
+(** 1-parameter version of [S2] *)
 module type S = sig
+  (** The type of the sequence *)
   type 'a t
 
+  (** The underlying monad for the sequence *)
   module M : Monad.S
 
+  (** 2-params version of [M], mostly here for internal reasons. [('a, 'e) M2.t]
+      is equal to ['a M.t]. *)
   module M2 : sig
+    (** @closed *)
     include module type of M with type 'a t := 'a M.t
 
     type ('a, 'e) t = 'a M.t
   end
 
+  (** @inline *)
   include S2 with type ('a, _) t := 'a t and module M := M2
+
+  (** [memoize_unless ~f s] is similar to [memoize s], except that only the
+      elements of [s] for which [f] returns [true] will be memoized *)
+  val memoize_unless : f:unit unless -> 'a t -> 'a t
 
   module Monad : sig
     type nonrec ('a, 'b) map = ('a, unit, 'b, unit) Monad.map
 
     val map : 'a t -> f:('a, 'b) map -> 'b t
   end
-
-  val memoize_unless : f:unit unless -> 'a t -> 'a t
 end
