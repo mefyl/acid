@@ -15,3 +15,8 @@ module V0_12_0 = struct
 end
 
 module V0_12_1 = V0_12_0
+
+module V0_12_2 = struct
+  include V0_12_0
+  module Bench = Bench
+end
