@@ -85,7 +85,7 @@ module Make2 (Monad : Monad.S2) = struct
       Monad.return ([ value ], Sequence { state; f })
     | Step.Yields (values, state) -> Monad.return (values, Sequence { state; f })
 
-  include struct
+  module Pure = struct
     let rec fold_until (Sequence { state; f = step }) ~init ~f ~finish =
       let open Base.Container.Continue_or_stop in
       step state >>= function
@@ -201,6 +201,8 @@ module Make2 (Monad : Monad.S2) = struct
       in
       unfold ~init:(s, (None, [])) ~f
   end
+
+  include Pure
 
   module Par = struct
     let filter_map (Sequence { state; f = step }) ~f =
