@@ -19,6 +19,7 @@ depends: [
   "ppx_deriving" {with-test}
   "ppx_here"
   "ppx_yojson" {>= "1.2.0" & with-test}
+  "ptime" {>= "1.2.0"}
   "schematic" {>= "0.18.2" & < "0.20.0" & with-test}
   "schematic-jsoo" {>= "0.18.2" & < "0.20.0" & with-test}
   "timmy" {>= "1.0.1" & < "2.0.0"}

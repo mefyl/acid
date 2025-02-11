@@ -46,6 +46,7 @@
    (and
     (>= 1.2.0)
     :with-test))
+  (ptime (>= 1.2.0))
   (schematic
    (and
     (and
