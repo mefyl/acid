@@ -46,6 +46,16 @@ module Result_tests = struct
       check ~here:[%here] (result int string) "length" (Result.Ok 5)
         (Sequence.length seq))
 
+  let take () =
+    let lst = List.init 10 ~f:(Fn.const 1) in
+    (* Infinite sequence, but we'll only take a subset of it *)
+    let seq = Sequence.unfold_step ~init:() ~f:(fun () -> Ok (Some (1, ()))) in
+    Alcotest.(
+      check ~here:[%here]
+        (result (list int) string)
+        "take" (Ok lst)
+        (Sequence.to_list @@ Sequence.take seq 10))
+
   let group_fold () =
     let seq = Sequence.of_lists [ [ 1; 2 ]; [ 4; 6 ]; [ 3; 5; 8; 7; 9 ] ] in
     let init n = List_nonempty.[ n ]
@@ -74,6 +84,7 @@ let () =
             test_case "unfold" unfold;
             test_case "fold" fold;
             test_case "length" length;
+            test_case "take" take;
             test_case "group_fold" group_fold;
           ] );
     ]

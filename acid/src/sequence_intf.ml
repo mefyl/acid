@@ -109,6 +109,11 @@ module type S2 = sig
   val partition : (('a, 'b) Base.Either.t, 'c) t -> ('a list * 'b list, 'c) M.t
   val length : ('a, 'b) t -> (int, 'b) M.t
 
+  (** [take t n] is [t], but limited to its [n] first elements.
+
+      If [length t >= n], then this is exactly [t]. *)
+  val take : ('a, 'b) t -> int -> ('a, 'b) t
+
   (** {1 Conversions} *)
 
   val of_base : 'a Base.Sequence.t -> ('a, 'b) t

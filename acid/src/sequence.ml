@@ -341,6 +341,16 @@ module Make2 (Monad : Monad.S2) = struct
       unfold ~init:(s, (None, [])) ~f
   end
 
+  let take seq n =
+    unfold ~init:(n, seq) ~f:(fun (n, seq) ->
+        if n <= 0 then Monad.return Step.Done
+        else
+          step seq >>| function
+          | [], _ -> Step.Done
+          | l, seq ->
+            let l = List.take l n in
+            Step.Yields (l, (n - List.length l, seq)))
+
   let to_list_rev seq =
     let rec to_list_rev acc seq =
       step seq >>= function
