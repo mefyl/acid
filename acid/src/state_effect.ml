@@ -28,15 +28,15 @@ struct
           retc = (fun v -> (v, state));
           exnc = raise;
           effc =
-            (fun (type effect) (effect : effect Effect.t) ->
-              match effect with
+            (fun (type eff) (eff : eff Effect.t) ->
+              match eff with
               | Get ->
                 Some
-                  (fun (k : (effect, _) Effect.Shallow.continuation) ->
+                  (fun (k : (eff, _) Effect.Shallow.continuation) ->
                     handle state k state)
               | Change f ->
                 Some
-                  (fun (k : (effect, _) Effect.Shallow.continuation) ->
+                  (fun (k : (eff, _) Effect.Shallow.continuation) ->
                     handle (f state) k state)
               | _ -> None);
         }
