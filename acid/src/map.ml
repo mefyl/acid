@@ -25,12 +25,13 @@ let change_map map k ~f =
 
 let mem_update map k ~f = Base.Map.change map k ~f:(Option.map ~f)
 
-module M (K : Select_schema.Map.KEY) = struct
+module type KEY = Select_schema.Map.KEY
+
+module M (K : KEY) = struct
   include Select.Map.M (K)
   include Select_schema.Map.M (K)
   include Select_jsoo.Map.M (K)
 
-  let pp = pp
   let empty = Base.Map.empty (module K)
   let singleton k v = Base.Map.singleton (module K) k v
   let of_alist l = Base.Map.of_alist (module K) l
@@ -56,4 +57,16 @@ module M (K : Select_schema.Map.KEY) = struct
     Base.Map.of_sequence_fold (module K) l ~init ~f
 
   let of_sequence_reduce l ~f = Base.Map.of_sequence_reduce (module K) l ~f
+end
+
+module type KEY_PRINTABLE = sig
+  type t [@@deriving show]
+
+  include KEY with type t := t
+end
+
+module M_printable (K : KEY_PRINTABLE) = struct
+  include M (K)
+
+  let pp pp_data = pp K.pp pp_data
 end
