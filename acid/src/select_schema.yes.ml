@@ -202,7 +202,7 @@ module Set = struct
       let open Schematic.Schema in
       let id =
         let open Fmt in
-        str "%amap" (option (string ++ const char '-')) elt_schema.id
+        str "%aset" (option (string ++ const char '-')) elt_schema.id
       and descriptor =
         let descriptor = List elt_schema
         and decode l = Base.Set.of_list (module E) l |> Result.return
