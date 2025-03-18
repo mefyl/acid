@@ -35,10 +35,6 @@ end
 
 module V0_12_1 = struct
   include V0_12_0
-  module State_effect = State_effect
-end
-
-module V0_12_2 = struct
-  include V0_12_1
   module Bench = Bench
+  module State_effect = State_effect
 end

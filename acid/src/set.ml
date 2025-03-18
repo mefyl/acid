@@ -10,7 +10,9 @@ let pp pp =
         @@ (cut ++ seq ~sep:comma (box ~indent @@ pp)))
      ++ cut ++ const string "}"
 
-module M (Elt : Select_schema.Set.ELT) = struct
+module type ELEMENT = Select_schema.Set.ELT
+
+module M (Elt : ELEMENT) = struct
   include Select.Set.M (Elt)
   include Select_schema.Set.M (Elt)
 
@@ -26,4 +28,16 @@ module M (Elt : Select_schema.Set.ELT) = struct
 
   let of_increasing_iterator_unchecked ~len ~f =
     of_increasing_iterator_unchecked (module Elt) ~len ~f
+end
+
+module type ELEMENT_PRINTABLE = sig
+  type t [@@deriving show]
+
+  include ELEMENT with type t := t
+end
+
+module M_printable (Element : ELEMENT_PRINTABLE) = struct
+  include M (Element)
+
+  let pp set = pp Element.pp set
 end
