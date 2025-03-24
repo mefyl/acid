@@ -52,8 +52,8 @@ depends: [
   "menhirLib" {= "20230608"}
   "menhirSdk" {= "20230608"}
   "metapp" {= "0.4.4"}
-  "ocaml" {= "5.1.1"}
-  "ocaml-base-compiler" {= "5.1.1"}
+  "ocaml" {= "5.2.0"}
+  "ocaml-base-compiler" {= "5.2.0"}
   "ocaml-compiler-libs" {= "v0.12.4"}
   "ocaml-config" {= "3"}
   "ocaml-options-vanilla" {= "1"}
