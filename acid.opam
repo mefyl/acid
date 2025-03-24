@@ -14,9 +14,11 @@ depends: [
   "crowbar" {with-test}
   "fmt"
   "hlist" {>= "0.2.0" & < "0.3.0"}
+  "js_of_ocaml"
   "logs"
+  "metapp"
   "ocaml" {>= "5.0.0"}
-  "ppx_deriving" {with-test}
+  "ppx_deriving"
   "ppx_here"
   "ppx_yojson" {>= "1.2.0" & with-test}
   "ptime" {>= "1.2.0"}

@@ -15,6 +15,10 @@ depends: [
   "js_of_ocaml"
   "js_of_ocaml-ppx"
   "js_of_ocaml-lwt" {with-test}
+  "ppx_deriving" {with-test}
+  "ppx_here" {with-test}
+  "ppx_yojson" {with-test}
+  "schematic" {with-test}
   "odoc" {with-doc}
 ]
 build: [

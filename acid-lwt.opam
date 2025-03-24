@@ -10,8 +10,13 @@ bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
 depends: [
   "dune" {>= "3.0"}
   "acid" {= version}
+  "alcotest" {with-test}
   "alcotest-lwt" {>= "1.1.0" & with-test}
   "lwt" {>= "5.0.0"}
+  "ppx_deriving"
+  "ppx_here" {with-test}
+  "ppx_yojson" {with-test}
+  "schematic" {with-test}
   "odoc" {with-doc}
 ]
 build: [
