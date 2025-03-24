@@ -5,8 +5,10 @@
  (deps
   acid.opam
   acid-jsoo.opam
+  acid-lwt.opam
   (alias_rec acid/default)
-  (alias_rec acid-jsoo/default)))
+  (alias_rec acid-jsoo/default)
+  (alias_rec acid-lwt/default)))
 
 (rule
  (target dune.inc)
