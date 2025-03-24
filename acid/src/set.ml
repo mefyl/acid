@@ -8,7 +8,8 @@ let pp pp =
   @@ const string "{"
      ++ (hvbox ~indent:(indent - 1)
         @@ (cut ++ seq ~sep:comma (box ~indent @@ pp)))
-     ++ cut ++ const string "}"
+     ++ cut
+     ++ const string "}"
 
 module type ELEMENT = Select_schema.Set.ELT
 

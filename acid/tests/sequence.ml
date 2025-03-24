@@ -68,7 +68,8 @@ module Result_tests = struct
         "group_fold"
         (Result.Ok [ [ 1; 2; 4; 6 ]; [ 3; 5; 8 ]; [ 7; 9 ] ])
         Sequence.(
-          group_fold seqq ~init ~f |> to_list
+          group_fold seqq ~init ~f
+          |> to_list
           |> Result.map
                ~f:(List.map ~f:(Fn.compose List.rev List_nonempty.to_list))))
 end

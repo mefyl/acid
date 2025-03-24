@@ -24,7 +24,9 @@ let json = Alcotest.testable Schematic.Json.pp Schematic.Json.equal
 let int () =
   let empty = IntMap.empty in
   let full =
-    empty |> Map.set ~key:1 ~data:"one" |> Map.set ~key:2 ~data:"two"
+    empty
+    |> Map.set ~key:1 ~data:"one"
+    |> Map.set ~key:2 ~data:"two"
     |> Map.set ~key:3 ~data:"three"
   in
   let check name map expected =
@@ -39,7 +41,9 @@ let int () =
 let string () =
   let empty = StringMap.empty in
   let full =
-    empty |> Map.set ~key:"one" ~data:1 |> Map.set ~key:"two" ~data:2
+    empty
+    |> Map.set ~key:"one" ~data:1
+    |> Map.set ~key:"two" ~data:2
     |> Map.set ~key:"three" ~data:3
   in
   let check name map expected =
