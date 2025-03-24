@@ -32,6 +32,10 @@ RUN --mount=type=ssh \
     (if test -n "$OPAM_WITHOUT_PACKAGES"; then opam remove --yes $OPAM_WITHOUT_PACKAGES; fi) && \
     opam clean -a -c -s --logs -r && \
     rm -rf /root/.cache/dune
+
+# TODO remove
+RUN opam exec -- dune build opam/*.extdeps && git diff --exit-code
+
 ADD .exists package*.json yarn*.lock /root/
 RUN if test -e /root/package.json; then \
     apk add --no-cache npm && \
