@@ -28,7 +28,7 @@ let mem_update map k ~f = Base.Map.change map k ~f:(Option.map ~f)
 
 module type KEY = Select_schema.Map.KEY
 
-module M_unprintable (K : KEY) = struct
+module M (K : KEY) = struct
   include Select.Map.M (K)
   include Select_schema.Map.M (K)
   include Select_jsoo.Map.M (K)
@@ -61,15 +61,13 @@ module M_unprintable (K : KEY) = struct
 end
 
 module type KEY_PRINTABLE = sig
-  type t
-
-  val pp : t Fmt.t
+  type t [@@deriving show]
 
   include KEY with type t := t
 end
 
-module M (K : KEY_PRINTABLE) = struct
-  include M_unprintable (K)
+module M_printable (K : KEY_PRINTABLE) = struct
+  include M (K)
 
   let pp pp_data = pp K.pp pp_data
 end
