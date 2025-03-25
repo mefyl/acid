@@ -6,7 +6,6 @@ include module type of Base.Result
 val both : ('a, 'e) t -> ('b, 'e) t -> ('a * 'b, 'e) t
 val failf : ('a, Format.formatter, unit, ('b, string) t) format4 -> 'a
 val to_option : ('a, _) t -> 'a option
-val traverse : 'a Base.List.t -> f:('a -> ('b, 'c) t) -> ('b Base.List.t, 'c) t
 
 module Nest (M : Monad.S) : Monad.S2 with type ('a, 'b) t = ('a, 'b) t M.t
 

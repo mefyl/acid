@@ -36,5 +36,3 @@ let all l =
     ~f:(fun acc -> function
     | Ok x -> Continue (Base.Result.map acc ~f:(fun l -> x :: l))
     | Error e -> Stop (Error e))
-
-let traverse l ~f = Base.List.map l ~f |> all

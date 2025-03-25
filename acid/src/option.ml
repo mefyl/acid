@@ -13,5 +13,3 @@ include Monad.MakeNestable (struct
       M.bind v ~f:(function None -> M.return None | Some v -> f v)
   end
 end)
-
-let traverse (l : 'a list) ~f = Base.List.map l ~f |> all
