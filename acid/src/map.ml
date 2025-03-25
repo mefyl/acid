@@ -61,7 +61,9 @@ module M (K : KEY) = struct
 end
 
 module type KEY_PRINTABLE = sig
-  type t [@@deriving show]
+  type t
+
+  val pp : t Fmt.t
 
   include KEY with type t := t
 end
