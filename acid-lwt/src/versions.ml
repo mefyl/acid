@@ -1,6 +1,4 @@
-module V0_12_0 = struct
-  include Acid.Versions.V0_12_0
-
+module Lwt_ = struct
   (** @canonical Acid_lwt.Lwt *)
   module Lwt = struct
     include Lwt_acid
@@ -14,9 +12,12 @@ module V0_12_0 = struct
   module Lwt_guarded = Lwt_guarded
 end
 
-module V0_12_1 = V0_12_0
+module V0_12_0 = struct
+  include Acid.Versions.V0_12_0
+  include Lwt_
+end
 
-module V0_12_2 = struct
-  include V0_12_0
-  module Bench = Bench
+module V0_12_1 = struct
+  include Acid.Versions.V0_12_1
+  include Lwt_
 end
