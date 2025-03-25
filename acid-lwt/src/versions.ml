@@ -1,4 +1,7 @@
 module Lwt_ = struct
+  (** @canonical Acid_lwt.Bench *)
+  module Bench = Bench
+
   (** @canonical Acid_lwt.Lwt *)
   module Lwt = struct
     include Lwt_acid
