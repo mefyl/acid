@@ -1,23 +1,5 @@
 include Monad_intf
 
-module Make (X : Base.Monad.Basic) = struct
-  include Base.Monad.Make (X)
-
-  let traverse l ~f = Base.List.map l ~f |> all
-end
-
-module Make2 (X : Base.Monad.Basic2) = struct
-  include Base.Monad.Make2 (X)
-
-  let traverse l ~f = Base.List.map l ~f |> all
-end
-
-module Make3 (X : Base.Monad.Basic3) = struct
-  include Base.Monad.Make3 (X)
-
-  let traverse l ~f = Base.List.map l ~f |> all
-end
-
 module MakeNestable2 (M : BASIC_NESTABLE2) = struct
   include M
   include Make2 (M)
@@ -76,7 +58,7 @@ module State = struct
   struct
     type 'a t = State.t -> 'a * State.t
 
-    include Make (struct
+    include Base.Monad.Make (struct
       type nonrec 'a t = 'a t
 
       let return v marks = (v, marks)
