@@ -98,8 +98,12 @@ let set elt =
 module Ordered = struct
   let by_length () =
     let test =
-      Strings.empty |> Strings.add "Foo" |> Strings.add "foo"
-      |> Strings.add "FOO" |> Strings.add "bar" |> Strings.add ""
+      Strings.empty
+      |> Strings.add "Foo"
+      |> Strings.add "foo"
+      |> Strings.add "FOO"
+      |> Strings.add "bar"
+      |> Strings.add ""
       |> Strings.add "multi_index"
     in
     let () =
@@ -153,8 +157,12 @@ module Ordered = struct
 
   let caseless () =
     let test =
-      Strings.empty |> Strings.add "Foo" |> Strings.add "foo"
-      |> Strings.add "FOO" |> Strings.add "bar" |> Strings.add "BAR"
+      Strings.empty
+      |> Strings.add "Foo"
+      |> Strings.add "foo"
+      |> Strings.add "FOO"
+      |> Strings.add "bar"
+      |> Strings.add "BAR"
       |> Strings.add "baz"
     in
     let check ~here test expected s =
@@ -190,7 +198,9 @@ end
 module Ordered_unique = struct
   let by_hash () =
     let test =
-      Strings.empty |> Strings.add "foo" |> Strings.add "bar"
+      Strings.empty
+      |> Strings.add "foo"
+      |> Strings.add "bar"
       |> Strings.add "baz"
     in
     let check_has test ~here s =
@@ -221,8 +231,12 @@ end
 module Multi_ordered = struct
   let by_characters () =
     let test =
-      Strings.empty |> Strings.add "Foo" |> Strings.add "foo"
-      |> Strings.add "FOO" |> Strings.add "bar" |> Strings.add "BAR"
+      Strings.empty
+      |> Strings.add "Foo"
+      |> Strings.add "foo"
+      |> Strings.add "FOO"
+      |> Strings.add "bar"
+      |> Strings.add "BAR"
       |> Strings.add "baz"
     in
     let check ~here test expected c =

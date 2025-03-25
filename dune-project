@@ -37,16 +37,19 @@
    (and
     (>= 0.2.0)
     (< 0.3.0)))
+  js_of_ocaml
   logs
+  metapp
   (ocaml
    (>= 5.0.0))
-  (ppx_deriving :with-test)
+  ppx_deriving
   ppx_here
   (ppx_yojson
    (and
     (>= 1.2.0)
     :with-test))
-  (ptime (>= 1.2.0))
+  (ptime
+   (>= 1.2.0))
   (schematic
    (and
     (and
@@ -80,12 +83,17 @@
  (depends
   (acid
    (= :version))
+  (alcotest :with-test)
   (alcotest-lwt
    (and
     (>= 1.1.0)
     :with-test))
   (lwt
-   (>= 5.0.0))))
+   (>= 5.0.0))
+  ppx_deriving
+  (ppx_here :with-test)
+  (ppx_yojson :with-test)
+  (schematic :with-test)))
 
 (package
  (name acid-jsoo)
@@ -100,4 +108,8 @@
   (conf-npm :with-test)
   js_of_ocaml
   js_of_ocaml-ppx
-  (js_of_ocaml-lwt :with-test)))
+  (js_of_ocaml-lwt :with-test)
+  (ppx_deriving :with-test)
+  (ppx_here :with-test)
+  (ppx_yojson :with-test)
+  (schematic :with-test)))

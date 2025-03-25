@@ -11,7 +11,8 @@ let pp pp_key pp_data =
            ++ seq ~sep:comma
                 (box ~indent
                 @@ pair ~sep:(const string ":" ++ sp) pp_key pp_data))
-     ++ cut ++ const string "}"
+     ++ cut
+     ++ const string "}"
 
 let change_map map k ~f =
   let res = ref None in

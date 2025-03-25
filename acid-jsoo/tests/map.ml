@@ -4,7 +4,8 @@ open Acid_jsoo
 let roundtrip () =
   let map =
     Map.empty (module String)
-    |> Map.set ~key:"one" ~data:1 |> Map.set ~key:"two" ~data:2
+    |> Map.set ~key:"one" ~data:1
+    |> Map.set ~key:"two" ~data:2
     |> Map.set ~key:"three" ~data:3
   in
   let js_map = Js.Map.of_map Js.string Fn.id map in

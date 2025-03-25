@@ -27,37 +27,37 @@ module Result_tests = struct
         "unfold |> to_list" (Result.Error "dividing by zero") res)
 
   let fold () =
-    let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ]
+    let seqq = Sequence.of_list [ 1; 2; 3; 4; 5 ]
     and f a b =
       let res = a + b in
       if res < 100 then Result.Ok res else Result.Error "too big"
     in
     Alcotest.(
       check ~here:[%here] (result int string) "sum" (Result.Ok 15)
-        (Sequence.Seq.fold ~init:0 ~f seq));
+        (Sequence.Seq.fold ~init:0 ~f seqq));
     Alcotest.(
       check ~here:[%here] (result int string) "too big a sum"
         (Result.Error "too big")
-        (Sequence.Seq.fold ~init:90 ~f seq))
+        (Sequence.Seq.fold ~init:90 ~f seqq))
 
   let length () =
-    let seq = Sequence.of_list [ 1; 2; 3; 4; 5 ] in
+    let seqq = Sequence.of_list [ 1; 2; 3; 4; 5 ] in
     Alcotest.(
       check ~here:[%here] (result int string) "length" (Result.Ok 5)
-        (Sequence.length seq))
+        (Sequence.length seqq))
 
   let take () =
     let lst = List.init 10 ~f:(Fn.const 1) in
     (* Infinite sequence, but we'll only take a subset of it *)
-    let seq = Sequence.unfold_step ~init:() ~f:(fun () -> Ok (Some (1, ()))) in
+    let seqq = Sequence.unfold_step ~init:() ~f:(fun () -> Ok (Some (1, ()))) in
     Alcotest.(
       check ~here:[%here]
         (result (list int) string)
         "take" (Ok lst)
-        (Sequence.to_list @@ Sequence.take seq 10))
+        (Sequence.to_list @@ Sequence.take seqq 10))
 
   let group_fold () =
-    let seq = Sequence.of_lists [ [ 1; 2 ]; [ 4; 6 ]; [ 3; 5; 8; 7; 9 ] ] in
+    let seqq = Sequence.of_lists [ [ 1; 2 ]; [ 4; 6 ]; [ 3; 5; 8; 7; 9 ] ] in
     let init n = List_nonempty.[ n ]
     and f List_nonempty.(head :: tail) n =
       Option.some_if (n >= head) List_nonempty.(n :: head :: tail)
@@ -68,7 +68,8 @@ module Result_tests = struct
         "group_fold"
         (Result.Ok [ [ 1; 2; 4; 6 ]; [ 3; 5; 8 ]; [ 7; 9 ] ])
         Sequence.(
-          group_fold seq ~init ~f |> to_list
+          group_fold seqq ~init ~f
+          |> to_list
           |> Result.map
                ~f:(List.map ~f:(Fn.compose List.rev List_nonempty.to_list))))
 end
