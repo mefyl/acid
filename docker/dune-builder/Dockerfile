@@ -1,6 +1,6 @@
 FROM alpine:3.20.3 AS opam-base
 
-RUN apk add --no-cache bash curl docker-cli docker-cli-buildx gcc g++ git make npm patch s3fs-fuse tzdata
+RUN apk add --no-cache bash curl docker-cli docker-cli-buildx gcc g++ git make npm openssh patch tzdata
 
 # Ensuring reproducibility, the poor man's way.
 RUN curl -fsSL https://get.dune.build/install | sed 's#dune_tar_uri=.*#dune_tar_uri="https://get.dune.build/2025-03-26/x86_64-unknown-linux-musl/dune-2025-03-26-x86_64-unknown-linux-musl.tar.gz"#' | sh

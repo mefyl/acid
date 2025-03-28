@@ -7,8 +7,6 @@ stages:
 
 before_script:
   - which docker && echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password-stdin
-  - chmod go-rwx "$DUNE_CACHE_CREDENTIALS"
-  - s3fs dune-cache /root/.cache/dune -o url=https://fra1.digitaloceanspaces.com/ -o use_path_request_style -o passwd_file="$DUNE_CACHE_CREDENTIALS" -o nonempty
 
 variables:
   BRANCH: "$CI_COMMIT_REF_NAME"
@@ -19,9 +17,10 @@ variables:
   FROM_SCRATCH:
     value: ""
     description: "Rebuild Docker images from scratch if not empty"
+  DUNE_CACHE_STORAGE_MODE: "copy"
 
 .ocaml:
-  image: "$CI_REGISTRY/routine/logistic/dune-builder:f7af2d0"
+  image: "$CI_REGISTRY/routine/logistic/dune-builder:5251af8"
 
 .ocaml-build:
   extends: .ocaml
