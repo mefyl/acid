@@ -1,0 +1,29 @@
+opam-version: "2.0"
+version: "0.12.1"
+synopsis: "Base lwt extension library"
+maintainer: ["mefyl <mefyl@gruntech.org>"]
+authors: ["mefyl <mefyl@gruntech.org>"]
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.routine.co/routine/acid"
+bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "acid-ios" {= version}
+  "lwt-ios" {>= "5.0.0"}
+  "ppx_deriving"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-x" "ios" "-p" "acid-lwt" "-j" jobs "@install"]
+]
+dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
+pin-depends: [
+  [
+    "schematic-ios.0.19.7"
+    "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2"
+  ]
+  [
+    "stdcompat.19"
+    "git+https://github.com/thierry-martinez/stdcompat.git#d53390d788027fe0a2282c4745eb3d1626341f99"
+  ]
+]
