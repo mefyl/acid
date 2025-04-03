@@ -367,6 +367,7 @@ let () =
                      pin_depend "ocamlformat" "0.26.2"
                      :: { pelem = String "opam-file-format"; pos }
                      :: { pelem = String "sexplib"; pos }
+                     :: { pelem = String "opam-dune-lint"; pos }
                      :: l;
                  }))
         | _ -> failwith "pin-depends expects a list"
