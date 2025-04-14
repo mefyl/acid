@@ -1,8 +1,9 @@
-module V0_12_0 = struct
+module V0_13_0 = struct
   (** @closed *)
   include Base
 
   module Array = Root.Array
+  module Bench = Bench
   module Circular = Circular
   module Continue_or_stop = Root.Continue_or_stop
   module Either = Root.Either
@@ -25,16 +26,11 @@ module V0_12_0 = struct
   module Sequence = Root.Sequence
   module Set = Root.Set
   module Split = Split
+  module State_effect = State_effect
   module String = Root.String
 
   let logs_src = Acid_logs.src
 
   (** @inline *)
   include Select_jsoo.Js
-end
-
-module V0_12_1 = struct
-  include V0_12_0
-  module Bench = Bench
-  module State_effect = State_effect
 end
