@@ -22,15 +22,15 @@ depends: [
   "ppx_here"
   "ppx_yojson" {>= "1.2.0" & with-test}
   "ptime" {>= "1.2.0"}
-  "schematic" {>= "0.18.2" & < "0.20.0" & with-test}
-  "schematic-jsoo" {>= "0.18.2" & < "0.20.0" & with-test}
+  "schematic" {>= "0.19.8" & < "0.20.0" & with-test}
+  "schematic-jsoo" {>= "0.19.8" & < "0.20.0" & with-test}
   "timmy" {>= "1.0.1" & < "2.0.0"}
   "metaversion"
   "odoc" {with-doc}
 ]
 depopts: [
-  "schematic" {>= "0.18.2" & < "0.20.0"}
-  "schematic-jsoo" {>= "0.18.2" & < "0.20.0"}
+  "schematic" {>= "0.19.8" & < "0.20.0"}
+  "schematic-jsoo" {>= "0.19.8" & < "0.20.0"}
 ]
 build: [
   ["dune" "subst"] {dev}
@@ -47,11 +47,3 @@ build: [
   ]
 ]
 dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
-pin-depends: [
-  [ "landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js" ]
-  [ "landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js" ]
-
-  # Until Schematic 0.19.8 is released
-  [ "schematic.0.19.7" "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2" ]
-  [ "schematic-jsoo.0.19.7" "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2" ]
-]

@@ -53,13 +53,13 @@
   (schematic
    (and
     (and
-     (>= 0.18.2)
+     (>= 0.19.8)
      (< 0.20.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.18.2)
+     (>= 0.19.8)
      (< 0.20.0))
     :with-test))
   (timmy
@@ -70,11 +70,11 @@
  (depopts
   (schematic
    (and
-    (>= 0.18.2)
+    (>= 0.19.8)
     (< 0.20.0)))
   (schematic-jsoo
    (and
-    (>= 0.18.2)
+    (>= 0.19.8)
     (< 0.20.0)))))
 
 (package

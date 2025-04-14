@@ -23,18 +23,10 @@ depends: [
   "metaversion-macos"
 ]
 depopts: [
-  "schematic-macos" {>= "0.18.2" & < "0.20.0"}
+  "schematic-macos" {>= "0.19.8" & < "0.20.0"}
 ]
 build: [
   ["dune" "subst"] {dev}
   ["dune" "build" "-x" "macos" "-p" "acid" "-j" jobs "@install"]
 ]
 dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
-pin-depends: [
-  ["landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js"]
-  ["landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js"]
-  [
-    "schematic-macos.0.19.7"
-    "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2"
-  ]
-]

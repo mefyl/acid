@@ -1,8 +1,0 @@
-pin-depends: [
-  [ "landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js" ]
-  [ "landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js" ]
-
-  # Until Schematic 0.19.8 is released
-  [ "schematic.0.19.7" "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2" ]
-  [ "schematic-jsoo.0.19.7" "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2" ]
-]
