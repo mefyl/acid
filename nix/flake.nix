@@ -155,6 +155,11 @@
               # On NixOS, this looks for timezone files in a non-existent location.
               conf-tzdata = null;
 
+              utop = prev.utop.overrideAttrs (a: {
+                # Utop has multiple root directories and Nix only wants one
+                sourceRoot = ".";
+              });
+
               # Because of our pin of cohttp 6.0.0~beta2, which is weird
               cohttp-eio = prev.cohttp-eio.overrideAttrs (a: {
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
