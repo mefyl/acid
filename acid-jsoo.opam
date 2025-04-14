@@ -18,7 +18,7 @@ depends: [
   "ppx_deriving" {with-test}
   "ppx_here" {with-test}
   "ppx_yojson" {with-test}
-  "schematic" {with-test}
+  "schematic" {>= "0.19.8" & < "0.20.0" & with-test}
   "odoc" {with-doc}
 ]
 build: [

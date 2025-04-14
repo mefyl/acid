@@ -93,7 +93,12 @@
   ppx_deriving
   (ppx_here :with-test)
   (ppx_yojson :with-test)
-  (schematic :with-test)))
+  (schematic
+   (and
+    (and
+     (>= 0.19.8)
+     (< 0.20.0))
+    :with-test))))
 
 (package
  (name acid-jsoo)
@@ -112,4 +117,9 @@
   (ppx_deriving :with-test)
   (ppx_here :with-test)
   (ppx_yojson :with-test)
-  (schematic :with-test)))
+  (schematic
+   (and
+    (and
+     (>= 0.19.8)
+     (< 0.20.0))
+    :with-test))))
