@@ -1,0 +1,48 @@
+opam-version: "2.0"
+version: "0.12.1"
+synopsis: "Base library"
+maintainer: ["mefyl <mefyl@gruntech.org>"]
+authors: ["mefyl <mefyl@gruntech.org>"]
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.routine.co/routine/acid"
+bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "base-android" {>= "v0.16.0" & < "v0.18.0"}
+  "fmt-android"
+  "hlist-android" {>= "0.2.0" & < "0.3.0"}
+  "js_of_ocaml"
+  "logs"
+  "metapp"
+  "ocaml-android" {>= "5.0.0"}
+  "ppx_deriving"
+  "ppx_here"
+  "ppx_here-android"
+  "ptime" {>= "1.2.0"}
+  "timmy-android" {>= "1.0.1" & < "2.0.0"}
+  "metaversion-android"
+]
+depopts: [
+  "schematic-android" {>= "0.18.2" & < "0.20.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-x" "android" "-p" "acid" "-j" jobs "@install"]
+]
+dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
+pin-depends: [
+  ["landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js"]
+  ["landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js"]
+  [
+    "stdcompat.19"
+    "git+https://github.com/thierry-martinez/stdcompat.git#d53390d788027fe0a2282c4745eb3d1626341f99"
+  ]
+  [
+    "schematic-android.0.19.7"
+    "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2"
+  ]
+  [
+    "stdcompat.19"
+    "git+https://github.com/thierry-martinez/stdcompat.git#d53390d788027fe0a2282c4745eb3d1626341f99"
+  ]
+]

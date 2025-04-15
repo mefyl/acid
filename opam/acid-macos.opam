@@ -11,10 +11,14 @@ depends: [
   "base-macos" {>= "v0.16.0" & < "v0.18.0"}
   "fmt-macos"
   "hlist-macos" {>= "0.2.0" & < "0.3.0"}
+  "js_of_ocaml"
   "logs"
+  "metapp"
   "ocaml-macos" {>= "5.0.0"}
+  "ppx_deriving"
   "ppx_here"
   "ppx_here-macos"
+  "ptime" {>= "1.2.0"}
   "timmy-macos" {>= "1.0.1" & < "2.0.0"}
   "metaversion-macos"
 ]
@@ -29,4 +33,16 @@ dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
 pin-depends: [
   ["landmarks.1.4" "git+https://github.com/routineco/landmarks.git#js"]
   ["landmarks-ppx.1.4" "git+https://github.com/routineco/landmarks.git#js"]
+  [
+    "stdcompat.19"
+    "git+https://github.com/thierry-martinez/stdcompat.git#d53390d788027fe0a2282c4745eb3d1626341f99"
+  ]
+  [
+    "schematic-macos.0.19.7"
+    "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2"
+  ]
+  [
+    "stdcompat.19"
+    "git+https://github.com/thierry-martinez/stdcompat.git#d53390d788027fe0a2282c4745eb3d1626341f99"
+  ]
 ]
