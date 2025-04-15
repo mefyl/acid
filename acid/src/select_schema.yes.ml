@@ -98,6 +98,13 @@ module Map = struct
     include Base.Map
     include Base.Map.M (K)
 
+    let _pp_key = Schematic.Pp.of_schema @@ K.schema_versioned (fun _ -> None)
+
+    let _of_sequence sequence =
+      match Base.Map.of_sequence (module K) sequence with
+      | `Duplicate_key k -> Result.failf "duplicate key: %a" _pp_key k
+      | `Ok map -> Result.return map
+
     let assoc_schema_versioned version =
       let key_schema = K.schema_versioned version in
       let pp_key = Schematic.Pp.of_schema key_schema in
@@ -151,6 +158,12 @@ module Map = struct
 
     let schema_versioned version =
       let key_schema = K.schema_versioned version in
+      let dictionary_id data_schema =
+        let open Fmt in
+        str "%adictionary"
+          (option (string ++ const char '-'))
+          data_schema.Schematic.Schema.id
+      in
       let res :
           'data Schematic.Schema.t ->
           (K.t, 'data, K.comparator_witness) Base.Map.t Schematic.Schema.t =
@@ -160,28 +173,16 @@ module Map = struct
              after, but is added here to avoid mapping Fn.id over keys for
              performance reasons. *)
           fun data_schema ->
-           let deconstruct map = map |> Base.Map.to_sequence
-           and construct sequence =
-             match Base.Map.of_sequence (module K) sequence with
-             | `Ok map -> Result.Ok map
-             | `Duplicate_key key -> Result.failf "duplicate key in map: %S" key
-           and id =
-             let open Fmt in
-             str "%adictionary"
-               (option (string ++ const char '-'))
-               data_schema.Schematic.Schema.id
-           in
            let open Schematic.Schema in
-           make ~id
+           make ~id:(dictionary_id data_schema)
            @@ Mapping
                 {
-                  construct;
-                  deconstruct;
+                  construct = _of_sequence;
+                  deconstruct = Base.Map.to_sequence;
                   item = data_schema;
                   length = Base.Map.length;
                 }
         | None -> (
-          let pp_key = Schematic.Pp.of_schema key_schema in
           let (Flatten { descriptor; decode; encode }) =
             Schematic.Schema.flatten key_schema.descriptor
           in
@@ -204,17 +205,12 @@ module Map = struct
                          Base.Map.update map key ~f:(function
                            | None -> data
                            | Some _ ->
-                             Fmt.failwith "duplicate key in map: %a" pp_key key)
+                             Fmt.failwith "duplicate key in map: %a" _pp_key key)
                          |> Result.return
                        with Failure reason -> Result.fail reason)
-              and id =
-                let open Fmt in
-                str "%adictionary"
-                  (option (string ++ const char '-'))
-                  data_schema.Schematic.Schema.id
               in
               let open Schematic.Schema in
-              make ~id
+              make ~id:(dictionary_id data_schema)
               @@ Mapping
                    {
                      construct;
