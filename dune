@@ -6,18 +6,6 @@
   acid.opam
   acid-jsoo.opam
   acid-lwt.opam
-  opam/acid-ios.opam
-  opam/acid-jsoo-ios.opam
-  opam/acid-lwt-ios.opam
-  opam/acid-macos.opam
-  opam/acid-jsoo-macos.opam
-  opam/acid-lwt-macos.opam
-  opam/acid-windows.opam
-  opam/acid-jsoo-windows.opam
-  opam/acid-lwt-windows.opam
-  opam/acid-android.opam
-  opam/acid-jsoo-android.opam
-  opam/acid-lwt-android.opam
   (alias_rec acid/default)
   (alias_rec acid-jsoo/default)
   (alias_rec acid-lwt/default)))
