@@ -21,9 +21,9 @@
     %{dep:.logistic/dune/extdeps/extdeps.exe}
     generate
     --cross
-    base,fmt,lwt
+    base,fmt,logs,lwt,ptime
     --cross-both
-    ppx_here
+    metapp,ppx_here
     --cross-exclude
     schematic-jsoo
     --local
