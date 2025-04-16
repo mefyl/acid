@@ -20,8 +20,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
      %{dep:../acid.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-ios.%{version:acid}.opam) (deps (:opam acid-ios.opam))
   (action
    (with-stdout-to %{target}
@@ -43,8 +43,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-macos --input
      %{dep:../acid.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-macos.%{version:acid}.opam)
   (deps (:opam acid-macos.opam))
   (action
@@ -67,8 +67,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-windows --input
      %{dep:../acid.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-windows.%{version:acid}.opam)
   (deps (:opam acid-windows.opam))
   (action
@@ -91,8 +91,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-android --input
      %{dep:../acid.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-android.%{version:acid}.opam)
   (deps (:opam acid-android.opam))
   (action
@@ -133,8 +133,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
      %{dep:../acid-jsoo.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-jsoo-ios.%{version:acid-jsoo}.opam)
   (deps (:opam acid-jsoo-ios.opam))
   (action
@@ -157,8 +157,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-macos --input
      %{dep:../acid-jsoo.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-jsoo-macos.%{version:acid-jsoo}.opam)
   (deps (:opam acid-jsoo-macos.opam))
   (action
@@ -181,8 +181,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-windows --input
      %{dep:../acid-jsoo.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-jsoo-windows.%{version:acid-jsoo}.opam)
   (deps (:opam acid-jsoo-windows.opam))
   (action
@@ -205,8 +205,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-android --input
      %{dep:../acid-jsoo.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-jsoo-android.%{version:acid-jsoo}.opam)
   (deps (:opam acid-jsoo-android.opam))
   (action
@@ -247,8 +247,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-ios --input
      %{dep:../acid-lwt.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-lwt-ios.%{version:acid-lwt}.opam)
   (deps (:opam acid-lwt-ios.opam))
   (action
@@ -271,8 +271,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-macos --input
      %{dep:../acid-lwt.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-lwt-macos.%{version:acid-lwt}.opam)
   (deps (:opam acid-lwt-macos.opam))
   (action
@@ -295,8 +295,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-windows --input
      %{dep:../acid-lwt.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-lwt-windows.%{version:acid-lwt}.opam)
   (deps (:opam acid-lwt-windows.opam))
   (action
@@ -319,8 +319,8 @@
    (with-stdout-to %{target}
     (run %{dep:../.logistic/dune/extdeps/extdeps.exe} rewrite-android --input
      %{dep:../acid-lwt.opam} --cross
-     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,lwt
-     --cross-both ppx_here --cross-exclude schematic-jsoo))))
+     acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+     --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
  (rule (target acid-lwt-android.%{version:acid-lwt}.opam)
   (deps (:opam acid-lwt-android.opam))
   (action

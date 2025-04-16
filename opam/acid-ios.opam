@@ -12,13 +12,14 @@ depends: [
   "fmt-ios"
   "hlist-ios" {>= "0.2.0" & < "0.3.0"}
   "js_of_ocaml"
-  "logs"
+  "logs-ios"
   "metapp"
+  "metapp-ios"
   "ocaml-ios" {>= "5.0.0"}
   "ppx_deriving"
   "ppx_here"
   "ppx_here-ios"
-  "ptime" {>= "1.2.0"}
+  "ptime-ios" {>= "1.2.0"}
   "timmy-ios" {>= "1.0.1" & < "2.0.0"}
   "metaversion-ios"
 ]
