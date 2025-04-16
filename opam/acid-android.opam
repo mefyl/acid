@@ -1,0 +1,33 @@
+opam-version: "2.0"
+version: "0.13.0"
+synopsis: "Base library"
+maintainer: ["mefyl <mefyl@gruntech.org>"]
+authors: ["mefyl <mefyl@gruntech.org>"]
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.routine.co/routine/acid"
+bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "base-android" {>= "v0.16.0" & < "v0.18.0"}
+  "fmt-android"
+  "hlist-android" {>= "0.2.0" & < "0.3.0"}
+  "js_of_ocaml"
+  "logs-android"
+  "metapp"
+  "metapp-android"
+  "ocaml-android" {>= "5.0.0"}
+  "ppx_deriving"
+  "ppx_here"
+  "ppx_here-android"
+  "ptime-android" {>= "1.2.0"}
+  "timmy-android" {>= "1.0.1" & < "2.0.0"}
+  "metaversion-android"
+]
+depopts: [
+  "schematic-android" {>= "0.19.8" & < "0.20.0"}
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-x" "android" "-p" "acid" "-j" jobs "@install"]
+]
+dev-repo: "git+https://gitlab.routine.co/routine/acid.git"

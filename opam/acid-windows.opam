@@ -12,13 +12,14 @@ depends: [
   "fmt-windows"
   "hlist-windows" {>= "0.2.0" & < "0.3.0"}
   "js_of_ocaml"
-  "logs"
+  "logs-windows"
   "metapp"
+  "metapp-windows"
   "ocaml-windows" {>= "5.0.0"}
   "ppx_deriving"
   "ppx_here"
   "ppx_here-windows"
-  "ptime" {>= "1.2.0"}
+  "ptime-windows" {>= "1.2.0"}
   "timmy-windows" {>= "1.0.1" & < "2.0.0"}
   "metaversion-windows"
 ]

@@ -12,13 +12,14 @@ depends: [
   "fmt-macos"
   "hlist-macos" {>= "0.2.0" & < "0.3.0"}
   "js_of_ocaml"
-  "logs"
+  "logs-macos"
   "metapp"
+  "metapp-macos"
   "ocaml-macos" {>= "5.0.0"}
   "ppx_deriving"
   "ppx_here"
   "ppx_here-macos"
-  "ptime" {>= "1.2.0"}
+  "ptime-macos" {>= "1.2.0"}
   "timmy-macos" {>= "1.0.1" & < "2.0.0"}
   "metaversion-macos"
 ]

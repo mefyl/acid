@@ -1,0 +1,19 @@
+opam-version: "2.0"
+version: "0.13.0"
+synopsis: "Base javascript library"
+maintainer: ["mefyl <mefyl@gruntech.org>"]
+authors: ["mefyl <mefyl@gruntech.org>"]
+license: "LGPL-3.0-or-later"
+homepage: "https://gitlab.routine.co/routine/acid"
+bug-reports: "https://gitlab.routine.co/routine/acid/-/issues"
+depends: [
+  "dune" {>= "3.0"}
+  "acid-lwt-ios" {= version}
+  "js_of_ocaml"
+  "js_of_ocaml-ppx"
+]
+build: [
+  ["dune" "subst"] {dev}
+  ["dune" "build" "-x" "ios" "-p" "acid-jsoo" "-j" jobs "@install"]
+]
+dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
