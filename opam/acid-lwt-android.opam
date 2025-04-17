@@ -1,5 +1,5 @@
 opam-version: "2.0"
-version: "0.12.1"
+version: "0.13.0"
 synopsis: "Base lwt extension library"
 maintainer: ["mefyl <mefyl@gruntech.org>"]
 authors: ["mefyl <mefyl@gruntech.org>"]
@@ -17,13 +17,3 @@ build: [
   ["dune" "build" "-x" "android" "-p" "acid-lwt" "-j" jobs "@install"]
 ]
 dev-repo: "git+https://gitlab.routine.co/routine/acid.git"
-pin-depends: [
-  [
-    "schematic-android.0.19.7"
-    "git+ssh://git@gitlab.routine.co/routine/schematic.git#89afc50dd5b899a0bd9e82c502261755f66fb7b2"
-  ]
-  [
-    "stdcompat.19"
-    "git+https://github.com/thierry-martinez/stdcompat.git#d53390d788027fe0a2282c4745eb3d1626341f99"
-  ]
-]

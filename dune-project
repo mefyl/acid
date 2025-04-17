@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.12.1)
+(version 0.13.0)
 
 (homepage https://gitlab.routine.co/routine/acid)
 
@@ -53,13 +53,13 @@
   (schematic
    (and
     (and
-     (>= 0.18.2)
+     (>= 0.19.8)
      (< 0.20.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.18.2)
+     (>= 0.19.8)
      (< 0.20.0))
     :with-test))
   (timmy
@@ -70,11 +70,11 @@
  (depopts
   (schematic
    (and
-    (>= 0.18.2)
+    (>= 0.19.8)
     (< 0.20.0)))
   (schematic-jsoo
    (and
-    (>= 0.18.2)
+    (>= 0.19.8)
     (< 0.20.0)))))
 
 (package
@@ -93,7 +93,12 @@
   ppx_deriving
   (ppx_here :with-test)
   (ppx_yojson :with-test)
-  (schematic :with-test)))
+  (schematic
+   (and
+    (and
+     (>= 0.19.8)
+     (< 0.20.0))
+    :with-test))))
 
 (package
  (name acid-jsoo)
@@ -112,4 +117,9 @@
   (ppx_deriving :with-test)
   (ppx_here :with-test)
   (ppx_yojson :with-test)
-  (schematic :with-test)))
+  (schematic
+   (and
+    (and
+     (>= 0.19.8)
+     (< 0.20.0))
+    :with-test))))

@@ -98,6 +98,13 @@ module Map = struct
     include Base.Map
     include Base.Map.M (K)
 
+    let _pp_key = Schematic.Pp.of_schema @@ K.schema_versioned (fun _ -> None)
+
+    let _of_sequence sequence =
+      match Base.Map.of_sequence (module K) sequence with
+      | `Duplicate_key k -> Result.failf "duplicate key: %a" _pp_key k
+      | `Ok map -> Result.return map
+
     let assoc_schema_versioned version =
       let key_schema = K.schema_versioned version in
       let pp_key = Schematic.Pp.of_schema key_schema in
@@ -112,73 +119,106 @@ module Map = struct
             (option (string ++ const char '-'))
             data_schema.id
         and descriptor =
-          let descriptor =
-            List
-              (make
-              @@ Tuple
-                   {
-                     decode = Base.Fn.id;
-                     encode = Base.Fn.id;
-                     items =
-                       Item
-                         {
-                           schema = key_schema;
-                           rest = Item { schema = data_schema; rest = ItemEnd };
-                         };
-                   })
-          and decode l =
-            let l = List.map l ~f:(fun Hlist.[ k; d ] -> (k, d)) in
-            match Base.Map.of_alist (module K) l with
+          let item =
+            Schematic.Schema.make
+            @@ Tuple
+                 {
+                   decode = Base.Fn.id;
+                   encode = Base.Fn.id;
+                   items =
+                     Item
+                       {
+                         schema = key_schema;
+                         rest = Item { schema = data_schema; rest = ItemEnd };
+                       };
+                 }
+          and construct items =
+            items
+            |> Base.Sequence.map ~f:(fun Hlist.[ name; value ] -> (name, value))
+            |> Base.Map.of_sequence (module K)
+            |> function
             | `Duplicate_key k -> Result.failf "duplicate key: %a" pp_key k
             | `Ok map -> Result.return map
-          and encode map =
-            Base.Map.to_alist map |> List.map ~f:(fun (k, d) -> Hlist.[ k; d ])
+          and deconstruct map =
+            Base.Map.to_sequence map
+            |> Base.Sequence.map ~f:(fun (k, d) -> Hlist.[ k; d ])
           in
-          Map { descriptor; decode; encode }
+          Sequence { item; construct; deconstruct; length = Base.Map.length }
         in
         make ~id descriptor
       in
       res
 
+    let rec descriptor_is_string :
+        type t. t Schematic.Schema.descriptor -> (t, string) Type.eq option =
+      function
+      | Fixpoint t -> descriptor_is_string (Lazy.force t)
+      | String -> Some Equal
+      | _ -> None
+
     let schema_versioned version =
       let key_schema = K.schema_versioned version in
-      let (Flatten { descriptor; decode; encode }) =
-        Schematic.Schema.flatten key_schema.descriptor
+      let dictionary_id data_schema =
+        let open Fmt in
+        str "%adictionary"
+          (option (string ++ const char '-'))
+          data_schema.Schematic.Schema.id
       in
-      let pp_key = Schematic.Pp.of_schema key_schema in
-      let res : 'data. 'data Schematic.Schema.t -> 'data t Schematic.Schema.t =
-        match descriptor with
-        | String ->
+      let res :
+          'data Schematic.Schema.t ->
+          (K.t, 'data, K.comparator_witness) Base.Map.t Schematic.Schema.t =
+        match descriptor_is_string key_schema.descriptor with
+        | Some Equal ->
+          (* This special case is handled by the generic one with Flatten just
+             after, but is added here to avoid mapping Fn.id over keys for
+             performance reasons. *)
           fun data_schema ->
-            let open Schematic.Schema in
-            let id =
-              let open Fmt in
-              str "%adictionary"
-                (option (string ++ const char '-'))
-                data_schema.id
-            and descriptor =
-              let descriptor = Mapping data_schema
-              and decode l =
-                let open Let.Syntax2 (Result) in
-                let* l =
-                  List.map
-                    ~f:(fun (key, data) ->
-                      let+ key = decode key in
-                      (key, data))
-                    l
-                  |> Result.all
-                in
-                match Base.Map.of_alist (module K) l with
-                | `Duplicate_key k -> Result.failf "duplicate key: %a" pp_key k
-                | `Ok map -> Result.return map
-              and encode map =
-                Base.Map.to_alist map
-                |> List.map ~f:(fun (key, data) -> (encode key, data))
+           let open Schematic.Schema in
+           make ~id:(dictionary_id data_schema)
+           @@ Mapping
+                {
+                  construct = _of_sequence;
+                  deconstruct = Base.Map.to_sequence;
+                  item = data_schema;
+                  length = Base.Map.length;
+                }
+        | None -> (
+          let (Flatten { descriptor; decode; encode }) =
+            Schematic.Schema.flatten key_schema.descriptor
+          in
+          match descriptor with
+          | String ->
+            fun data_schema ->
+              let deconstruct map =
+                map
+                |> Base.Map.to_sequence
+                |> Base.Sequence.map ~f:(fun (key, data) -> (encode key, data))
+              and construct sequence =
+                sequence
+                |> Base.Sequence.fold_m
+                     ~init:(Base.Map.empty (module K))
+                     ~return:Result.return ~bind:Result.bind
+                     ~f:(fun map (key, data) ->
+                       let open Let.Syntax2 (Result) in
+                       let* key = decode key in
+                       try
+                         Base.Map.update map key ~f:(function
+                           | None -> data
+                           | Some _ ->
+                             Fmt.failwith "duplicate key in map: %a" _pp_key key)
+                         |> Result.return
+                       with Failure reason -> Result.fail reason)
               in
-              Map { descriptor; decode; encode }
-            in
-            make ~id descriptor
-        | _ -> fun schema -> assoc_schema_versioned version schema
+              let open Schematic.Schema in
+              make ~id:(dictionary_id data_schema)
+              @@ Mapping
+                   {
+                     construct;
+                     deconstruct;
+                     item = data_schema;
+                     length = Base.Map.length;
+                   }
+          | _ -> fun schema -> assoc_schema_versioned version schema)
       in
       res
 

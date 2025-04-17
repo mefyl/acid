@@ -15,12 +15,7 @@ module Lwt_ = struct
   module Lwt_guarded = Lwt_guarded
 end
 
-module V0_12_0 = struct
-  include Acid.Versions.V0_12_0
-  include Lwt_
-end
-
-module V0_12_1 = struct
-  include Acid.Versions.V0_12_1
+module V0_13_0 = struct
+  include Acid.Versions.V0_13_0
   include Lwt_
 end
