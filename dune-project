@@ -37,7 +37,6 @@
    (and
     (>= 0.2.0)
     (< 0.3.0)))
-  js_of_ocaml
   logs
   metapp
   (ocaml
