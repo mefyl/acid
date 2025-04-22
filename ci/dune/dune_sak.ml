@@ -149,7 +149,8 @@ let () =
                               Atom
                                 ("--pretty=url { src: \
                                   \"git://git@gitlab.routine.co:routine/"
-                               ^ repository ^ "#%H\" }");
+                                ^ repository
+                                ^ "#%H\" }");
                               Atom "-n1";
                             ];
                         ];
@@ -211,8 +212,12 @@ let () =
       |> Result.return
     in
     Term.(
-      const generate $ Arg.value repo_name $ Arg.value local
-      $ Arg.value cross_both $ Arg.value cross_exclude $ Arg.value cross_only)
+      const generate
+      $ Arg.value repo_name
+      $ Arg.value local
+      $ Arg.value cross_both
+      $ Arg.value cross_exclude
+      $ Arg.value cross_only)
     |> Cmd.(v (info "generate"))
   and rewrite =
     let open OpamParserTypes.FullPos in
@@ -343,7 +348,8 @@ let () =
     let rewrite path cross cross_both cross_exclude =
       let package =
         String.rsplit2 ~on:'.' (Stdlib.Filename.basename path)
-        |> Option.value_exn |> fst
+        |> Option.value_exn
+        |> fst
       in
       let file = parse path in
       let rec rewrite_contents contents =
@@ -454,8 +460,11 @@ let () =
       | Result.Error (None, msg) -> Result.Error msg
     in
     Term.(
-      const rewrite $ Arg.required input $ Arg.value cross_only
-      $ Arg.value cross_both $ Arg.value cross_exclude)
+      const rewrite
+      $ Arg.required input
+      $ Arg.value cross_only
+      $ Arg.value cross_both
+      $ Arg.value cross_exclude)
     |> Cmd.(v (info ("rewrite-" ^ toolchain)))
   in
   Cmdliner.Cmd.(

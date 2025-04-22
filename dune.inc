@@ -14,12 +14,9 @@
   (with-stdout-to
    %{target}
    (run
-    %{dep:.logistic/dune/extdeps/extdeps.exe}
+    %{dep:.logistic/ci/dune/dune_sak.exe}
     generate
-    --cross-both
-    %{read-strings:cross-both.dune}
-    --cross-exclude
-    %{read-strings:cross-exclude.dune})))
+    %{read-strings:cross.flags})))
  (deps dune-project .logistic/dune.inc))
 
 (subdir
