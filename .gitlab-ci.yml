@@ -10,7 +10,6 @@ opam-docker-builder:
   only:
     - master
   script:
-    - apk add --no-cache docker-cli
     - docker build -f docker/opam-builder/Dockerfile docker/opam-builder -t $CI_REGISTRY_IMAGE/ci-builder
     - docker push $CI_REGISTRY_IMAGE/ci-builder
 
