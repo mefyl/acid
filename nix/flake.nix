@@ -241,7 +241,7 @@
 
             devPackages = [
               # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_26_2
+              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_27_0
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
 
