@@ -38,7 +38,6 @@
     (>= 0.2.0)
     (< 0.3.0)))
   logs
-  metapp
   (ocaml
    (>= 5.0.0))
   ppx_deriving
@@ -52,28 +51,27 @@
   (schematic
    (and
     (and
-     (>= 0.19.8)
+     (>= 0.19.9)
      (< 0.20.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.19.8)
+     (>= 0.19.9)
      (< 0.20.0))
     :with-test))
   (timmy
    (and
     (>= 1.0.1)
-    (< 2.0.0)))
-  metaversion)
+    (< 2.0.0))))
  (depopts
   (schematic
    (and
-    (>= 0.19.8)
+    (>= 0.19.9)
     (< 0.20.0)))
   (schematic-jsoo
    (and
-    (>= 0.19.8)
+    (>= 0.19.9)
     (< 0.20.0)))))
 
 (package
@@ -95,9 +93,15 @@
   (schematic
    (and
     (and
-     (>= 0.19.8)
+     (>= 0.19.9)
      (< 0.20.0))
-    :with-test))))
+    :with-test)))
+ (conflicts
+  (schematic
+   (or
+    (< 0.19.9)
+    (= 0.20.0)
+    (= 0.20.1)))))
 
 (package
  (name acid-jsoo)
@@ -119,6 +123,6 @@
   (schematic
    (and
     (and
-     (>= 0.19.8)
+     (>= 0.19.9)
      (< 0.20.0))
     :with-test))))

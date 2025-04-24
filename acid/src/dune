@@ -18,7 +18,5 @@
    from
    (js_of_ocaml -> select_jsoo.yes.ml)
    (!js_of_ocaml -> select_jsoo.no.ml)))
- (preprocessor_deps
-  (package metaversion))
  (preprocess
-  (pps metapp.ppx ppx_here ppx_deriving.show)))
+  (pps ppx_here ppx_deriving.show)))

@@ -16,8 +16,11 @@ depends: [
   "ppx_deriving"
   "ppx_here" {with-test}
   "ppx_yojson" {with-test}
-  "schematic" {>= "0.19.8" & < "0.20.0" & with-test}
+  "schematic" {>= "0.19.9" & < "0.20.0" & with-test}
   "odoc" {with-doc}
+]
+conflicts: [
+  "schematic" {< "0.19.9" | = "0.20.0" | = "0.20.1"}
 ]
 build: [
   ["dune" "subst"] {dev}
