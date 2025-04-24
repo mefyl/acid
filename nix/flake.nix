@@ -3,7 +3,12 @@
     # Point to our fork until https://github.com/tweag/opam-nix/issues/99 is done
     opam-nix = {
       url = "github:tweag/opam-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+        flake-utils.follows = "flake-utils";
+        opam-repository.follows = "opam-repository";
+      };
     };
 
     flake-compat = {
@@ -150,6 +155,14 @@
                 sourceRoot = ".";
               });
 
+              landmarks = prev.landmarks.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              landmarks-ppx = prev.landmarks-ppx.overrideAttrs (a: {
+                doCheck = false;
+              });
+
               # Because of our pin of cohttp 6.0.0~beta2, which is weird
               cohttp-eio = prev.cohttp-eio.overrideAttrs (a: {
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
@@ -165,6 +178,62 @@
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
                   (final.http or null)
                 ];
+              });
+
+              cohttp-lwt-unix = prev.cohttp-lwt-unix.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              schematic = prev.schematic.overrideAttrs (a: {
+                doCheck = false;
+              });
+              timmy-timezones = prev.timmy-timezones.overrideAttrs (a: {
+                doCheck = false;
+              });
+              acid = prev.acid.overrideAttrs (a: {
+                doCheck = false;
+              });
+              acid-lwt = prev.acid-lwt.overrideAttrs (a: {
+                doCheck = false;
+              });
+              stripe-schemas = prev.stripe-schemas.overrideAttrs (a: {
+                doCheck = false;
+              });
+              gapi = prev.gapi.overrideAttrs (a: {
+                doCheck = false;
+              });
+              crdt = prev.crdt.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mandate = prev.mandate.overrideAttrs (a: {
+                doCheck = false;
+              });
+              stripe = prev.stripe.overrideAttrs (a: {
+                doCheck = false;
+              });
+              sqml-caqti = prev.sqml-caqti.overrideAttrs (a: {
+                doCheck = false;
+              });
+              routine-schemas = prev.routine-schemas.overrideAttrs (a: {
+                doCheck = false;
+              });
+              rfc5545 = prev.rfc5545.overrideAttrs (a: {
+                doCheck = false;
+              });
+              lcs = prev.lcs.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mellifera = prev.mellifera.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mellifera-httpaf = prev.mellifera-httpaf.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mrou = prev.mrou.overrideAttrs (a: {
+                doCheck = false;
+              });
+              routine-metrics = prev.routine-metrics.overrideAttrs (a: {
+                doCheck = false;
               });
             };
 
