@@ -15,11 +15,6 @@
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    gitignore = {
-      url = "github:hercules-ci/gitignore.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     opam-repository = {
       url = "github:ocaml/opam-repository";
       flake = false;
@@ -35,7 +30,6 @@
     , flake-utils
     , opam-nix
     , nixpkgs
-    , gitignore
     , opam-repository
     , routine-opam-repository
     , ...
@@ -44,26 +38,26 @@
         path = ./template;
         description = "Initialize a setup for developing on a Routine OCaml repository";
       };
-      lib.mkRoutineRepo = path: { localPackages ? null
-                                  # Extra Opam packages to install for development (in the form of an opam-nix query).
-                                  # E.g.,
-                                  # { acid = "*"; logs = "0.7.0"; }
-                                , extraDevPackagesQuery ? { }
-                                , extraDevPackages ? (pkgs: [ ])
-                                , extraOverlay ? (final: prev: { })
-                                , opamSourceFilterRules ? ''
-                                    *
-                                    !*.opam
-                                  ''
-                                , resolveArgsOverride ? (args: args)
-                                , extraRepos ? [ ]
-                                  # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
-                                , ocamlVersion ? "5.2.0"
-                                , withSwift ? false
-                                  # Whether to make the shell swift-compatible.
-                                  # This isn't enabled by default as it is
-                                  # somewhat invasive (forcing the stdenv to use clang in particular)
-                                }:
+      lib.mkRoutineRepo =
+        path:
+        { localPackages ? null
+          # Extra Opam packages to install for development (in the form of an opam-nix query).
+          # E.g.,
+          # { acid = "*"; logs = "0.7.0"; }
+        , extraDevPackagesQuery ? { }
+        , extraDevPackages ? (pkgs: [ ])
+        , extraOverlay ? (final: prev: { })
+          # Regexes to filter in the opam files to pick
+        , opamFilesRegexes ? [ "^.*\\.opam$" ]
+        , resolveArgsOverride ? (args: args)
+        , extraRepos ? [ ]
+          # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
+        , ocamlVersion ? "5.2.0"
+        , withSwift ? false
+          # Whether to make the shell swift-compatible.
+          # This isn't enabled by default as it is
+          # somewhat invasive (forcing the stdenv to use clang in particular)
+        }:
         flake-utils.lib.eachDefaultSystem (
           system:
           let
@@ -77,12 +71,8 @@
               config.allowUnfree = true;
             };
 
-            # Only keep the Opam files to maximize Nix caching
-            opamFilesFilter = gitignore.lib.gitignoreFilterWith {
-              basePath = path;
-              extraRules = opamSourceFilterRules;
-            };
-            opamFiles = pkgs.lib.cleanSourceWith { src = path; filter = opamFilesFilter; };
+            # Only keep root opam files
+            opamFiles = pkgs.lib.sourceByRegex path opamFilesRegexes;
 
             on = opam-nix.lib.${system};
 
