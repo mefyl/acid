@@ -235,6 +235,9 @@
               routine-metrics = prev.routine-metrics.overrideAttrs (a: {
                 doCheck = false;
               });
+              routine-crdt = prev.routine-crdt.overrideAttrs (a: {
+                doCheck = false;
+              });
             };
 
             scope' = scope.overrideScope (pkgs.lib.composeExtensions overlay extraOverlay);
