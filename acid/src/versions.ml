@@ -34,3 +34,5 @@ module V0_13_0 = struct
   (** @inline *)
   include Select_jsoo.Js
 end
+
+module V0_13_1 = V0_13_0

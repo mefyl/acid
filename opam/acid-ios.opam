@@ -1,5 +1,5 @@
 opam-version: "2.0"
-version: "0.13.0"
+version: "0.13.1"
 synopsis: "Base library"
 maintainer: ["mefyl <mefyl@gruntech.org>"]
 authors: ["mefyl <mefyl@gruntech.org>"]
@@ -11,20 +11,16 @@ depends: [
   "base-ios" {>= "v0.16.0" & < "v0.18.0"}
   "fmt-ios"
   "hlist-ios" {>= "0.2.0" & < "0.3.0"}
-  "js_of_ocaml"
   "logs-ios"
-  "metapp"
-  "metapp-ios"
   "ocaml-ios" {>= "5.0.0"}
   "ppx_deriving"
   "ppx_here"
   "ppx_here-ios"
   "ptime-ios" {>= "1.2.0"}
   "timmy-ios" {>= "1.0.1" & < "2.0.0"}
-  "metaversion-ios"
 ]
 depopts: [
-  "schematic-ios" {>= "0.19.8" & < "0.20.0"}
+  "schematic-ios" {>= "0.19.9" & < "0.20.0"}
 ]
 build: [
   ["dune" "subst"] {dev}

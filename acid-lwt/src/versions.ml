@@ -19,3 +19,8 @@ module V0_13_0 = struct
   include Acid.Versions.V0_13_0
   include Lwt_
 end
+
+module V0_13_1 = struct
+  include Acid.Versions.V0_13_1
+  include Lwt_
+end

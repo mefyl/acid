@@ -1,5 +1,5 @@
 opam-version: "2.0"
-version: "0.13.0"
+version: "0.13.1"
 synopsis: "Base lwt extension library"
 maintainer: ["mefyl <mefyl@gruntech.org>"]
 authors: ["mefyl <mefyl@gruntech.org>"]
@@ -11,6 +11,9 @@ depends: [
   "acid-ios" {= version}
   "lwt-ios" {>= "5.0.0"}
   "ppx_deriving"
+]
+conflicts: [
+  "schematic" {< "0.19.9" | = "0.20.0" | = "0.20.1"}
 ]
 build: [
   ["dune" "subst"] {dev}
