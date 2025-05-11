@@ -7,7 +7,11 @@ ADD id_rsa* /root/.ssh/
 RUN if test -e /root/.ssh/id_rsa; then chmod 600 /root/.ssh/id_rsa; else mkdir -p /root/.ssh; fi
 RUN ssh-keyscan gitlab.routine.co > /root/.ssh/known_hosts
 
-# Install the Dune Developer Preview version to be able to use `dune pkg` instead of `opam`
+# Install the Dune Developer Preview version to be able to use `dune
+# pkg` instead of `opam`
+
+# A dummy beacon to force Docker to rebuild
+ENV MINIMAL_VERSION=aaa7e95 
 RUN curl -fsSL https://get.dune.build/install | sh
 ADD dune-config /root/.config/dune/config
 ENV PATH="/root/.local/bin:$PATH"
