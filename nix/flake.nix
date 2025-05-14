@@ -59,7 +59,7 @@
         , resolveArgsOverride ? (args: args)
         , extraRepos ? [ ]
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
-        , ocamlVersion ? "5.2.0"
+        , ocamlVersion
         , withSwift ? false
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is

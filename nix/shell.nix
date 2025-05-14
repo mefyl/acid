@@ -15,7 +15,7 @@
   /**
     Extra arguments passed directly to `mkShell`
   */
-, ocamlVersion ? "5_3"
+, ocamlVersion
 , extraArgs ? { }
 }:
 let
