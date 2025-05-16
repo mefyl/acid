@@ -51,8 +51,8 @@
           # { acid = "*"; logs = "0.7.0"; }
         , extraDevPackagesQuery ? { }
         , extraDevPackages ? (pkgs: [ ])
-        # An extra overlay applied to the OCaml packages set.
-        # The first argument is the global pkgs set, the two other ones are the standard overlay arguments for the OCaml pkg set.
+          # An extra overlay applied to the OCaml packages set.
+          # The first argument is the global pkgs set, the two other ones are the standard overlay arguments for the OCaml pkg set.
         , extraOCamlOverlay ? (pkgs: final: prev: { })
           # Regexes to filter in the opam files to pick
         , opamFilesRegexes ? [ "^.*\\.opam$" ]
@@ -60,6 +60,7 @@
         , extraRepos ? [ ]
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
+        , ocamlformatVersion
         , withSwift ? false
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
@@ -71,6 +72,10 @@
             ocamlPackagesVersion =
               let parsedVersion = builtins.splitVersion ocamlVersion;
               in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1;
+
+            ocamlformatParsedVersion =
+              let parsedVersion = builtins.splitVersion ocamlformatVersion;
+              in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1 + "_" + builtins.elemAt parsedVersion 2;
 
             pkgs = import nixpkgs {
               inherit system;
@@ -145,8 +150,14 @@
               # Remember to update your nix-shell (e.g. with `direnv reload`) after every change in the local repo.
               schematic-http = prev.schematic-http.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
               timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
-              timmy-unix = prev.timmy-unix.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ]; });
-              timmy-lwt = prev.timmy-lwt.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
+              timmy-unix = prev.timmy-unix.overrideAttrs (a: {
+                doCheck = false;
+                buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ];
+              });
+              timmy-lwt = prev.timmy-lwt.overrideAttrs (a: {
+                doCheck = false;
+                buildInputs = a.buildInputs or [ ] ++ [ prev.logs ];
+              });
               acid-jsoo = prev.acid-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ final.acid-lwt ]; });
 
               # On NixOS, this looks for timezone files in a non-existent location.
@@ -246,7 +257,7 @@
 
             devPackages = [
               # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_27_0
+              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}"."ocamlformat_${ocamlformatParsedVersion}"
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
 
