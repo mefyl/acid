@@ -60,6 +60,7 @@
         , extraRepos ? [ ]
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
+        , ocamlformatVersion
         , withSwift ? false
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
@@ -71,6 +72,10 @@
             ocamlPackagesVersion =
               let parsedVersion = builtins.splitVersion ocamlVersion;
               in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1;
+
+            ocamlformatParsedVersion =
+              let parsedVersion = builtins.splitVersion ocamlformatVersion;
+              in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1 + "_" + builtins.elemAt parsedVersion 2;
 
             pkgs = import nixpkgs {
               inherit system;
@@ -246,7 +251,7 @@
 
             devPackages = [
               # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_27_0
+              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}"."ocamlformat_${ocamlformatParsedVersion}"
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
               pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
 
