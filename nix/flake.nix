@@ -51,8 +51,8 @@
           # { acid = "*"; logs = "0.7.0"; }
         , extraDevPackagesQuery ? { }
         , extraDevPackages ? (pkgs: [ ])
-        # An extra overlay applied to the OCaml packages set.
-        # The first argument is the global pkgs set, the two other ones are the standard overlay arguments for the OCaml pkg set.
+          # An extra overlay applied to the OCaml packages set.
+          # The first argument is the global pkgs set, the two other ones are the standard overlay arguments for the OCaml pkg set.
         , extraOCamlOverlay ? (pkgs: final: prev: { })
           # Regexes to filter in the opam files to pick
         , opamFilesRegexes ? [ "^.*\\.opam$" ]
