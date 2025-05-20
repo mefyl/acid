@@ -11,7 +11,7 @@ RUN ssh-keyscan gitlab.routine.co > /root/.ssh/known_hosts
 # pkg` instead of `opam`
 
 # A dummy beacon to force Docker to rebuild
-ENV MINIMAL_VERSION=aaa7e95 
+ENV MINIMAL_VERSION=488e968
 RUN curl -fsSL https://get.dune.build/install | sh
 ADD dune-config /root/.config/dune/config
 ENV PATH="/root/.local/bin:$PATH"
