@@ -3,6 +3,7 @@ let
 
   thisRoutineRepo = logisticFullNixShell.lib.mkRoutineRepo ./. {
     ocamlVersion = "5.2.0";
+    ocamlformatVersion = "0.27.0";
   };
 in
 thisRoutineRepo.devShells.${builtins.currentSystem}.default
