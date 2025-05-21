@@ -60,7 +60,7 @@
         , extraRepos ? [ ]
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
-        , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile ("${path}/.ocamlformat")))
+        , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat")))
         , withSwift ? false
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
