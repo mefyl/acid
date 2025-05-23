@@ -1,6 +1,6 @@
 FROM alpine:3.21.0 AS opam-base
 
-RUN apk add --no-cache autoconf bash curl docker-cli docker-cli-buildx gcc g++ git make npm openssh patch tzdata
+RUN apk add --no-cache autoconf bash curl docker-cli docker-cli-buildx gcc g++ git make npm openssh patch tzdata zlib-dev zstd-libs
 
 # Enable pushing to git@gitlab.routine.co:routine/opam
 ADD id_rsa* /root/.ssh/
