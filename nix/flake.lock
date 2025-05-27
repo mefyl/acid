@@ -117,11 +117,11 @@
     "opam-repository": {
       "flake": false,
       "locked": {
-        "lastModified": 1745411808,
-        "narHash": "sha256-VuBUGgvP5Nok2mrxhBbH9wCCWHp1YM2VUNmvFLclsOc=",
+        "lastModified": 1747644099,
+        "narHash": "sha256-9cT9VnPKDv8XaafUs0IdRyY7rC3RV+Taa+3m95aPgYE=",
         "owner": "ocaml",
         "repo": "opam-repository",
-        "rev": "8106bcf57fc33218275bbf0d02e725f4e9fcd0f6",
+        "rev": "55711315d054c8d83610afaedab4b5cbd30de09d",
         "type": "github"
       },
       "original": {
@@ -164,11 +164,11 @@
     "routine-opam-repository": {
       "flake": false,
       "locked": {
-        "lastModified": 1746517522,
-        "narHash": "sha256-w1jhlPJucrI27Q2WuAX0ZYW6ouGaRGbKQPfrz68XUK4=",
+        "lastModified": 1747299403,
+        "narHash": "sha256-b5Vlvb+wZcC1l1HJcNP1UP07lgVs91FQukUKKIu9k3k=",
         "ref": "refs/heads/master",
-        "rev": "4479e5ff968d373e979b553b14147398cf4f3159",
-        "revCount": 527,
+        "rev": "5f678cef0cc08bebeccb9be2233eb4e30ab9d3c6",
+        "revCount": 531,
         "type": "git",
         "url": "ssh://git@gitlab.routine.co/routine/opam.git"
       },

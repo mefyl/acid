@@ -148,36 +148,21 @@
               # });
               #
               # Remember to update your nix-shell (e.g. with `direnv reload`) after every change in the local repo.
-              schematic-http = prev.schematic-http.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
-              timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
-              timmy-unix = prev.timmy-unix.overrideAttrs (a: {
+              acid = prev.acid.overrideAttrs (a: {
                 doCheck = false;
-                buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ];
-              });
-              timmy-lwt = prev.timmy-lwt.overrideAttrs (a: {
-                doCheck = false;
-                buildInputs = a.buildInputs or [ ] ++ [ prev.logs ];
               });
               acid-jsoo = prev.acid-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ final.acid-lwt ]; });
-
-              # On NixOS, this looks for timezone files in a non-existent location.
-              conf-tzdata = null;
-
-              utop = prev.utop.overrideAttrs (a: {
-                # Utop has multiple root directories and Nix only wants one
-                sourceRoot = ".";
-              });
-
-              landmarks = prev.landmarks.overrideAttrs (a: {
+              acid-lwt = prev.acid-lwt.overrideAttrs (a: {
                 doCheck = false;
               });
 
-              landmarks-ppx = prev.landmarks-ppx.overrideAttrs (a: {
-                doCheck = false;
+              cohttp = prev.cohttp.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [
+                  (final.http or null)
+                ];
               });
-
-              # Because of our pin of cohttp 6.0.0~beta2, which is weird
               cohttp-eio = prev.cohttp-eio.overrideAttrs (a: {
+                # Because of our pin of cohttp 6.0.0~beta2, which is weird
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
                   prev.uri
                   prev.logs
@@ -187,69 +172,104 @@
                   final.cohttp
                 ];
               });
-              cohttp = prev.cohttp.overrideAttrs (a: {
-                buildInputs = a.nativeBuildInputs or [ ] ++ [
-                  (final.http or null)
-                ];
+              cohttp-lwt-unix = prev.cohttp-lwt-unix.overrideAttrs (a: {
+                doCheck = false;
               });
 
-              cohttp-lwt-unix = prev.cohttp-lwt-unix.overrideAttrs (a: {
+              # On NixOS, this looks for timezone files in a non-existent location.
+              conf-tzdata = null;
+
+              crdt = prev.crdt.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              gapi = prev.gapi.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              landmarks = prev.landmarks.overrideAttrs (a: {
+                doCheck = false;
+              });
+              landmarks-ppx = prev.landmarks-ppx.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              lcs = prev.lcs.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              mandate = prev.mandate.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              mellifera = prev.mellifera.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mellifera-cohttp = prev.mellifera-cohttp.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mellifera-httpaf = prev.mellifera-httpaf.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              mrou = prev.mrou.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              rfc5545 = prev.rfc5545.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              routine-crdt = prev.routine-crdt.overrideAttrs (a: {
+                doCheck = false;
+              });
+              routine-metrics = prev.routine-metrics.overrideAttrs (a: {
+                doCheck = false;
+              });
+              routine-schemas = prev.routine-schemas.overrideAttrs (a: {
                 doCheck = false;
               });
 
               schematic = prev.schematic.overrideAttrs (a: {
                 doCheck = false;
               });
-              timmy-timezones = prev.timmy-timezones.overrideAttrs (a: {
+              schematic-cohttp-eio = prev.schematic-cohttp-eio.overrideAttrs (a: {
                 doCheck = false;
               });
-              acid = prev.acid.overrideAttrs (a: {
+              schematic-http = prev.schematic-http.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ];
+              });
+              schematic-jsoo = prev.schematic-jsoo.overrideAttrs (a: {
                 doCheck = false;
               });
-              acid-lwt = prev.acid-lwt.overrideAttrs (a: {
+
+              sqml-caqti = prev.sqml-caqti.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              stripe = prev.stripe.overrideAttrs (a: {
                 doCheck = false;
               });
               stripe-schemas = prev.stripe-schemas.overrideAttrs (a: {
                 doCheck = false;
               });
-              gapi = prev.gapi.overrideAttrs (a: {
+
+              timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
+              timmy-lwt = prev.timmy-lwt.overrideAttrs (a: {
+                doCheck = false;
+                buildInputs = a.buildInputs or [ ] ++ [ prev.logs ];
+              });
+              timmy-timezones = prev.timmy-timezones.overrideAttrs (a: {
                 doCheck = false;
               });
-              crdt = prev.crdt.overrideAttrs (a: {
+              timmy-unix = prev.timmy-unix.overrideAttrs (a: {
                 doCheck = false;
+                buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ];
               });
-              mandate = prev.mandate.overrideAttrs (a: {
-                doCheck = false;
-              });
-              stripe = prev.stripe.overrideAttrs (a: {
-                doCheck = false;
-              });
-              sqml-caqti = prev.sqml-caqti.overrideAttrs (a: {
-                doCheck = false;
-              });
-              routine-schemas = prev.routine-schemas.overrideAttrs (a: {
-                doCheck = false;
-              });
-              rfc5545 = prev.rfc5545.overrideAttrs (a: {
-                doCheck = false;
-              });
-              lcs = prev.lcs.overrideAttrs (a: {
-                doCheck = false;
-              });
-              mellifera = prev.mellifera.overrideAttrs (a: {
-                doCheck = false;
-              });
-              mellifera-httpaf = prev.mellifera-httpaf.overrideAttrs (a: {
-                doCheck = false;
-              });
-              mrou = prev.mrou.overrideAttrs (a: {
-                doCheck = false;
-              });
-              routine-metrics = prev.routine-metrics.overrideAttrs (a: {
-                doCheck = false;
-              });
-              routine-crdt = prev.routine-crdt.overrideAttrs (a: {
-                doCheck = false;
+
+              utop = prev.utop.overrideAttrs (a: {
+                # Utop has multiple root directories and Nix only wants one
+                sourceRoot = ".";
               });
             };
 
