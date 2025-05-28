@@ -216,6 +216,10 @@
                 doCheck = false;
               });
 
+              ocaml-compiler = prev.ocaml-compiler.overrideAttrs (a: {
+                buildInputs = a.buildInputs ++ [ pkgs.zstd ];
+              });
+
               rfc5545 = prev.rfc5545.overrideAttrs (a: {
                 doCheck = false;
               });
