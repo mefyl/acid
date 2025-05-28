@@ -69,14 +69,6 @@
         flake-utils.lib.eachDefaultSystem (
           system:
           let
-            ocamlPackagesVersion =
-              let parsedVersion = builtins.splitVersion ocamlVersion;
-              in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1;
-
-            ocamlformatParsedVersion =
-              let parsedVersion = builtins.splitVersion ocamlformatVersion;
-              in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1 + "_" + builtins.elemAt parsedVersion 2;
-
             pkgs = import nixpkgs {
               inherit system;
               # Required for steam-run
@@ -110,6 +102,9 @@
                 # Useful development packages
                 developmentQuery = {
                   utop = "*";
+                  ocaml-lsp-server = "*";
+                  merlin = "*";
+                  ocamlformat = ocamlformatVersion;
                 } // pkgs.lib.optionalAttrs
                   (builtins.compareVersions ocamlVersion "5.2.0" >= 0)
                   {
@@ -212,6 +207,10 @@
                 doCheck = false;
               });
 
+              merlin = prev.merlin.overrideAttrs (a: {
+                doCheck = false;
+              });
+
               mrou = prev.mrou.overrideAttrs (a: {
                 doCheck = false;
               });
@@ -280,11 +279,6 @@
             scope' = scope.overrideScope (pkgs.lib.composeExtensions overlay (extraOCamlOverlay pkgs));
 
             devPackages = [
-              # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}"."ocamlformat_${ocamlformatParsedVersion}"
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
-
               # System libraries
               pkgs.appimage-run
               pkgs.autoconf
