@@ -29,6 +29,14 @@
       url = "git+ssh://git@gitlab.routine.co/routine/opam.git";
       flake = false;
     };
+
+    dune = {
+      url = "github:ocaml/dune";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
   outputs =
     { self
@@ -37,6 +45,7 @@
     , nixpkgs
     , opam-repository
     , routine-opam-repository
+    , dune
     , ...
     }: {
       templates.default = {
@@ -176,6 +185,10 @@
 
               crdt = prev.crdt.overrideAttrs (a: {
                 doCheck = false;
+              });
+
+              dune = prev.dune.overrideAttrs (a: {
+                src = dune.packages.${system}.dune-experimental.src;
               });
 
               gapi = prev.gapi.overrideAttrs (a: {
