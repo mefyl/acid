@@ -270,7 +270,7 @@
                 doCheck = false;
               });
 
-              timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
+              timmy-jsoo = if prev ? timmy-jsoo then prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; }) else null;
               timmy-lwt = prev.timmy-lwt.overrideAttrs (a: {
                 doCheck = false;
                 buildInputs = a.buildInputs or [ ] ++ [ prev.logs ];
