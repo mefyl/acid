@@ -1,3 +1,7 @@
+let logs_src = Logs.Src.create "Acid_bench"
+
+module Log = (val Logs.src_log logs_src)
+
 module Expert = struct
   type t = {
     name : string;
@@ -21,7 +25,7 @@ module Expert = struct
       | None -> Logs.Tag.empty
       | Some pos -> Logs.Tag.(add pos_tag pos empty)
     in
-    Logs.info (fun m ->
+    Log.debug (fun m ->
         m "bench %s: %a" ~tags name Timmy.Span.pp Timmy.Time.(now () - start))
 end
 
