@@ -31,7 +31,7 @@
     };
 
     dune = {
-      url = "github:ocaml/dune/5cbbf9ffedbc62c2f7f7eba185d30560eef1ca80";
+      url = "github:ocaml/dune/299e75ff4fa813267b4c4209c713484b080f2703";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -188,7 +188,17 @@
               });
 
               # We at Routine must use a very recent, not yet released version of Dune because we use `dune pkg`...
-              dune = dune.packages.${system}.dune-experimental;
+              # dune = dune.packages.${system}.dune-experimental;
+              dune = prev.dune.overrideAttrs (a: {
+                src = dune.packages.${system}.dune-experimental.src;
+              });
+              dune-configurator = prev.dune-configurator.overrideAttrs (a: {
+                src = dune.packages.${system}.dune-experimental.src;
+                nativeBuildInputs = a.nativeBuildInputs or [ ] ++ [ pkgs.git ];
+                preBuild = ''
+                  git init
+                '';
+              });
 
               gapi = prev.gapi.overrideAttrs (a: {
                 doCheck = false;
