@@ -22,6 +22,7 @@
       "original": {
         "owner": "ocaml",
         "repo": "dune",
+        "rev": "299e75ff4fa813267b4c4209c713484b080f2703",
         "type": "github"
       }
     },

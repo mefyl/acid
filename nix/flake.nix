@@ -31,7 +31,7 @@
     };
 
     dune = {
-      url = "github:ocaml/dune";
+      url = "github:ocaml/dune/299e75ff4fa813267b4c4209c713484b080f2703";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -187,8 +187,17 @@
                 doCheck = false;
               });
 
+              # We at Routine must use a very recent, not yet released version of Dune because we use `dune pkg`...
+              # dune = dune.packages.${system}.dune-experimental;
               dune = prev.dune.overrideAttrs (a: {
                 src = dune.packages.${system}.dune-experimental.src;
+              });
+              dune-configurator = prev.dune-configurator.overrideAttrs (a: {
+                src = dune.packages.${system}.dune-experimental.src;
+                nativeBuildInputs = a.nativeBuildInputs or [ ] ++ [ pkgs.git ];
+                preBuild = ''
+                  git init
+                '';
               });
 
               gapi = prev.gapi.overrideAttrs (a: {
@@ -226,6 +235,12 @@
 
               mrou = prev.mrou.overrideAttrs (a: {
                 doCheck = false;
+              });
+
+              nofuture = prev.nofuture.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [
+                  prev.ocaml
+                ];
               });
 
               ocaml-compiler = prev.ocaml-compiler.overrideAttrs (a: {
