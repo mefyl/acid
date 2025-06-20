@@ -271,18 +271,24 @@
                 doCheck = false;
               });
 
-              schematic = prev.schematic.overrideAttrs (a: {
-                doCheck = false;
-              });
+              schematic =
+                if prev ? schematic then
+                  prev.schematic.overrideAttrs
+                    (a: {
+                      doCheck = false;
+                    }) else null;
               schematic-cohttp-eio = prev.schematic-cohttp-eio.overrideAttrs (a: {
                 doCheck = false;
               });
               schematic-http = prev.schematic-http.overrideAttrs (a: {
                 buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ];
               });
-              schematic-jsoo = prev.schematic-jsoo.overrideAttrs (a: {
-                doCheck = false;
-              });
+              schematic-jsoo =
+                if prev ? schematic-jsoo then
+                  prev.schematic-jsoo.overrideAttrs
+                    (a: {
+                      doCheck = false;
+                    }) else null;
 
               sqml-caqti = prev.sqml-caqti.overrideAttrs (a: {
                 doCheck = false;
