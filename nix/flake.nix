@@ -141,7 +141,7 @@
                 installPhase = ''
                   cp -r $src $out
                   chmod -R u+w $out
-                  cp -r $out/packages/dune/dune.3.19.1 $out/packages/dune/dune.${version}
+                  cp -r $out/packages/dune/dune.3.* $out/packages/dune/dune.${version}
                 '';
               };
 
