@@ -1,0 +1,19 @@
+(version 1.1.8)
+
+(build
+ (all_platforms
+  ((action
+    (progn
+     (when %{pkg-self:dev} (run dune subst))
+     (run dune build -p %{pkg-self:name} -j %{jobs} @install))))))
+
+(depends
+ (all_platforms
+  (dune base fmt ocaml ppx_here ppx_deriving ptime schematic)))
+
+(source
+ (fetch
+  (url
+   git+ssh://git@gitlab.routine.co/routine/timmy#c0391ef1d28b12e1c418729e241a1f57257d3c62)))
+
+(dev)

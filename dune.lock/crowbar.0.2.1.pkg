@@ -1,0 +1,33 @@
+(version 0.2.1)
+
+(build
+ (all_platforms
+  ((action
+    (progn
+     (when %{pkg-self:dev} (run dune subst))
+     (run
+      dune
+      build
+      -p
+      %{pkg-self:name}
+      -j
+      %{jobs}
+      --promote-install-files=false
+      @install)
+     (run
+      dune
+      install
+      -p
+      %{pkg-self:name}
+      --create-install-files
+      %{pkg-self:name}))))))
+
+(depends
+ (all_platforms
+  (dune ocaml ocplib-endian cmdliner afl-persistent)))
+
+(source
+ (fetch
+  (url https://github.com/stedolan/crowbar/archive/v0.2.1.tar.gz)
+  (checksum
+   sha256=4d73e558bf230ed88b7fadc79ac9ece63ffe7a0fbda542755743dc311d21bc24)))
