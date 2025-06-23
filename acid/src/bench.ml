@@ -25,7 +25,7 @@ module Expert = struct
       | None -> Logs.Tag.empty
       | Some pos -> Logs.Tag.(add pos_tag pos empty)
     in
-    Log.debug (fun m ->
+    Log.info (fun m ->
         m "bench %s: %a" ~tags name Timmy.Span.pp Timmy.Time.(now () - start))
 end
 
