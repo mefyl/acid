@@ -18,10 +18,11 @@ let unfold _ () =
 
 module Make
     (Monad : Base.Monad.S)
-    (Walk : Acid.Sequence.WALKERS
-              with type 'a sequence := 'a Sequence.t
-               and type 'a monad := 'a Lwt.t
-               and type 'a walk := 'a Monad.t) =
+    (Walk :
+      Acid.Sequence.WALKERS
+        with type 'a sequence := 'a Sequence.t
+         and type 'a monad := 'a Lwt.t
+         and type 'a walk := 'a Monad.t) =
 struct
   let filter_map _ () =
     let f i =

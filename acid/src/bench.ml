@@ -1,4 +1,5 @@
 open Base
+
 let logs_src = Logs.Src.create "Acid_bench"
 
 module Log = (val Logs.src_log logs_src)
