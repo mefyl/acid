@@ -256,7 +256,8 @@ end
 
 (** An index that sort values by an injective property.
 
-    Values mapped to the same property are further indexed by the [Next] index. *)
+    Values mapped to the same property are further indexed by the [Next] index.
+*)
 module Ordered_by
     (Value : ORDERED_BY)
     (Next : INDEX with type value = Value.value) : sig
@@ -278,7 +279,8 @@ end
 
 (** An index that index values by a set of injective property.
 
-    Values mapped to the same property are further indexed by the [Next] index. *)
+    Values mapped to the same property are further indexed by the [Next] index.
+*)
 module Multi_ordered_by
     (Value : MULTI_ORDERED_BY)
     (Next : INDEX with type value = Value.value) : sig

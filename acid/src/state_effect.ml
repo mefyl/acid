@@ -19,8 +19,8 @@ struct
 
   let run_state init f =
     let rec handle :
-          'arg.
-          t -> ('arg, 'res) Effect.Shallow.continuation -> 'arg -> 'res * t =
+        'arg. t -> ('arg, 'res) Effect.Shallow.continuation -> 'arg -> 'res * t
+        =
      fun (type arg) (state : t) (k : (arg, 'res) Effect.Shallow.continuation)
          (arg : arg) ->
       Effect.Shallow.continue_with k arg

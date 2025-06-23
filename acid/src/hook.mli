@@ -53,7 +53,8 @@ val attach :
   'hook * 'witness
 
 (** [attach_witness] is like [attach] except the callback is passed the
-    subscription witness. Use it if you need to call [detach] for the callback. *)
+    subscription witness. Use it if you need to call [detach] for the callback.
+*)
 val attach_witness :
   (('payload, _, 'value, _, _, 'witness) Expert.t as 'hook) ->
   ('witness -> 'payload -> 'value) ->

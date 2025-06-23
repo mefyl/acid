@@ -3,7 +3,12 @@
     # Point to our fork until https://github.com/tweag/opam-nix/issues/99 is done
     opam-nix = {
       url = "github:tweag/opam-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+        flake-utils.follows = "flake-utils";
+        opam-repository.follows = "opam-repository";
+      };
     };
 
     flake-compat = {
@@ -15,11 +20,6 @@
 
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    gitignore = {
-      url = "github:hercules-ci/gitignore.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     opam-repository = {
       url = "github:ocaml/opam-repository";
       flake = false;
@@ -29,60 +29,63 @@
       url = "git+ssh://git@gitlab.routine.co/routine/opam.git";
       flake = false;
     };
+
+    dune = {
+      url = "github:ocaml/dune/5cbbf9ffedbc62c2f7f7eba185d30560eef1ca80";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-utils.follows = "flake-utils";
+      };
+    };
   };
   outputs =
     { self
     , flake-utils
     , opam-nix
     , nixpkgs
-    , gitignore
     , opam-repository
     , routine-opam-repository
+    , dune
     , ...
     }: {
       templates.default = {
         path = ./template;
         description = "Initialize a setup for developing on a Routine OCaml repository";
       };
-      lib.mkRoutineRepo = path: { localPackages ? null
-                                  # Extra Opam packages to install for development (in the form of an opam-nix query).
-                                  # E.g.,
-                                  # { acid = "*"; logs = "0.7.0"; }
-                                , extraDevPackagesQuery ? { }
-                                , extraDevPackages ? (pkgs: [ ])
-                                , extraOverlay ? (final: prev: { })
-                                , opamSourceFilterRules ? ''
-                                    *
-                                    !*.opam
-                                  ''
-                                , resolveArgsOverride ? (args: args)
-                                , extraRepos ? [ ]
-                                  # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
-                                , ocamlVersion ? "5.2.0"
-                                , withSwift ? false
-                                  # Whether to make the shell swift-compatible.
-                                  # This isn't enabled by default as it is
-                                  # somewhat invasive (forcing the stdenv to use clang in particular)
-                                }:
+      lib.mkRoutineRepo =
+        path:
+        { localPackages ? null
+          # Extra Opam packages to install for development (in the form of an opam-nix query).
+          # E.g.,
+          # { acid = "*"; logs = "0.7.0"; }
+        , extraDevPackagesQuery ? { }
+        , extraDevPackages ? (pkgs: [ ])
+          # An extra overlay applied to the OCaml packages set.
+          # The first argument is the global pkgs set, the two other ones are the standard overlay arguments for the OCaml pkg set.
+        , extraOCamlOverlay ? (pkgs: final: prev: { })
+          # Regexes to filter in the opam files to pick
+        , opamFilesRegexes ? [ "^.*\\.opam$" ]
+        , resolveArgsOverride ? (args: args)
+        , extraRepos ? [ ]
+          # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
+        , ocamlVersion
+        , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat")))
+        , withSwift ? false
+          # Whether to make the shell swift-compatible.
+          # This isn't enabled by default as it is
+          # somewhat invasive (forcing the stdenv to use clang in particular)
+        }:
         flake-utils.lib.eachDefaultSystem (
           system:
           let
-            ocamlPackagesVersion =
-              let parsedVersion = builtins.splitVersion ocamlVersion;
-              in builtins.elemAt parsedVersion 0 + "_" + builtins.elemAt parsedVersion 1;
-
             pkgs = import nixpkgs {
               inherit system;
               # Required for steam-run
               config.allowUnfree = true;
             };
 
-            # Only keep the Opam files to maximize Nix caching
-            opamFilesFilter = gitignore.lib.gitignoreFilterWith {
-              basePath = path;
-              extraRules = opamSourceFilterRules;
-            };
-            opamFiles = pkgs.lib.cleanSourceWith { src = path; filter = opamFilesFilter; };
+            # Only keep root opam files
+            opamFiles = pkgs.lib.sourceByRegex path opamFilesRegexes;
 
             on = opam-nix.lib.${system};
 
@@ -108,6 +111,9 @@
                 # Useful development packages
                 developmentQuery = {
                   utop = "*";
+                  ocaml-lsp-server = "*";
+                  merlin = "*";
+                  ocamlformat = ocamlformatVersion;
                 } // pkgs.lib.optionalAttrs
                   (builtins.compareVersions ocamlVersion "5.2.0" >= 0)
                   {
@@ -126,10 +132,23 @@
                 angstrom = "0.15.0";
               };
 
+            # Extend the base Opam repository with a (incorrect but not important) version of dune that does not yet exist, so that Opam resolver gives us a break (since we use an unreleased version of Dune)
+            opam-repository-extended = let version = "3.20.0"; in pkgs.stdenv.mkDerivation
+              {
+                name = "opam-repository";
+                inherit version;
+                src = opam-repository;
+                installPhase = ''
+                  cp -r $src $out
+                  chmod -R u+w $out
+                  cp -r $out/packages/dune/dune.3.18.1 $out/packages/dune/dune.${version}
+                '';
+              };
+
             scope =
               on.buildOpamProject'
                 (resolveArgsOverride {
-                  repos = [ opam-repository routine-opam-repository ] ++ extraRepos;
+                  repos = [ opam-repository-extended routine-opam-repository ] ++ extraRepos;
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
@@ -137,7 +156,7 @@
                 query;
 
             overlay = final: prev: {
-              # You can add overrides here or pass them from each individual `shell.nix` via `extraOverlay`.
+              # You can add overrides here or pass them from each individual `shell.nix` via `extraOCamlOverlay`.
               # To add a local, development repo (e.g. your hacked `schematic` rather than the one from Routine's `opam` repo), you can `overrideAttrs` to replace the source like this:
               #
               # schematic = prev.schematic.overrideAttrs (a: {
@@ -146,17 +165,21 @@
               # });
               #
               # Remember to update your nix-shell (e.g. with `direnv reload`) after every change in the local repo.
-              schematic-http = prev.schematic-http.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
-              timmy-jsoo = prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; });
-              timmy-unix = prev.timmy-unix.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ]; });
-              timmy-lwt = prev.timmy-lwt.overrideAttrs (a: { buildInputs = a.buildInputs or [ ] ++ [ prev.logs ]; });
-              acid-jsoo = prev.acid-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.acid-lwt ]; });
+              acid = prev.acid.overrideAttrs (a: {
+                doCheck = false;
+              });
+              acid-jsoo = prev.acid-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ final.acid-lwt ]; });
+              acid-lwt = prev.acid-lwt.overrideAttrs (a: {
+                doCheck = false;
+              });
 
-              # On NixOS, this looks for timezone files in a non-existent location.
-              conf-tzdata = null;
-
-              # Because of our pin of cohttp 6.0.0~beta2, which is weird
+              cohttp = prev.cohttp.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [
+                  (final.http or null)
+                ];
+              });
               cohttp-eio = prev.cohttp-eio.overrideAttrs (a: {
+                # Because of our pin of cohttp 6.0.0~beta2, which is weird
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
                   prev.uri
                   prev.logs
@@ -166,21 +189,134 @@
                   final.cohttp
                 ];
               });
-              cohttp = prev.cohttp.overrideAttrs (a: {
+              cohttp-lwt-unix = prev.cohttp-lwt-unix.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              # On NixOS, this looks for timezone files in a non-existent location.
+              conf-tzdata = null;
+
+              crdt = prev.crdt.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              # We at Routine must use a very recent, not yet released version of Dune because we use `dune pkg`...
+              dune = dune.packages.${system}.dune-experimental;
+              dune-configurator = prev.dune-configurator.overrideAttrs (a: {
+                src = dune.packages.${system}.dune-experimental.src;
+                nativeBuildInputs = a.nativeBuildInputs or [ ] ++ [ pkgs.git ];
+                preBuild = ''
+                  git init
+                '';
+              });
+
+              gapi = prev.gapi.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              landmarks = prev.landmarks.overrideAttrs (a: {
+                doCheck = false;
+              });
+              landmarks-ppx = prev.landmarks-ppx.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              lcs = prev.lcs.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              mandate = prev.mandate.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              mellifera = prev.mellifera.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mellifera-cohttp = prev.mellifera-cohttp.overrideAttrs (a: {
+                doCheck = false;
+              });
+              mellifera-httpaf = prev.mellifera-httpaf.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              merlin = prev.merlin.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              mrou = prev.mrou.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              nofuture = prev.nofuture.overrideAttrs (a: {
                 buildInputs = a.nativeBuildInputs or [ ] ++ [
-                  (final.http or null)
+                  prev.ocaml
                 ];
+              });
+
+              ocaml-compiler = prev.ocaml-compiler.overrideAttrs (a: {
+                buildInputs = a.buildInputs ++ [ pkgs.zstd ];
+              });
+
+              rfc5545 = prev.rfc5545.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              routine-crdt = prev.routine-crdt.overrideAttrs (a: {
+                doCheck = false;
+              });
+              routine-metrics = prev.routine-metrics.overrideAttrs (a: {
+                doCheck = false;
+              });
+              routine-schemas = prev.routine-schemas.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              schematic = prev.schematic.overrideAttrs (a: {
+                doCheck = false;
+              });
+              schematic-cohttp-eio = prev.schematic-cohttp-eio.overrideAttrs (a: {
+                doCheck = false;
+              });
+              schematic-http = prev.schematic-http.overrideAttrs (a: {
+                buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ];
+              });
+              schematic-jsoo = prev.schematic-jsoo.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              sqml-caqti = prev.sqml-caqti.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              stripe = prev.stripe.overrideAttrs (a: {
+                doCheck = false;
+              });
+              stripe-schemas = prev.stripe-schemas.overrideAttrs (a: {
+                doCheck = false;
+              });
+
+              timmy-jsoo = if prev ? timmy-jsoo then prev.timmy-jsoo.overrideAttrs (a: { buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ]; }) else null;
+              timmy-lwt = prev.timmy-lwt.overrideAttrs (a: {
+                doCheck = false;
+                buildInputs = a.buildInputs or [ ] ++ [ prev.logs ];
+              });
+              timmy-timezones = prev.timmy-timezones.overrideAttrs (a: {
+                doCheck = false;
+              });
+              timmy-unix = prev.timmy-unix.overrideAttrs (a: {
+                doCheck = false;
+                buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ];
+              });
+
+              utop = prev.utop.overrideAttrs (a: {
+                # Utop has multiple root directories and Nix only wants one
+                sourceRoot = ".";
               });
             };
 
-            scope' = scope.overrideScope (pkgs.lib.composeExtensions overlay extraOverlay);
+            scope' = scope.overrideScope (pkgs.lib.composeExtensions overlay (extraOCamlOverlay pkgs));
 
             devPackages = [
-              # For some reason, these packages cannot be installed via `opam-nix` as it leads to resolution conflicts 🤷 So we use the Nix packages instead.
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocamlformat_0_26_2
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".ocaml-lsp
-              pkgs.ocaml-ng."ocamlPackages_${ocamlPackagesVersion}".merlin
-
               # System libraries
               pkgs.appimage-run
               pkgs.autoconf

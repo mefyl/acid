@@ -149,9 +149,8 @@ module Map = struct
       in
       res
 
-    let rec descriptor_is_string :
-        type t. t Schematic.Schema.descriptor -> (t, string) Type.eq option =
-      function
+    let rec descriptor_is_string : type t.
+        t Schematic.Schema.descriptor -> (t, string) Type.eq option = function
       | Fixpoint t -> descriptor_is_string (Lazy.force t)
       | String -> Some Equal
       | _ -> None
@@ -173,15 +172,15 @@ module Map = struct
              after, but is added here to avoid mapping Fn.id over keys for
              performance reasons. *)
           fun data_schema ->
-           let open Schematic.Schema in
-           make ~id:(dictionary_id data_schema)
-           @@ Mapping
-                {
-                  construct = _of_sequence;
-                  deconstruct = Base.Map.to_sequence;
-                  item = data_schema;
-                  length = Base.Map.length;
-                }
+            let open Schematic.Schema in
+            make ~id:(dictionary_id data_schema)
+            @@ Mapping
+                 {
+                   construct = _of_sequence;
+                   deconstruct = Base.Map.to_sequence;
+                   item = data_schema;
+                   length = Base.Map.length;
+                 }
         | None -> (
           let (Flatten { descriptor; decode; encode }) =
             Schematic.Schema.flatten key_schema.descriptor
