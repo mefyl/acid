@@ -31,7 +31,7 @@
     };
 
     dune = {
-      url = "github:ocaml/dune/5cbbf9ffedbc62c2f7f7eba185d30560eef1ca80";
+      url = "github:ocaml/dune/55353da9f2982ce39558dd084166a90e83e3d3f5";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -155,7 +155,9 @@
                 opamFiles
                 query;
 
-            overlay = final: prev: {
+            overlay = final: prev:
+              let override_if_exists = name: override: if prev ? "${name}" then prev."${name}".overrideAttrs override else null; in
+               {
               # You can add overrides here or pass them from each individual `shell.nix` via `extraOCamlOverlay`.
               # To add a local, development repo (e.g. your hacked `schematic` rather than the one from Routine's `opam` repo), you can `overrideAttrs` to replace the source like this:
               #
@@ -280,7 +282,7 @@
               schematic-http = prev.schematic-http.overrideAttrs (a: {
                 buildInputs = a.nativeBuildInputs or [ ] ++ [ prev.logs ];
               });
-              schematic-jsoo = prev.schematic-jsoo.overrideAttrs (a: {
+              schematic-jsoo = override_if_exists "schematic-jsoo" (a: {
                 doCheck = false;
               });
 
@@ -355,7 +357,6 @@
                 exec "$executable" "$@"
               '';
 
-              TZ = "Europe/Paris";
 
             };
 
@@ -382,6 +383,7 @@
               let mkShell = if withSwift then pkgs.mkShell.override { stdenv = pkgs.clangStdenv; } else pkgs.mkShell; in
               mkShell {
                 NODE_OPTIONS = "--max_old_space_size=4096";
+                TZ = "Europe/Paris";
                 inputsFrom = builtins.attrValues packages;
                 buildInputs =
                   devPackages ++
