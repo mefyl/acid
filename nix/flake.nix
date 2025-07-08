@@ -67,12 +67,12 @@
         , extraRepos ? [ ]
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
-        , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat")))
           # Force a specific ocamlformat version, e.g. `"0.26.2"`.
-        , withSwift ? false
+        , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat")))
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
           # somewhat invasive (forcing the stdenv to use clang in particular)
+        , withSwift ? false
         }:
         flake-utils.lib.eachDefaultSystem (
           system:
