@@ -63,13 +63,12 @@
           # An extra overlay applied to the OCaml packages set.
           # The first argument is the global pkgs set, the two other ones are the standard overlay arguments for the OCaml pkg set.
         , extraOCamlOverlay ? (pkgs: final: prev: { })
-          # Regexes to filter in the opam files to pick
-        , opamFilesRegexes ? [ "^.*\\.opam$" ]
         , resolveArgsOverride ? (args: args)
         , extraRepos ? [ ]
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
         , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat")))
+          # Force a specific ocamlformat version, e.g. `"0.26.2"`.
         , withSwift ? false
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
@@ -85,14 +84,28 @@
             };
 
             # Only keep root opam files
-            opamFiles = pkgs.lib.sourceByRegex path opamFilesRegexes;
+            opamFiles =
+              let
+                opamFilesWithoutCrossCompilation = pkgs.lib.fileset.fileFilter
+                  (file: file.hasExt "opam"
+                    && !(pkgs.lib.hasSuffix "-android.opam" file.name)
+                    && !(pkgs.lib.hasSuffix "-ios.opam" file.name)
+                    && !(pkgs.lib.hasSuffix "-macos.opam" file.name)
+                    && !(pkgs.lib.hasSuffix "-windows.opam" file.name))
+                  path;
+                gitTracked = pkgs.lib.fileset.gitTracked path;
+              in
+              pkgs.lib.fileset.toSource {
+                root = path;
+                fileset = pkgs.lib.fileset.intersection gitTracked opamFilesWithoutCrossCompilation;
+              };
 
             on = opam-nix.lib.${system};
 
             localPackages_ = if localPackages != null then localPackages else
             builtins.attrNames
               (builtins.mapAttrs (_: pkgs.lib.last)
-                (on.listRepo (on.makeOpamRepo opamFiles)));
+                (on.listRepo (on.makeOpamRepoRec opamFiles)));
 
             # You can add "development" Opam packages here. They will get added to the devShell automatically.
             devPackagesQuery =
@@ -149,6 +162,7 @@
               on.buildOpamProject'
                 (resolveArgsOverride {
                   repos = [ opam-repository-extended routine-opam-repository ] ++ extraRepos;
+                  recursive = true;
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
@@ -238,6 +252,10 @@
                   doCheck = false;
                 });
                 mellifera-httpaf = prev.mellifera-httpaf.overrideAttrs (a: {
+                  doCheck = false;
+                });
+
+                memtrace = prev.memtrace.overrideAttrs (a: {
                   doCheck = false;
                 });
 
