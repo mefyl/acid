@@ -55,6 +55,40 @@ let string () =
   check "empty" empty (`O []);
   check "full" full [%ezjsonm { one = 1; two = 2; three = 3 }]
 
+module Id = struct
+  include String
+
+  let schema_versioned _ =
+    Schematic.Schema.map
+      ~encode:(fun id -> "prefix:" ^ id)
+      ~decode:(fun id ->
+        String.chop_prefix ~prefix:"prefix:" id
+        |> Result.of_option ~error:"missing prefix")
+      Schematic.Schemas.string_schema
+end
+
+module Map = struct
+  include Acid.Map.M_printable (Id)
+
+  type nonrec t = int t
+
+  let equal = equal Int.equal
+  let pp = pp Fmt.int
+end
+
+let complex_keys () =
+  let map = Map.singleton "key" 0
+  and schema = Map.schema Schematic.Schemas.int_schema in
+  let repr = Schematic.Json.encode schema map in
+  let () =
+    Alcotest.check ~here:[%here] json "serialized map"
+      (`O [ ("prefix:key", `Float 0.) ])
+      repr
+  in
+  Alcotest.(check ~here:[%here] (result (module Map) reject))
+    "deserialized map" (Result.Ok map)
+  @@ Schematic.Json.decode schema repr
+
 let () =
   Alcotest.run "Acid.Map.schema"
     [
@@ -62,5 +96,6 @@ let () =
         [
           Alcotest.test_case "int keys" `Quick int;
           Alcotest.test_case "string keys" `Quick string;
+          Alcotest.test_case "complex keys" `Quick complex_keys;
         ] );
     ]
