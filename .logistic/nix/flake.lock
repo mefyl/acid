@@ -12,17 +12,17 @@
         "ocaml-overlays": "ocaml-overlays"
       },
       "locked": {
-        "lastModified": 1748560250,
-        "narHash": "sha256-zQHN0y9tg3glL5JN3xayNAvkrSOL1DGg3LKeIWsNPVY=",
+        "lastModified": 1750426178,
+        "narHash": "sha256-YNandEaQ3Li/Pb5tqJhgqpLHeC/d6E57/r7Y3QfBpMw=",
         "owner": "ocaml",
         "repo": "dune",
-        "rev": "5cbbf9ffedbc62c2f7f7eba185d30560eef1ca80",
+        "rev": "55353da9f2982ce39558dd084166a90e83e3d3f5",
         "type": "github"
       },
       "original": {
         "owner": "ocaml",
         "repo": "dune",
-        "rev": "5cbbf9ffedbc62c2f7f7eba185d30560eef1ca80",
+        "rev": "55353da9f2982ce39558dd084166a90e83e3d3f5",
         "type": "github"
       }
     },
@@ -209,11 +209,11 @@
     "opam-repository": {
       "flake": false,
       "locked": {
-        "lastModified": 1747644099,
-        "narHash": "sha256-9cT9VnPKDv8XaafUs0IdRyY7rC3RV+Taa+3m95aPgYE=",
+        "lastModified": 1750365288,
+        "narHash": "sha256-kpbrsuvez7k9CLy1xpTeCXojMUySy3d5Dw0h74r8JwQ=",
         "owner": "ocaml",
         "repo": "opam-repository",
-        "rev": "55711315d054c8d83610afaedab4b5cbd30de09d",
+        "rev": "2c7fa9dbb65d0f6a3ff5378154183146e08fd36d",
         "type": "github"
       },
       "original": {
@@ -257,11 +257,11 @@
     "routine-opam-repository": {
       "flake": false,
       "locked": {
-        "lastModified": 1747754665,
-        "narHash": "sha256-iZCB5ilfEGOLjZIYgg1dpLxTev1s/mIHJ/KEzxewEFs=",
+        "lastModified": 1751535819,
+        "narHash": "sha256-rGIznYPQue3HcWvJERp9AseedQ1Q5GT1AB2r+9uj9CI=",
         "ref": "refs/heads/master",
-        "rev": "10e6a83ef3d3cb2252e34321308cd40fd953a51f",
-        "revCount": 532,
+        "rev": "62e751b2e7cdaf33d54d64d686c601c1a9adcc86",
+        "revCount": 544,
         "type": "git",
         "url": "ssh://git@gitlab.routine.co/routine/opam.git"
       },
