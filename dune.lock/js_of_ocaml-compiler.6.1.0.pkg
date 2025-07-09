@@ -1,0 +1,25 @@
+(version 6.1.0)
+
+(build
+ (all_platforms
+  ((action (run dune build -p %{pkg-self:name} -j %{jobs} @install)))))
+
+(depends
+ (all_platforms
+  (dune
+   ocaml
+   ppxlib
+   cmdliner
+   sedlex
+   menhir
+   menhirLib
+   menhirSdk
+   yojson
+   ocamlfind)))
+
+(source
+ (fetch
+  (url
+   https://github.com/ocsigen/js_of_ocaml/releases/download/6.1.0/js_of_ocaml-6.1.0.tbz)
+  (checksum
+   sha256=3c330cc382fde31ab77c2563fc294a17037c2c6b49cdbc4183a8072c88471527)))

@@ -10,7 +10,7 @@
 
 (authors "mefyl <mefyl@gruntech.org>")
 
-(version 0.13.1)
+(version O.13.2)
 
 (homepage https://gitlab.routine.co/routine/acid)
 
@@ -51,14 +51,14 @@
   (schematic
    (and
     (and
-     (>= 0.19.9)
-     (< 0.20.0))
+     (>= 0.21.0)
+     (< 0.22.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.19.9)
-     (< 0.20.0))
+     (>= 0.21.0)
+     (< 0.22.0))
     :with-test))
   (timmy
    (and
@@ -67,12 +67,12 @@
  (depopts
   (schematic
    (and
-    (>= 0.19.9)
-    (< 0.20.0)))
+    (>= 0.21.0)
+    (< 0.22.0)))
   (schematic-jsoo
    (and
-    (>= 0.19.9)
-    (< 0.20.0)))))
+    (>= 0.21.0)
+    (< 0.22.0)))))
 
 (package
  (name acid-lwt)
@@ -93,15 +93,9 @@
   (schematic
    (and
     (and
-     (>= 0.19.9)
-     (< 0.20.0))
-    :with-test)))
- (conflicts
-  (schematic
-   (or
-    (< 0.19.9)
-    (= 0.20.0)
-    (= 0.20.1)))))
+     (>= 0.21.0)
+     (< 0.22.0))
+    :with-test))))
 
 (package
  (name acid-jsoo)
@@ -123,6 +117,6 @@
   (schematic
    (and
     (and
-     (>= 0.19.9)
-     (< 0.20.0))
+     (>= 0.21.0)
+     (< 0.22.0))
     :with-test))))
