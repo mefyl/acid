@@ -1,0 +1,8 @@
+--cross
+base,fmt,logs,lwt,ptime
+--cross-both
+metapp,ppx_here
+--cross-exclude
+schematic-jsoo
+--local
+hlist,metaversion,schematic,schematic-jsoo,timmy

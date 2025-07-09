@@ -1,0 +1,338 @@
+(rule
+ (target acid.%{version:acid}.opam)
+ (deps
+  (:opam ../acid.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-ios.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-ios --input
+    %{dep:../acid.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-ios.%{version:acid}.opam)
+ (deps
+  (:opam acid-ios.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-macos.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-macos
+    --input %{dep:../acid.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-macos.%{version:acid}.opam)
+ (deps
+  (:opam acid-macos.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-windows.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-windows
+    --input %{dep:../acid.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-windows.%{version:acid}.opam)
+ (deps
+  (:opam acid-windows.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-android.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-android
+    --input %{dep:../acid.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-android.%{version:acid}.opam)
+ (deps
+  (:opam acid-android.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-jsoo.%{version:acid-jsoo}.opam)
+ (deps
+  (:opam ../acid-jsoo.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-jsoo-ios.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-ios --input
+    %{dep:../acid-jsoo.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-jsoo-ios.%{version:acid-jsoo}.opam)
+ (deps
+  (:opam acid-jsoo-ios.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-jsoo-macos.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-macos
+    --input %{dep:../acid-jsoo.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-jsoo-macos.%{version:acid-jsoo}.opam)
+ (deps
+  (:opam acid-jsoo-macos.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-jsoo-windows.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-windows
+    --input %{dep:../acid-jsoo.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-jsoo-windows.%{version:acid-jsoo}.opam)
+ (deps
+  (:opam acid-jsoo-windows.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-jsoo-android.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-android
+    --input %{dep:../acid-jsoo.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-jsoo-android.%{version:acid-jsoo}.opam)
+ (deps
+  (:opam acid-jsoo-android.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-lwt.%{version:acid-lwt}.opam)
+ (deps
+  (:opam ../acid-lwt.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-lwt-ios.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-ios --input
+    %{dep:../acid-lwt.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-lwt-ios.%{version:acid-lwt}.opam)
+ (deps
+  (:opam acid-lwt-ios.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-lwt-macos.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-macos
+    --input %{dep:../acid-lwt.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-lwt-macos.%{version:acid-lwt}.opam)
+ (deps
+  (:opam acid-lwt-macos.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-lwt-windows.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-windows
+    --input %{dep:../acid-lwt.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-lwt-windows.%{version:acid-lwt}.opam)
+ (deps
+  (:opam acid-lwt-windows.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
+
+(rule
+ (target acid-lwt-android.opam)
+ (mode
+  (promote (until-clean)))
+ (action
+  (with-stdout-to
+   %{target}
+   (run %{workspace_root}/.logistic/ci/dune/dune_sak.exe rewrite-android
+    --input %{dep:../acid-lwt.opam} --cross
+    acid,acid-jsoo,acid-lwt,hlist,metaversion,schematic,schematic-jsoo,timmy,base,fmt,logs,lwt,ptime
+    --cross-both metapp,ppx_here --cross-exclude schematic-jsoo))))
+
+(rule
+ (target acid-lwt-android.%{version:acid-lwt}.opam)
+ (deps
+  (:opam acid-lwt-android.opam))
+ (action
+  (with-stdout-to
+   %{target}
+   (progn
+    (cat %{opam})
+    (run git log
+     "--pretty=url { src: \"git://git@gitlab.routine.co:routine/acid#%H\" }"
+     -n1)))))
