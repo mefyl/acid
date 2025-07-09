@@ -1,4 +1,4 @@
-(version 0.19.10)
+(version 0.21.0)
 
 (build
  (all_platforms
@@ -10,21 +10,26 @@
 (depends
  (all_platforms
   (dune
-   uri
-   ptime
-   ppx_here
-   fmt
-   ezjsonm
    base
-   js_of_ocaml
-   js_of_ocaml-ppx
+   base64
+   ezjsonm
+   fmt
+   hmap
+   hlist
    landmarks
    landmarks-ppx
-   schematic)))
+   logs
+   ocaml
+   ppxlib
+   ppx_deriving
+   ppx_here
+   ptime
+   semver2
+   uri)))
 
 (source
  (fetch
   (url
-   git+ssh://git@gitlab.routine.co/routine/schematic#30b814b7bc99962ba752c1d41e719e9df76ce2a0)))
+   git+ssh://git@gitlab.routine.co/routine/schematic#59e013071c8cb16b3101cfdcd0edb3652dbb9ec5)))
 
 (dev)
