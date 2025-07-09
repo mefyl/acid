@@ -30,6 +30,6 @@
 (source
  (fetch
   (url
-   git+ssh://git@gitlab.routine.co/routine/schematic#59e013071c8cb16b3101cfdcd0edb3652dbb9ec5)))
+   git+ssh://git@gitlab.routine.co/routine/schematic#32940fb86623bcd35be341ef81c744abed2ce442)))
 
 (dev)

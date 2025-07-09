@@ -1,5 +1,5 @@
 opam-version: "2.0"
-version: "O.13.2"
+version: "0.13.2"
 synopsis: "Base library"
 maintainer: ["mefyl <mefyl@gruntech.org>"]
 authors: ["mefyl <mefyl@gruntech.org>"]
@@ -20,7 +20,7 @@ depends: [
   "timmy-ios" {>= "1.0.1" & < "2.0.0"}
 ]
 depopts: [
-  "schematic-ios" {>= "0.19.9" & < "0.20.0"}
+  "schematic-ios" {>= "0.21.0" & < "0.22.0"}
 ]
 build: [
   ["dune" "subst"] {dev}
