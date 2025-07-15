@@ -68,7 +68,7 @@
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
           # Force a specific ocamlformat version, e.g. `"0.26.2"`.
-        , ocamlformatVersion ? builtins.head (builtins.match ".*^version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat")))
+        , ocamlformatVersion ? builtins.elemAt (builtins.match ".*(\n|^)version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat"))) 1
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
           # somewhat invasive (forcing the stdenv to use clang in particular)
