@@ -55,6 +55,11 @@
       lib.mkRoutineRepo =
         path:
         { localPackages ? null
+          # A function for building the set of opam files to take into account in the local repository.
+          # Takes `nixpkgs` as argument to allow using the lib functions (`fileset` in particular), and should return a `fileset`
+          #
+          # If `null`, all the non-cross packages in the repository will be used
+        , opamFiles ? null
           # Extra Opam packages to install for development (in the form of an opam-nix query).
           # E.g.,
           # { acid = "*"; logs = "0.7.0"; }
@@ -84,20 +89,26 @@
             };
 
             # Only keep root opam files
-            opamFiles =
+            opamFiles_ =
               let
-                opamFilesWithoutCrossCompilation = pkgs.lib.fileset.fileFilter
-                  (file: file.hasExt "opam"
-                    && !(pkgs.lib.hasSuffix "-android.opam" file.name)
-                    && !(pkgs.lib.hasSuffix "-ios.opam" file.name)
-                    && !(pkgs.lib.hasSuffix "-macos.opam" file.name)
-                    && !(pkgs.lib.hasSuffix "-windows.opam" file.name))
-                  path;
-                gitTracked = pkgs.lib.fileset.gitTracked path;
+                opamFilesWithoutCrossCompilation =
+                   pkgs.lib.fileset.fileFilter
+                    (file: file.hasExt "opam"
+                      && !(pkgs.lib.hasSuffix "-android.opam" file.name)
+                      && !(pkgs.lib.hasSuffix "-ios.opam" file.name)
+                      && !(pkgs.lib.hasSuffix "-macos.opam" file.name)
+                      && !(pkgs.lib.hasSuffix "-windows.opam" file.name))
+                    path;
+                gitTracked = pkgs.lib.fileset.gitTrackedWith { recurseSubmodules = true; } path;
+                allOpamFiles = 
+                 if opamFiles != null then
+                   (opamFiles pkgs)
+                 else
+                   pkgs.lib.fileset.intersection gitTracked opamFilesWithoutCrossCompilation;
               in
               pkgs.lib.fileset.toSource {
                 root = path;
-                fileset = pkgs.lib.fileset.intersection gitTracked opamFilesWithoutCrossCompilation;
+                fileset = allOpamFiles;
               };
 
             on = opam-nix.lib.${system};
@@ -105,7 +116,7 @@
             localPackages_ = if localPackages != null then localPackages else
             builtins.attrNames
               (builtins.mapAttrs (_: pkgs.lib.last)
-                (on.listRepo (on.makeOpamRepoRec opamFiles)));
+                (on.listRepo (on.makeOpamRepoRec opamFiles_)));
 
             # You can add "development" Opam packages here. They will get added to the devShell automatically.
             devPackagesQuery =
@@ -166,7 +177,7 @@
                   resolveArgs.with-test = true;
                   resolveArgs.criteria = "-removed,-count[avoid-version:,true],-count[version-lag:,true],-changed,-count[version-lag:,false],-count[missing-depexts:,true],-new";
                 })
-                opamFiles
+                opamFiles_
                 query;
 
             overlay = final: prev:
