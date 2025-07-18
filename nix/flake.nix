@@ -55,6 +55,10 @@
       lib.mkRoutineRepo =
         path:
         { localPackages ? null
+          # A function for building the set of opam files to take into account in the local repository.
+          # Takes `nixpkgs` as argument to allow using the lib functions (`fileset` in particular), and should return a `fileset`
+          #
+          # If `null`, all the non-cross packages in the repository will be used
         , opamFiles ? null
           # Extra Opam packages to install for development (in the form of an opam-nix query).
           # E.g.,
