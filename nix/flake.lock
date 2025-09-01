@@ -12,17 +12,17 @@
         "ocaml-overlays": "ocaml-overlays"
       },
       "locked": {
-        "lastModified": 1750426178,
-        "narHash": "sha256-YNandEaQ3Li/Pb5tqJhgqpLHeC/d6E57/r7Y3QfBpMw=",
+        "lastModified": 1756120870,
+        "narHash": "sha256-nSqciEovIVyNVwf3iLWYAymOW4rEpUNZXUZLwHOcsuw=",
         "owner": "ocaml",
         "repo": "dune",
-        "rev": "55353da9f2982ce39558dd084166a90e83e3d3f5",
+        "rev": "84b524ad0b337a95e44a7c307b1c237d20075272",
         "type": "github"
       },
       "original": {
         "owner": "ocaml",
         "repo": "dune",
-        "rev": "55353da9f2982ce39558dd084166a90e83e3d3f5",
+        "rev": "84b524ad0b337a95e44a7c307b1c237d20075272",
         "type": "github"
       }
     },
