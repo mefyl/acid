@@ -31,7 +31,7 @@
     };
 
     dune = {
-      url = "github:ocaml/dune/55353da9f2982ce39558dd084166a90e83e3d3f5";
+      url = "github:ocaml/dune/84b524ad0b337a95e44a7c307b1c237d20075272";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
@@ -92,7 +92,7 @@
             opamFiles_ =
               let
                 opamFilesWithoutCrossCompilation =
-                   pkgs.lib.fileset.fileFilter
+                  pkgs.lib.fileset.fileFilter
                     (file: file.hasExt "opam"
                       && !(pkgs.lib.hasSuffix "-android.opam" file.name)
                       && !(pkgs.lib.hasSuffix "-ios.opam" file.name)
@@ -100,11 +100,11 @@
                       && !(pkgs.lib.hasSuffix "-windows.opam" file.name))
                     path;
                 gitTracked = pkgs.lib.fileset.gitTrackedWith { recurseSubmodules = true; } path;
-                allOpamFiles = 
-                 if opamFiles != null then
-                   (opamFiles pkgs)
-                 else
-                   pkgs.lib.fileset.intersection gitTracked opamFilesWithoutCrossCompilation;
+                allOpamFiles =
+                  if opamFiles != null then
+                    (opamFiles pkgs)
+                  else
+                    pkgs.lib.fileset.intersection gitTracked opamFilesWithoutCrossCompilation;
               in
               pkgs.lib.fileset.toSource {
                 root = path;
