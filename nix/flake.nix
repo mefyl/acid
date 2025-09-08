@@ -340,11 +340,6 @@
                   doCheck = false;
                   buildInputs = a.buildInputs or [ ] ++ [ pkgs.tzdata prev.logs ];
                 });
-
-                utop = prev.utop.overrideAttrs (a: {
-                  # Utop has multiple root directories and Nix only wants one
-                  sourceRoot = ".";
-                });
               };
 
             scope' = scope.overrideScope (pkgs.lib.composeExtensions overlay (extraOCamlOverlay pkgs));
