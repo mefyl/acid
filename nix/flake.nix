@@ -31,7 +31,9 @@
     };
 
     dune = {
-      url = "github:ocaml/dune/84b524ad0b337a95e44a7c307b1c237d20075272";
+      # Temporary until it is merged in Dune
+      # See https://github.com/ocaml/dune/pull/12438
+      url = "github:sir4ur0n/dune/f08d92f67ed10be2782649fef7b9a6821cd46a19";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-utils.follows = "flake-utils";
