@@ -1,14 +1,14 @@
 {
     "dune": {
-        "branch": "3.20",
+        "branch": "main",
         "description": "A composable build system for OCaml.",
         "homepage": "https://dune.build/",
         "owner": "ocaml",
         "repo": "dune",
-        "rev": "84b524ad0b337a95e44a7c307b1c237d20075272",
-        "sha256": "1v5jkirw0js6bmcl79f4i9dqwa83k2sqixq7ay6mq89g9a49qalx",
+        "rev": "935e26cbcf5bcbaae68bd45ed83f37b62c03b521",
+        "sha256": "071qqqbz0jpgrkmdi2vib8q41jkx8q28j4mhm1lqc5c2fizqyfj7",
         "type": "tarball",
-        "url": "https://github.com/ocaml/dune/archive/84b524ad0b337a95e44a7c307b1c237d20075272.tar.gz",
+        "url": "https://github.com/ocaml/dune/archive/935e26cbcf5bcbaae68bd45ed83f37b62c03b521.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "flake-compat": {
