@@ -73,7 +73,7 @@
           # Unfortunately the OCaml version must be passed explicitly because it impacts the development packages (LSP, etc.) provided by the shell.
         , ocamlVersion
           # Force a specific ocamlformat version, e.g. `"0.26.2"`.
-        , ocamlformatVersion ? builtins.elemAt (builtins.match ".*(\n|^)version=([^\n]*).*" (builtins.readFile (path + "/.ocamlformat"))) 1
+        , ocamlformatVersion ? null
           # Whether to make the shell swift-compatible.
           # This isn't enabled by default as it is
           # somewhat invasive (forcing the stdenv to use clang in particular)
@@ -87,7 +87,13 @@
               # Required for steam-run
               config.allowUnfree = true;
             };
-
+            shared = import ./shared.nix { inherit pkgs; };
+            ocamlformatVersion =
+              if ocamlformatVersion == null
+              then
+                shared.ocamlformatVersionFromDotOcamlformat (path + "/.ocamlformat")
+              else
+                ocamlformatVersion;
             # Only keep root opam files
             opamFiles_ =
               let
@@ -369,22 +375,7 @@
             packages =
               pkgs.lib.getAttrs localPackages_ scope';
 
-            routine_run = pkgs.buildFHSEnv {
-              name = "routine-run";
-
-              targetPkgs = pkgs:
-                (pkgs.appimageTools.defaultFhsEnvArgs.targetPkgs pkgs) ++
-                (pkgs.appimageTools.defaultFhsEnvArgs.multiPkgs pkgs);
-
-              runScript = pkgs.writers.writeBash "routine-run" ''
-                executable="''${1:-./dist_electron/linux-unpacked/routine}"
-                shift
-
-                exec "$executable" "$@"
-              '';
-
-
-            };
+            routine_run = shared.routine_run;
 
             ciPackages = import ./ci-packages.nix {
               inherit pkgs;
