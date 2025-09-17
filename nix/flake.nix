@@ -88,7 +88,7 @@
               config.allowUnfree = true;
             };
             shared = import ./shared.nix { inherit pkgs; };
-            ocamlformatVersion =
+            ocamlformatVersion_ =
               if ocamlformatVersion == null
               then
                 shared.ocamlformatVersionFromDotOcamlformat (path + "/.ocamlformat")
@@ -143,7 +143,7 @@
                   utop = "*";
                   ocaml-lsp-server = "*";
                   merlin = "*";
-                  ocamlformat = ocamlformatVersion;
+                  ocamlformat = ocamlformatVersion_;
                 } // pkgs.lib.optionalAttrs
                   (builtins.compareVersions ocamlVersion "5.2.0" >= 0)
                   {
