@@ -29,9 +29,9 @@ let
   dune-preview = (import srcs.flake-compat { src = srcs.dune; }).outputs.packages.${pkgs.system}.dune-experimental;
   shared =
     import ./shared.nix { inherit pkgs; };
-  ocamlformatVersion =
-    if args ? ocamlformatVersion then args.ocamlformatVersion else
-    if args ? dotOcamlformatPath then
+  ocamlformatVersion_ =
+    if ocamlformatVersion != null then args.ocamlformatVersion else
+    if dotOcamlformatPath != null then
       builtins.replaceStrings [ "." ] [ "_" ]
         (shared.ocamlformatVersionFromDotOcamlformat dotOcamlformatPath)
     else throw "One of 'ocamlformatVersion' or 'dotOcamlformatPath' must be supplied";
@@ -45,7 +45,7 @@ pkgs.mkShell
       pkgs.opam
 
       # Dev tooling
-      pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}"."ocamlformat_${ocamlformatVersion}"
+      pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}"."ocamlformat_${ocamlformatVersion_}"
       pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}".ocaml-lsp
       pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}".merlin
       shared.routine_run
