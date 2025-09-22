@@ -6,4 +6,5 @@ in
 
 import "${logisticPath}/nix/shell.nix" {
   ocamlVersion = "5_3";
+  dotOcamlformatPath = ./.ocamlformat;
 }
