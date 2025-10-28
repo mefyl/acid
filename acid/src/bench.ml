@@ -81,13 +81,11 @@ module Expert = struct
 
   let program_start = Ptime_clock.now () |> Timmy.Time.of_ptime
 
+  (** [span_to_us span] returns the number of microseconds in [span]. *)
   let span_to_us span =
     let days, ps = Ptime.Span.to_d_ps @@ Timmy.Span.to_ptime span in
-    if days > 0 then
-      Logs.warn (fun m ->
-          m "Integer overflow converting the span %a to microseconds"
-            Timmy.Span.pp span);
     Int64.(to_float @@ (ps / 1_000_000L))
+    +. Int.to_float (24 * 60 * 60 * 1_000_000 * days)
 
   let pos_tag : Lexing.position Logs.Tag.def =
     let pp_position fmt { Lexing.pos_fname; pos_lnum; _ } =
