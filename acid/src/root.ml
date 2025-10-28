@@ -28,6 +28,9 @@ module Monad = Monad
 (** @canonical Acid.Option *)
 module Option = Option
 
+(** @canonical Acid.Pair *)
+module Pair = Pair
+
 (** @canonical Acid.IQueue *)
 module Queue = Queue
 
