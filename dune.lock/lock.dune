@@ -10,9 +10,9 @@
   ((source
     https://github.com/ocaml-dune/opam-overlays.git#2a9543286ff0e0656058fee5c0da7abc16b8717d))
   ((source
-    https://github.com/ocaml/opam-repository.git#11a53009bd75423d805636ff9384bf7cce8b0a9a))
+    https://github.com/ocaml/opam-repository.git#7f9c784b97b368cd82ee80890d9866b8e66b7c1b))
   ((source
-    ssh://git@gitlab.routine.co/routine/opam#0feab7d6e164145db0a1f8d79f02cffc6872b051))))
+    ssh://git@gitlab.routine.co/routine/opam#45b773e0989f7503ab2c5b16e001d6b34e339e98))))
 
 (solved_for_platforms
  ((arch x86_64)

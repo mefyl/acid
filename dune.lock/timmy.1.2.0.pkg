@@ -1,4 +1,4 @@
-(version 1.5)
+(version 1.2.0)
 
 (build
  (all_platforms
@@ -9,9 +9,11 @@
 
 (depends
  (all_platforms
-  (dune ocaml ppxlib landmarks)))
+  (dune base fmt ocaml ppx_here ppx_deriving ptime schematic)))
 
 (source
  (fetch
-  (url https://github.com/lexifi/landmarks/archive/refs/tags/v1.5.tar.gz)
-  (checksum md5=8656a2bd04456f8f18ef19af20c85f0c)))
+  (url
+   git+ssh://git@gitlab.routine.co/routine/timmy#36aedcfdbc79593e8dc203e78782f0c4e4b5377d)))
+
+(dev)

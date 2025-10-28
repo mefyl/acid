@@ -32,7 +32,9 @@ module M (Elt : ELEMENT) = struct
 end
 
 module type ELEMENT_PRINTABLE = sig
-  type t [@@deriving show]
+  type t
+
+  val pp : t Fmt.t
 
   include ELEMENT with type t := t
 end
