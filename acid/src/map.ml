@@ -60,6 +60,11 @@ module M (K : KEY) = struct
   let of_sequence_reduce l ~f = Base.Map.of_sequence_reduce (module K) l ~f
 end
 
+module type KEYED = sig
+  module Key : KEY
+  include module type of M (Key)
+end
+
 module type KEY_PRINTABLE = sig
   type t
 
