@@ -1,4 +1,4 @@
-(version 0.2.1)
+(version 0.2.2)
 
 (build
  (all_platforms
@@ -24,10 +24,10 @@
 
 (depends
  (all_platforms
-  (dune ocaml ocplib-endian cmdliner afl-persistent)))
+  (dune ocaml cmdliner afl-persistent)))
 
 (source
  (fetch
-  (url https://github.com/stedolan/crowbar/archive/v0.2.1.tar.gz)
+  (url https://github.com/stedolan/crowbar/archive/v0.2.2.tar.gz)
   (checksum
-   sha256=4d73e558bf230ed88b7fadc79ac9ece63ffe7a0fbda542755743dc311d21bc24)))
+   sha256=debd1345ac0116232390af64552d15948b5dc7200e287730235f7ff42098f3c5)))
