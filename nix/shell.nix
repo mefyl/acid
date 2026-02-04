@@ -8,33 +8,25 @@
   */
 , extraPackages ? (pkgs: [ ])
   /**
-    The ocamlformat version (formatted as Nix wants it).
-    To keep in sync with the one in .ocamlformat
-  */
-, ocamlformatVersion ? "0_27_0"
-  /**
     Extra arguments passed directly to `mkShell`
   */
-, ocamlVersion
 , extraArgs ? { }
 }:
 let
   ci-packages = import ./ci-packages.nix { inherit pkgs; };
 
-  dune-preview = (import srcs.flake-compat { src = srcs.dune; }).outputs.packages.${pkgs.system}.dune-experimental;
+  dune-preview = (import srcs.flake-compat { src = srcs.dune; }).outputs.packages.${pkgs.system}.dune;
+  shared =
+    import ./shared.nix { inherit pkgs; };
 in
 pkgs.mkShell
   ({
     packages = [
       # Base OCaml tooling
-      pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}".ocaml
       dune-preview
-      pkgs.opam
 
       # Dev tooling
-      pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}"."ocamlformat_${ocamlformatVersion}"
-      pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}".ocaml-lsp
-      pkgs.ocaml-ng."ocamlPackages_${ocamlVersion}".merlin
+      shared.routine_run
 
       # System libraries
       pkgs.appimage-run
