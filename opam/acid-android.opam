@@ -20,6 +20,7 @@ depends: [
   "timmy-android" {>= "1.0.1" & < "2.0.0"}
 ]
 depopts: [
+  "js_of_ocaml"
   "schematic-android" {>= "0.21.0" & < "0.22.0"}
 ]
 build: [

@@ -65,6 +65,7 @@
     (>= 1.0.1)
     (< 2.0.0))))
  (depopts
+  js_of_ocaml
   (schematic
    (and
     (>= 0.21.0)

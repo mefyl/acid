@@ -26,6 +26,7 @@ depends: [
   "odoc" {with-doc}
 ]
 depopts: [
+  "js_of_ocaml"
   "schematic" {>= "0.21.0" & < "0.22.0"}
   "schematic-jsoo" {>= "0.21.0" & < "0.22.0"}
 ]
