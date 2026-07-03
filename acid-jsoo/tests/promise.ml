@@ -8,7 +8,7 @@ module Of_lwt = struct
         let* () = Js_of_ocaml_lwt.Lwt_js.yield () in
         failwith "oups")
     |> Acid_jsoo.Js.Promise.map ~f:(fun () ->
-           Alcotest.fail ~here:[%here] "promised was fulfilled")
+        Alcotest.fail ~here:[%here] "promised was fulfilled")
     |> Acid_jsoo.Js.Promise.catch ~f:(fun _ -> ())
     |> ignore
 end

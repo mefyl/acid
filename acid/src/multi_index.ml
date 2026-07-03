@@ -400,7 +400,7 @@ struct
       | Some index ->
         Next.all index
         |> Sequence.fold ~init:map ~f:(fun map elt ->
-               Binder.Multi_index.remove elt map)
+            Binder.Multi_index.remove elt map)
 
     let update value map ~f =
       match find value map with
@@ -408,9 +408,9 @@ struct
       | Some next ->
         Next.all next
         |> Base.Sequence.fold ~init:map ~f:(fun map old ->
-               match f old with
-               | None -> Binder.Multi_index.remove old map
-               | Some value -> Binder.Multi_index.update old value map)
+            match f old with
+            | None -> Binder.Multi_index.remove old map
+            | Some value -> Binder.Multi_index.update old value map)
   end
 end
 
@@ -478,7 +478,7 @@ struct
       | Some index ->
         Next.all index
         |> Sequence.fold ~init:map ~f:(fun map elt ->
-               Binder.Multi_index.remove elt map)
+            Binder.Multi_index.remove elt map)
 
     let update value map ~f =
       match find value map with
@@ -486,8 +486,8 @@ struct
       | Some next ->
         Next.all next
         |> Base.Sequence.fold ~init:map ~f:(fun map old ->
-               match f old with
-               | None -> Binder.Multi_index.remove old map
-               | Some value -> Binder.Multi_index.update old value map)
+            match f old with
+            | None -> Binder.Multi_index.remove old map
+            | Some value -> Binder.Multi_index.update old value map)
   end
 end
