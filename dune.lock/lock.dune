@@ -1,6 +1,6 @@
 (lang package 0.1)
 
-(dependency_hash 6fda81943e2682a594c1a2312d4bbb77)
+(dependency_hash 2b19729833d56f54a13759381b0d6179)
 
 (ocaml ocaml-base-compiler)
 
@@ -8,9 +8,9 @@
  (complete true)
  (used
   ((source
-    ssh://git@gitlab.routine.co/routine/opam#a183cc149ccb3c6cae0d24505b0b35e04f33a07f))
+    ssh://git@gitlab.routine.co/routine/opam#cfdb4e855904e40d94c3b073c1d522f38b5622f5))
   ((source
-    https://github.com/ocaml/opam-repository.git#45c04602c2fc908af6d1b17ba39c7517d58cb274))
+    https://github.com/ocaml/opam-repository.git#e5bad6c27f60c89b4ebf8b47a296d4c06f5f548f))
   ((source
     https://github.com/ocaml-dune/opam-overlays.git#2a9543286ff0e0656058fee5c0da7abc16b8717d))))
 
@@ -20,12 +20,7 @@
   (with-dev-setup false)
   (post true)
   (opam-version 2.2.0))
- (unset_variables
-  with-test
-  sys-ocaml-libc
-  enable-ocaml-beta-repository
-  dev
-  build))
+ (unset_variables with-test sys-ocaml-libc dev build))
 
 (solved_for_platforms
  ((arch x86_64)

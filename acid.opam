@@ -20,15 +20,15 @@ depends: [
   "ppx_here"
   "ppx_yojson" {>= "1.2.0" & with-test}
   "ptime" {>= "1.2.0"}
-  "schematic" {>= "0.21.0" & < "0.22.0" & with-test}
-  "schematic-jsoo" {>= "0.21.0" & < "0.22.0" & with-test}
+  "schematic" {>= "0.22.3" & < "0.23.0" & with-test}
+  "schematic-jsoo" {>= "0.22.3" & < "0.23.0" & with-test}
   "timmy" {>= "1.0.1" & < "2.0.0"}
   "odoc" {with-doc}
 ]
 depopts: [
   "js_of_ocaml"
-  "schematic" {>= "0.21.0" & < "0.22.0"}
-  "schematic-jsoo" {>= "0.21.0" & < "0.22.0"}
+  "schematic" {>= "0.22.3" & < "0.23.0"}
+  "schematic-jsoo" {>= "0.22.3" & < "0.23.0"}
 ]
 build: [
   ["dune" "subst"] {dev}
