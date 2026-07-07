@@ -1,3 +1,5 @@
+module Schematic = Schematic.Versions.V0_22_3
+
 module Either = struct
   let schema = Schematic.Schemas.Either.schema
   let schema_versioned = Schematic.Schemas.Either.schema_versioned
@@ -69,7 +71,8 @@ module List_nonempty = struct
         | [] -> Result.fail "empty list"
         | hd :: tl -> Result.return (hd :: tl)
       and encode (hd :: tl) = List.cons hd tl in
-      Schematic.Schema.Map { decode; encode; descriptor = List parameter }
+      Schematic.Schema.Descriptor.map ~decode ~encode
+      @@ Schematic.Schema.Descriptor.list parameter
     in
     Schematic.Schema.make
       ~id:(Schematic.Schema.name_combine parameter "list-nonempty")
@@ -121,17 +124,9 @@ module Map = struct
         and descriptor =
           let item =
             Schematic.Schema.make
-            @@ Tuple
-                 {
-                   decode = Base.Fn.id;
-                   encode = Base.Fn.id;
-                   items =
-                     Item
-                       {
-                         schema = key_schema;
-                         rest = Item { schema = data_schema; rest = ItemEnd };
-                       };
-                 }
+            @@ Schematic.Schema.Descriptor.tuple ~decode:Base.Fn.id
+                 ~encode:Base.Fn.id
+                 [ key_schema; data_schema ]
           and construct items =
             items
             |> Base.Sequence.map ~f:(fun Hlist.[ name; value ] -> (name, value))
@@ -143,7 +138,8 @@ module Map = struct
             Base.Map.to_sequence map
             |> Base.Sequence.map ~f:(fun (k, d) -> Hlist.[ k; d ])
           in
-          Sequence { item; construct; deconstruct; length = Base.Map.length }
+          Schematic.Schema.Descriptor.sequence ~construct ~deconstruct
+            ~length:Base.Map.length item
         in
         make ~id descriptor
       in
@@ -174,13 +170,9 @@ module Map = struct
           fun data_schema ->
             let open Schematic.Schema in
             make ~id:(dictionary_id data_schema)
-            @@ Mapping
-                 {
-                   construct = _of_sequence;
-                   deconstruct = Base.Map.to_sequence;
-                   item = data_schema;
-                   length = Base.Map.length;
-                 }
+            @@ Descriptor.dictionary ~construct:_of_sequence
+                 ~deconstruct:Base.Map.to_sequence ~length:Base.Map.length
+                 data_schema
         | None -> (
           let (Flatten { descriptor; decode; encode }) =
             Schematic.Schema.flatten key_schema.descriptor
@@ -210,13 +202,8 @@ module Map = struct
               in
               let open Schematic.Schema in
               make ~id:(dictionary_id data_schema)
-              @@ Mapping
-                   {
-                     construct;
-                     deconstruct;
-                     item = data_schema;
-                     length = Base.Map.length;
-                   }
+              @@ Descriptor.dictionary ~construct ~deconstruct
+                   ~length:Base.Map.length data_schema
           | _ -> fun schema -> assoc_schema_versioned version schema)
       in
       res
@@ -243,10 +230,10 @@ module Set = struct
         let open Fmt in
         str "%aset" (option (string ++ const char '-')) elt_schema.id
       and descriptor =
-        let descriptor = List elt_schema
+        let descriptor = Descriptor.list elt_schema
         and decode l = Base.Set.of_list (module E) l |> Result.return
         and encode set = Base.Set.to_list set in
-        Map { descriptor; decode; encode }
+        Descriptor.map ~decode ~encode descriptor
       in
       make ~id descriptor
 

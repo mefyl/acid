@@ -1,21 +1,4 @@
 open Acid
-
-module String = struct
-  include String
-
-  let schema_versioned version =
-    let schema = schema_versioned version in
-    let descriptor =
-      Schematic.Schema.Map
-        {
-          encode = Fn.id;
-          decode = Result.return;
-          descriptor = Fixpoint (lazy schema.descriptor);
-        }
-    in
-    { schema with descriptor }
-end
-
 module IntMap = Map.M (Int)
 module StringMap = Map.M (String)
 

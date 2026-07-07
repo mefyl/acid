@@ -21,7 +21,7 @@ depends: [
 ]
 depopts: [
   "js_of_ocaml"
-  "schematic-ios" {>= "0.21.0" & < "0.22.0"}
+  "schematic-ios" {>= "0.22.3" & < "0.23.0"}
 ]
 build: [
   ["dune" "subst"] {dev}

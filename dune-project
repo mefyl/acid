@@ -51,14 +51,14 @@
   (schematic
    (and
     (and
-     (>= 0.21.0)
-     (< 0.22.0))
+     (>= 0.22.3)
+     (< 0.23.0))
     :with-test))
   (schematic-jsoo
    (and
     (and
-     (>= 0.21.0)
-     (< 0.22.0))
+     (>= 0.22.3)
+     (< 0.23.0))
     :with-test))
   (timmy
    (and
@@ -68,12 +68,12 @@
   js_of_ocaml
   (schematic
    (and
-    (>= 0.21.0)
-    (< 0.22.0)))
+    (>= 0.22.3)
+    (< 0.23.0)))
   (schematic-jsoo
    (and
-    (>= 0.21.0)
-    (< 0.22.0)))))
+    (>= 0.22.3)
+    (< 0.23.0)))))
 
 (package
  (name acid-lwt)
@@ -95,7 +95,7 @@
    (and
     (and
      (>= 0.21.0)
-     (< 0.22.0))
+     (< 0.23.0))
     :with-test))))
 
 (package
@@ -118,6 +118,32 @@
   (schematic
    (and
     (and
-     (>= 0.21.0)
-     (< 0.22.0))
+     (>= 0.22.3)
+     (< 0.23.0))
     :with-test))))
+
+(pin
+ (url
+  git+ssh://git@gitlab.routine.co/routine/schematic#460567f30ea5f33df83992b47939275eb24b125e)
+ (package
+  (name schematic)
+  (version 0.22.3))
+ (package
+  (name schematic-jsoo)
+  (version 0.22.3)))
+
+(pin
+ (url
+  git+ssh://git@gitlab.routine.co/routine/timmy#dfaa11f0782e47cb422b33405f6a3680c6e1fe5b)
+ (package
+  (name timmy)
+  (version 1.2.4)))
+
+; For Wasmoo support.
+
+(pin
+ (url
+  git+https://github.com/mefyl/alcotest#f0007cbfdffd868945dd7503160c8bce08d01113)
+ (package
+  (name alcotest)
+  (version 1.9.1)))
