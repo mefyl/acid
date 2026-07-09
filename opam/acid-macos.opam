@@ -17,7 +17,7 @@ depends: [
   "ppx_here"
   "ppx_here-macos"
   "ptime-macos" {>= "1.2.0"}
-  "timmy-macos" {>= "1.0.1" & < "2.0.0"}
+  "timmy-macos" {>= "1.2.5" & < "2.0.0"}
 ]
 depopts: [
   "js_of_ocaml"

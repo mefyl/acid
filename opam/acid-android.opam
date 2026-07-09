@@ -17,7 +17,7 @@ depends: [
   "ppx_here"
   "ppx_here-android"
   "ptime-android" {>= "1.2.0"}
-  "timmy-android" {>= "1.0.1" & < "2.0.0"}
+  "timmy-android" {>= "1.2.5" & < "2.0.0"}
 ]
 depopts: [
   "js_of_ocaml"

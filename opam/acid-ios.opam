@@ -17,7 +17,7 @@ depends: [
   "ppx_here"
   "ppx_here-ios"
   "ptime-ios" {>= "1.2.0"}
-  "timmy-ios" {>= "1.0.1" & < "2.0.0"}
+  "timmy-ios" {>= "1.2.5" & < "2.0.0"}
 ]
 depopts: [
   "js_of_ocaml"

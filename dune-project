@@ -62,7 +62,7 @@
     :with-test))
   (timmy
    (and
-    (>= 1.0.1)
+    (>= 1.2.5)
     (< 2.0.0))))
  (depopts
   js_of_ocaml
@@ -124,20 +124,10 @@
 
 (pin
  (url
-  git+ssh://git@gitlab.routine.co/routine/schematic#460567f30ea5f33df83992b47939275eb24b125e)
+  git+https://github.com/dbuenzli/bytesrw#47bdebcbc527c264572fb5fbcc5ca606e67bcd32)
  (package
-  (name schematic)
-  (version 0.22.3))
- (package
-  (name schematic-jsoo)
-  (version 0.22.3)))
-
-(pin
- (url
-  git+ssh://git@gitlab.routine.co/routine/timmy#dfaa11f0782e47cb422b33405f6a3680c6e1fe5b)
- (package
-  (name timmy)
-  (version 1.2.4)))
+  (name bytesrw)
+  (version 0.3.0)))
 
 ; For Wasmoo support.
 
