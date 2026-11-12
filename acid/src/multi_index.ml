@@ -301,7 +301,9 @@ module Ordered (Value : Comparator.S) = struct
   let remove value map = Set.remove map value
 
   module Bind (Binder : BINDER with type index = t) = struct
+    let max map = Set.max_elt (Binder.get map)
     let mem value map = Set.mem (Binder.get map) value
+    let min map = Set.min_elt (Binder.get map)
   end
 end
 

@@ -223,7 +223,9 @@ module Ordered (Value : Comparator.S) : sig
        and type value = Value.t
 
   module Bind (Binder : BINDER with type index = t) : sig
+    val max: Binder.Multi_index.t -> Value.t option
     val mem : Value.t -> Binder.Multi_index.t -> bool
+    val min: Binder.Multi_index.t -> Value.t option
   end
 end
 
