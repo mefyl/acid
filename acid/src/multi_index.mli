@@ -223,9 +223,16 @@ module Ordered (Value : Comparator.S) : sig
        and type value = Value.t
 
   module Bind (Binder : BINDER with type index = t) : sig
-    val max: Binder.Multi_index.t -> Value.t option
+    val max : Binder.Multi_index.t -> Value.t option
     val mem : Value.t -> Binder.Multi_index.t -> bool
-    val min: Binder.Multi_index.t -> Value.t option
+    val min : Binder.Multi_index.t -> Value.t option
+
+    (** [to_sequence ?order t] is the values of [t] in [order], increasing by
+        default. *)
+    val to_sequence :
+      ?order:[ `Increasing | `Decreasing ] ->
+      Binder.Multi_index.t ->
+      Value.t Sequence.t
   end
 end
 

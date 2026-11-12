@@ -304,6 +304,7 @@ module Ordered (Value : Comparator.S) = struct
     let max map = Set.max_elt (Binder.get map)
     let mem value map = Set.mem (Binder.get map) value
     let min map = Set.min_elt (Binder.get map)
+    let to_sequence ?order map = Set.to_sequence ?order (Binder.get map)
   end
 end
 
