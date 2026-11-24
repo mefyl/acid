@@ -1,4 +1,4 @@
-(version 0.22.3)
+(version 0.22.4)
 
 (build
  (all_platforms
@@ -11,24 +11,19 @@
  (all_platforms
   (dune
    base
-   base64
-   bytesrw
+   brr
    ezjsonm
    fmt
-   hlist
-   hmap
-   logs
-   ocaml
-   ppxlib
-   ppx_deriving
+   js_of_ocaml
+   js_of_ocaml-ppx
    ppx_here
    ptime
-   semver2
+   schematic
    uri)))
 
 (source
  (fetch
   (url
-   git+ssh://git@gitlab.routine.co/routine/schematic#8b94e36c10c000cbef03e67ce5dfd41595aed414)))
+   git+ssh://git@gitlab.routine.co/routine/schematic#50e259d67e9223cd491f8ea4230e9a4ad3f22030)))
 
 (dev)

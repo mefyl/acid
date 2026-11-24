@@ -22,30 +22,9 @@
       (progn
        (run
         ./configure
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
         --prefix=%{prefix}
         --docdir=%{doc}/ocaml
-        (when false "")
         -C
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
         --disable-warn-error)
        (run %{make} -j%{jobs}))))))
   ((((arch x86_64)
@@ -60,32 +39,10 @@
       (progn
        (run
         ./configure
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
         --prefix=%{prefix}
         --docdir=%{doc}/ocaml
-        (when false "")
         -C
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
         CC=cc
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
-        (when false "")
         --disable-warn-error)
        (run %{make} -j%{jobs}))))))))
 
