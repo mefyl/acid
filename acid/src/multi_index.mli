@@ -249,11 +249,20 @@ module Ordered_by_unique (Value : ORDERED_BY) : sig
       Binder.Multi_index.t
 
     val find : Value.t -> Binder.Multi_index.t -> Value.value option
+    val max : Binder.Multi_index.t -> Value.value option
     val mem : Value.t -> Binder.Multi_index.t -> bool
+    val min : Binder.Multi_index.t -> Value.value option
     val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
 
     val set :
       Value.t -> Value.value -> Binder.Multi_index.t -> Binder.Multi_index.t
+
+    (** [to_sequence ?order t] is the values of [t] by key in [order],
+        increasing by default. *)
+    val to_sequence :
+      ?order:[ `Increasing | `Decreasing ] ->
+      Binder.Multi_index.t ->
+      Value.value Sequence.t
 
     val update :
       Value.t ->
@@ -275,8 +284,17 @@ module Ordered_by
   module Bind
       (Binder : BINDER with type Multi_index.value = value and type index = t) : sig
     val find : Value.t -> Binder.Multi_index.t -> Next.t option
+    val max : Binder.Multi_index.t -> (Value.t * Next.t) option
     val mem : Value.t -> Binder.Multi_index.t -> bool
+    val min : Binder.Multi_index.t -> (Value.t * Next.t) option
     val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
+
+    (** [to_sequence ?order t] is the bindings of [t] by key in [order],
+        increasing by default. *)
+    val to_sequence :
+      ?order:[ `Increasing | `Decreasing ] ->
+      Binder.Multi_index.t ->
+      (Value.t * Next.t) Sequence.t
 
     val update :
       Value.t ->
@@ -298,8 +316,17 @@ module Multi_ordered_by
   module Bind
       (Binder : BINDER with type Multi_index.value = value and type index = t) : sig
     val find : Value.t -> Binder.Multi_index.t -> Next.t option
+    val max : Binder.Multi_index.t -> (Value.t * Next.t) option
     val mem : Value.t -> Binder.Multi_index.t -> bool
+    val min : Binder.Multi_index.t -> (Value.t * Next.t) option
     val remove : Value.t -> Binder.Multi_index.t -> Binder.Multi_index.t
+
+    (** [to_sequence ?order t] is the bindings of [t] by key in [order],
+        increasing by default. *)
+    val to_sequence :
+      ?order:[ `Increasing | `Decreasing ] ->
+      Binder.Multi_index.t ->
+      (Value.t * Next.t) Sequence.t
 
     val update :
       Value.t ->

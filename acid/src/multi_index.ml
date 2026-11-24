@@ -308,6 +308,10 @@ module Ordered (Value : Comparator.S) = struct
   end
 end
 
+let map_order = function
+  | `Increasing -> `Increasing_key
+  | `Decreasing -> `Decreasing_key
+
 module Ordered_by_unique (Value : ORDERED_BY) = struct
   type t = (Value.t, Value.value, Value.comparator_witness) Map.t
   type value = Value.value
@@ -332,7 +336,13 @@ module Ordered_by_unique (Value : ORDERED_BY) = struct
       (Binder : BINDER with type Multi_index.value = value and type index = t) =
   struct
     let find value map = Map.find (Binder.get map) value
+    let max map = Map.max_elt (Binder.get map) |> Option.map ~f:snd
     let mem value map = Map.mem (Binder.get map) value
+    let min map = Map.min_elt (Binder.get map) |> Option.map ~f:snd
+
+    let to_sequence ?order map =
+      let order = Option.map ~f:map_order order in
+      Map.to_sequence ?order (Binder.get map) |> Sequence.map ~f:snd
 
     let change value map ~f =
       let found = find value map in
@@ -394,8 +404,14 @@ struct
   module Bind
       (Binder : BINDER with type Multi_index.value = value and type index = t) =
   struct
-    let mem value map = Map.mem (Binder.get map) value
     let find value map = Map.find (Binder.get map) value
+    let max map = Map.max_elt (Binder.get map)
+    let mem value map = Map.mem (Binder.get map) value
+    let min map = Map.min_elt (Binder.get map)
+
+    let to_sequence ?order map =
+      let order = Option.map ~f:map_order order in
+      Map.to_sequence ?order (Binder.get map)
 
     let remove value map =
       match Map.find (Binder.get map) value with
@@ -472,8 +488,14 @@ struct
   module Bind
       (Binder : BINDER with type Multi_index.value = value and type index = t) =
   struct
-    let mem value map = Map.mem (Binder.get map) value
     let find value map = Map.find (Binder.get map) value
+    let max map = Map.max_elt (Binder.get map)
+    let mem value map = Map.mem (Binder.get map) value
+    let min map = Map.min_elt (Binder.get map)
+
+    let to_sequence ?order map =
+      let order = Option.map ~f:map_order order in
+      Map.to_sequence ?order (Binder.get map)
 
     let remove value map =
       match Map.find (Binder.get map) value with
