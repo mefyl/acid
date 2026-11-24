@@ -1,4 +1,3 @@
-.merlin
+.envrc
 _build
 _opam
-/path-to-logistic.nix
